@@ -3,8 +3,8 @@
 
 def set_color_code(color_code):
     def text_color(text):
-        # return f"\033[{color_code}{text}\033["
-        return f"\033[{color_code}{text}\033"
+        return f"\033[{color_code}{text}\033["
+
     return text_color
 
 
