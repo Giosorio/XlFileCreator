@@ -1,9 +1,8 @@
-from .encrypt_xl import *
+from .data_validation import *
+from .encrypt_xl import PackageMsofficeMissing, _check_msoffice_installed, set_password, create_password
 from .formats import format_dict
 from .xlfiletemp import XlFileTemp
-from .data_validation import *
 
 
 
-
-encrypt_xl._check_msoffice_installed(init=True)
+_check_msoffice_installed(init=True)
