@@ -1,0 +1,48 @@
+
+format_dict = {
+    'format_0': "wb.add_format({'text_wrap':True, 'bold':True})", 
+    'format_1': "wb.add_format({'bg_color': '#6F8693', 'bold':1, 'font_color':'#FFFFFF', 'text_wrap':1})", 
+    'format_2': "wb.add_format({'bg_color': '#912CEE', 'bold':1, 'font_color':'#FFFFFF', 'text_wrap':1})", 
+    'format_3': "wb.add_format({'bg_color': '#4B0082', 'bold':1, 'font_color':'#FFFFFF', 'text_wrap':1})", 
+    'format_4': "wb.add_format({'bg_color': '#366092', 'bold':1, 'font_color':'#FFFFFF', 'text_wrap':1})", 
+    'format_5': "wb.add_format({'bg_color': '#CD0000', 'bold':1, 'font_color':'#FFFFFF', 'text_wrap':1})", 
+    'format_6': "wb.add_format({'bg_color': '#308014', 'bold':1, 'font_color':'#FFFFFF', 'text_wrap':1})", 
+    'format_7': "wb.add_format({'bg_color': '#8B7500', 'bold':1, 'font_color':'#FFFFFF', 'text_wrap':1})", 
+    'format_8': "wb.add_format({'bg_color': '#F79646', 'bold':1, 'font_color':'#FFFFFF', 'text_wrap':1})", 
+    'format_9': "wb.add_format({'bg_color': '#ffff00', 'bold':1, 'font_color':'#000000', 'text_wrap':1})", 
+    'format_10': "wb.add_format({'bg_color':'#ADD8E6', 'bold':0, 'font_color':'#000000', 'text_wrap':0, 'italic':1})",
+    'format_11': "wb.add_format({'bg_color': '#FF3030'})",
+    'format_12': "wb.add_format({'bg_color': '#FFFF00'})",
+    'format_13': "wb.add_format({'bg_color': '#737373'})",
+    'format_14': "wb.add_format({'bg_color': '#FFC7CE', 'font_color':'#FF3030'})",
+    'format_15': "wb.add_format({'text_wrap':True, 'bold':True, 'italic':True})", 
+    'rsr_format_0': "wb.add_format({'bg_color': '#f45225', 'bold':1, 'font_color':'#FFFFFF', 'text_wrap':1})", 
+    'rsr_format_1': "wb.add_format({'bg_color': '#e74536', 'bold':1, 'font_color':'#FFFFFF', 'text_wrap':1})", 
+    'rsr_format_2': "wb.add_format({'bg_color': '#f45225', 'bold':1, 'font_color':'#ffb511', 'text_wrap':1})", 
+    'rsr_format_3': "wb.add_format({'bg_color': '#f45225', 'bold':1, 'font_color':'#0f1941', 'text_wrap':1})", 
+    'rsr_format_4': "wb.add_format({'bg_color': '#001f33', 'bold':1, 'font_color':'#FFFFFF', 'text_wrap':1})", 
+    'rsr_format_5': "wb.add_format({'bg_color': '#001f33', 'bold':1, 'font_color':'#fea900', 'text_wrap':1})", 
+    'rsr_format_6': "wb.add_format({'bg_color': '#001f33', 'bold':1, 'font_color':'#f45225', 'text_wrap':1})", 
+    'rsr_format_7': "wb.add_format({'bg_color': '#80ccff', 'bold':1, 'font_color':'#0f1941', 'text_wrap':1})", 
+    'rsr_format_8': "wb.add_format({'bg_color': '#FFFFFF', 'bold':1, 'font_color':'#2175d9', 'text_wrap':1})", 
+    'rsr_format_9': "wb.add_format({'bg_color': '#FFFFFF', 'bold':1, 'font_color':'#005c99', 'text_wrap':1})",
+    'rsr_format_10': "wb.add_format({'bg_color': '#FFFFFF', 'bold':1, 'font_color':'#0f1941', 'text_wrap':1})",
+    'rsr_format_11': "wb.add_format({'bg_color': '#FFFFFF', 'bold':1, 'font_color':'#fea900', 'text_wrap':1})",
+    'rsr_format_12': "wb.add_format({'bg_color': '#6ba5b4', 'bold':1, 'font_color':'#0f1941', 'text_wrap':1})",
+    'rsr_format_13': "wb.add_format({'bg_color': '#ffb511', 'bold':1, 'font_color':'#0f1941', 'text_wrap':1})",
+    'rsr_format_14': "wb.add_format({'bg_color': '#6ba5b4', 'bold':1, 'font_color':'#FFFFFF', 'text_wrap':1})",
+    }
+
+
+### lock text is the default when the sheet is protected ws.protect(sheet_password)
+format_lock_config_dict = {
+    'unlocked_text': "wb.add_format({'locked': False, 'text_wrap':True})",  
+    'unlocked_dollars': "wb.add_format({'locked': False, 'text_wrap':False, 'num_format': '$#,##0.00'})",
+    'unlocked_pounds': "wb.add_format({'locked': False, 'text_wrap':False, 'num_format': '£#,##0.00'})",
+    'unlocked_euros': "wb.add_format({'locked': False, 'text_wrap':False, 'num_format': '€#,##0.00'})",
+    'unlocked_percent': "wb.add_format({'locked': False, 'text_wrap':False, 'num_format': '0.00%'})",
+    # 'locked_percent': "wb.add_format({'text_wrap':False, 'num_format': '0.00%'})",
+    # 'locked_dollars': "wb.add_format({'text_wrap':False, 'num_format': '$#,##0.00'})",
+    # 'locked_pounds': "wb.add_format({'text_wrap':False, 'num_format': '£#,##0.00'})",
+    # 'locked_euros': "wb.add_format({'text_wrap':False, 'num_format': '€#,##0.00'})",
+    }
