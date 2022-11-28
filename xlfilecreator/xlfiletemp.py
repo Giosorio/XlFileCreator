@@ -1,6 +1,8 @@
 import pandas as pd
 
 import datetime
+import os
+import shutil
 from typing import List, Dict, Optional
 
 from .create_xlfile import create_xl_file
@@ -106,7 +108,7 @@ class XlFileTemp:
 
     def to_excel(self, project_name: Optional[str]=None, split_by: Optional[str]=None, batch: Optional[int]=1, 
         sheet_password: Optional[str]=None, workbook_password: Optional[str]=None, allow_input_extra_rows: Optional[bool]=None, 
-        protect_files: Optional[bool]=False, random_password: Optional[bool]=False) -> None:
+        protect_files: Optional[bool]=False, random_password: Optional[bool]=False, in_zip: Optional[bool]=False) -> None:
         """
         Creates the excel file
         project_name: name of the project, it will be part of the filename of the templates. If split_by is None it will be the name of the single file generated
@@ -117,6 +119,7 @@ class XlFileTemp:
         allow_input_extra_rows: False/True Determines if the templates allow the user to fill out more rows in the template
         protect_files: False/True encrypt the files
         random_password: False/True if protect_files is True it determines if the password of the files should be random or based on a logic
+        in_zip: False/True Download folders in zip 
         """
 
         today = datetime.datetime.today().strftime('%Y%m%d')
@@ -182,6 +185,12 @@ class XlFileTemp:
             df_pw.to_csv(passwordMaster_name, index=False)
 
             set_password(path_1, path_2, passwordMaster_name)
+        
+        if in_zip:
+            shutil.make_archive(path_1, 'zip', path_1)
+            shutil.make_archive(path_2, 'zip', path_2)
+            os.system(f'rm -r {path_1}')
+            os.system(f'rm -r {path_2}')
 
             ### colab
             # files.download(passwordMaster_name)
