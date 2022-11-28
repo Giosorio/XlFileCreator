@@ -21,9 +21,9 @@ def set_idx_format(workbook, worksheet, df):
 
     columns = iter(df.columns)
     col = next(columns)
-    worksheet.set_column(col, col, width=17, cell_format=idx_format)
+    worksheet.set_column(col, col, width=20, cell_format=idx_format)
     for col in columns:
-        worksheet.set_column(col, col, width=17, cell_format=other_cols_format)
+        worksheet.set_column(col, col, width=20, cell_format=other_cols_format)
 
 
 def config_file():
@@ -36,11 +36,11 @@ def config_file():
         ws_format.set_tab_color('#80ccff')
         for i, format_ in enumerate(format_dict.keys()):
             ws_format.write_string(i,0, format_, cell_format=eval(format_dict[format_]))
-        ws_format.set_column(0, 0, width=12)
+        ws_format.set_column(0, 0, width=17)
 
         column_formats = ['COLUMN FORMATS','unlocked_text','unlocked_dollars','unlocked_pounds','unlocked_euros','unlocked_percent']
         ws_format.write_column(0,1,column_formats)
-        ws_format.set_column(1, 1, width=17)
+        ws_format.set_column(1, 1, width=20)
 
         ### IMPORT_FILE Sheet
         df_impf.to_excel(writer,sheet_name='IMPORT_FILE', header=False, index=False)
