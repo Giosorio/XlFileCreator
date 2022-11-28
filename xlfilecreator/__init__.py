@@ -4,6 +4,6 @@ from .xlfiletemp import XlFileTemp
 from .data_validation import *
 
 
-from .test import Test
+
 
 encrypt_xl._check_msoffice_installed(init=True)
