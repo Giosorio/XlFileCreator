@@ -7,6 +7,7 @@ import os
 import string
 from typing import List, Tuple, Dict, Optional
 
+from .terminal_colors import yellow
 from .xlfilecreator_errors import HeaderIndexNotIdentified
 
 
@@ -92,7 +93,7 @@ def get_google_sheet_validation(sheet_id, dropdown_list_sheet):
     try:
         df = get_google_sheet_df(sheet_id, dropdown_list_sheet, header='HEADER')
     except KeyError:
-        print(f"\nWARNING: 'HEADER' not found in '{dropdown_list_sheet}', dropdown_list_sheet set as None\nEnsure '{dropdown_list_sheet}'is the correct name of the sheet and that it is in the correct format.\n")
+        print(yellow(f"\nWARNING: 'HEADER' not found in '{dropdown_list_sheet}', dropdown_list_sheet set as None\nEnsure '{dropdown_list_sheet}'is the correct name of the sheet and that it is in the correct format.\n"))
         return None
     else:
         return df
