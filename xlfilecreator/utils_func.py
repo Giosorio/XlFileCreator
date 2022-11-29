@@ -78,7 +78,12 @@ def clean_df_main(df_main: pd.DataFrame) -> pd.DataFrame:
 def get_google_sheet_df(sheet_id: str, sheet_name: str, header: Optional[str]=None) -> pd.DataFrame:
     """header: index 'HEADER' from the dropdows list sheet"""
     ### Read google sheets file
-    df = pd.read_csv(f'https://docs.google.com/spreadsheets/d/{sheet_id}/gviz/tq?tqx=out:csv&sheet={sheet_name}', na_filter=False, header=None, index_col=0)
+    try:
+        df = pd.read_csv(f'https://docs.google.com/spreadsheets/d/{sheet_id}/gviz/tq?tqx=out:csv&sheet={sheet_name}', na_filter=False, header=None, index_col=0)
+    except pd.errors.ParserError as pe:
+        print(pe)
+        raise pd.errors.ParserError('The Google sheet workbook is restricted. It must be accessible to Anyone with the link')
+
     df.index.name = 'Index'
 
     if header is None:
