@@ -134,7 +134,6 @@ class XlFileTemp:
             create_xl_file(project_name, self.df_data, self.df_settings, self.data_validation_dict, 
             self.data_val_headers, self.df_data_validation, self.hd_index, self.header_index_list, 
             self.extra_rows, self.dropdown_list_sheet, sheet_password, workbook_password)
-
             return None
 
         if self.extra_rows or allow_input_extra_rows:
@@ -142,7 +141,6 @@ class XlFileTemp:
         else:
             df_rows_extra = None
 
-        
         project = set_project_name(project_name)
         path_1, path_2 = create_output_folders(project.name, today, protect_files)
 
@@ -165,18 +163,15 @@ class XlFileTemp:
             file_name = f'{id_file}-{name}-{today}.xlsx'
             file_path = f'{path_1}/{file_name}'
 
-
             ### Create Excel file
             create_xl_file(file_path, df_split_value, self.df_settings, self.data_validation_dict, 
             self.data_val_headers, self.df_data_validation, self.hd_index, self.header_index_list, 
             self.extra_rows, self.dropdown_list_sheet, sheet_password, workbook_password)
 
-
             ### Create Password master df
             if protect_files is True:
                 pw = create_password(project, split_value, random_password)    
                 password_master.append((id_file, file_name, split_value, pw))
-
 
         ### Encrypt Excel files
         if protect_files is True:
