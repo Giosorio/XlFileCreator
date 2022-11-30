@@ -159,7 +159,7 @@ class XlFileTemp:
             ### Include the headers on the top
             df_split_value = pd.concat([self.df_hd, df_split_value, df_rows_extra])
 
-            ### remove special characters from the supplier name
+            ### Remove special characters from the supplier name
             name = ''.join(char for char in split_value if char == ' ' or char.isalnum())
             id_file = f'{project.name}ID{batch}{i:03d}'
             file_name = f'{id_file}-{name}-{today}.xlsx'
