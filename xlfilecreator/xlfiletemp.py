@@ -3,13 +3,12 @@ import pandas as pd
 import datetime
 import os
 import shutil
-from typing import List, Dict, Optional
+from typing import Optional
 
 from .create_xlfile import create_xl_file
 from .config_file import config_file
 from .data_validation import clean_df_data_validation, get_data_validation_dict
 from .encrypt_xl import set_password, create_password
-from .header_format import set_headers_format
 from .utils_func import get_google_sheet_df, get_headers, get_df_data, rows_extra, set_project_name
 from .utils_func import create_output_folders, clean_df_main, get_google_sheet_validation, get_column_to_split_by
 
