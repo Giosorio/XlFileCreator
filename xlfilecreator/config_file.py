@@ -14,7 +14,7 @@ DV = {0: {0: 'Index', 1: 'error_type', 2: 'input_title', 3: 'input_message', 4: 
 df_dv = pd.DataFrame(DV)
 
 
-def set_idx_format(workbook, worksheet, df):
+def set_idx_format(workbook: xlsxwriter.workbook.Workbook, worksheet: xlsxwriter.worksheet.Worksheet, df: pd.DataFrame) -> None:
 
     idx_format = workbook.add_format({'text_wrap':True, 'bold':True, 'italic':True, 'right':True})
     other_cols_format = workbook.add_format({'text_wrap':True})
@@ -26,7 +26,7 @@ def set_idx_format(workbook, worksheet, df):
         worksheet.set_column(col, col, width=20, cell_format=other_cols_format)
 
 
-def config_file():
+def config_file() -> None:
 
     with pd.ExcelWriter('XlFileTemp_config_file.xlsx', engine='xlsxwriter') as writer:
         wb = writer.book
@@ -70,8 +70,3 @@ def config_file():
         ws_main.data_validation('B2:AM2', {'validate': 'list', 'source': f'=FORMATS!$A$1:$A${len(format_dict)}'})
         ws_main.data_validation('B4:AM4', {'validate': 'list', 'source': f'=FORMATS!$B$2:$B${len(format_lock_config_dict)}'})
         
-
-
-
-
-

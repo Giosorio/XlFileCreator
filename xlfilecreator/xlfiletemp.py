@@ -98,7 +98,7 @@ class XlFileTemp:
         return cls(df_main, df_data_validation_complete, dropdown_list_sheet=dropdown_list_sheet)
 
     @staticmethod
-    def export_config_file():
+    def export_config_file() -> None:
         """
         Export Excel file used as a tempalte to create an XlFileTemp object
         The template includes data that can be pass as the parameter of the 
@@ -153,20 +153,20 @@ class XlFileTemp:
 
         password_master = []
         for i, split_value in enumerate(values_to_split,1):
-            ## Filter the values to include in the template
+            ### Filter the values to include in the template
             df_split_value = self.df_data[self.df_data[col_to_split]==split_value]
             
-            ## Include the headers on the top
+            ### Include the headers on the top
             df_split_value = pd.concat([self.df_hd, df_split_value, df_rows_extra])
 
-            # remove special characters from the supplier name
+            ### remove special characters from the supplier name
             name = ''.join(char for char in split_value if char == ' ' or char.isalnum())
             id_file = f'{project.name}ID{batch}{i:03d}'
             file_name = f'{id_file}-{name}-{today}.xlsx'
             file_path = f'{path_1}/{file_name}'
 
 
-            ## Create Excel file
+            ### Create Excel file
             create_xl_file(file_path, df_split_value, self.df_settings, self.data_validation_dict, 
             self.data_val_headers, self.df_data_validation, self.hd_index, self.header_index_list, 
             self.extra_rows, self.dropdown_list_sheet, sheet_password, workbook_password)
@@ -191,13 +191,3 @@ class XlFileTemp:
             shutil.make_archive(path_2, 'zip', path_2)
             os.system(f'rm -r {path_1}')
             os.system(f'rm -r {path_2}')
-
-            ### colab
-            # files.download(passwordMaster_name)
-
-
-
-
-
-
-
