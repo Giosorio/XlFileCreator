@@ -10,7 +10,7 @@ from .config_file import config_file
 from .data_validation import clean_df_data_validation, get_data_validation_dict
 from .encrypt_xl import set_password, create_password
 from .utils_func import get_google_sheet_df, get_headers, get_df_data, rows_extra, set_project_name
-from .utils_func import create_output_folders, clean_df_main, get_google_sheet_validation, get_column_to_split_by
+from .utils_func import create_output_folders, clean_df_main, get_google_sheet_validation, get_column_to_split_by, get_excel_df
 
 
 class XlFileTemp:
@@ -70,11 +70,26 @@ class XlFileTemp:
         return self.df_data.shape[0]
     
     @classmethod
-    def load_from_excel(cls, xl_file):
-        """Constructor of XlFileTemp
-        Creates an XlFileTemp object from an excel file"""
-        pass
-    
+    def read_excel(cls, xl_file: str, sheet_name: str, dropdown_list_sheet: Optional[str]=None):
+        """
+        Constructor of XlFileTemp
+        Creates an XlFileTemp object from an excel file
+
+        Parameters
+        xl_file: Excel file path
+        sheet_name: name of the sheet where the data is stored
+        dropdown_list_sheet: name of the sheet where the dropdownlists and data validation settings are located, default=None
+        """
+        
+        df_main = get_excel_df(xl_file, sheet_name)
+        df_main = clean_df_main(df_main)
+        if dropdown_list_sheet is None or dropdown_list_sheet == '':
+            df_data_validation_complete = None
+        else:
+            df_data_validation_complete = get_excel_df(xl_file, sheet_name=dropdown_list_sheet, header='HEADER')
+        
+        return cls(df_main, df_data_validation_complete, dropdown_list_sheet=dropdown_list_sheet)
+
     @classmethod
     def read_google_sheets_file(cls, sheet_id: str, sheet_name: str, dropdown_list_sheet: Optional[str]=None):
         """

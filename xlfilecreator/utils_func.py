@@ -75,6 +75,22 @@ def clean_df_main(df_main: pd.DataFrame) -> pd.DataFrame:
     return df_main[columns_scope]
 
 
+def get_excel_df(xl_file:str, sheet_name: str, header: Optional[str]=None) -> pd.DataFrame:
+
+    df = pd.read_excel(xl_file, sheet_name=sheet_name, header=None, na_filter=False, index_col=0)
+    df.index.name = 'Index'
+
+    if header is None:
+        df.columns = range(df.shape[1])
+    else:
+        try:
+            df.columns = df.loc[header]
+        except KeyError:
+            raise KeyError(f"'HEADER' not found in the index {[idx for idx in df.index if idx != '']}")
+
+    return df
+
+
 def get_google_sheet_df(sheet_id: str, sheet_name: str, header: Optional[str]=None) -> pd.DataFrame:
     """header: index 'HEADER' from the dropdows list sheet"""
     ### Read google sheets file
