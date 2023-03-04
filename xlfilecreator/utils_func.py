@@ -12,7 +12,7 @@ from .xlfilecreator_errors import HeaderIndexNotIdentified
 
 
 
-def get_column_to_split_by(df_settings, split_by):
+def get_column_to_split_by(df_settings: pd.DataFrame, split_by: str) -> int:
     """returns Dataframe integer column of the column to split by"""
 
     try:
@@ -110,7 +110,7 @@ def get_google_sheet_df(sheet_id: str, sheet_name: str, header: Optional[str]=No
     return df
 
 
-def get_google_sheet_validation(sheet_id, dropdown_list_sheet):
+def get_google_sheet_validation(sheet_id: str, dropdown_list_sheet: str) -> pd.DataFrame:
     try:
         df = get_google_sheet_df(sheet_id, dropdown_list_sheet, header='HEADER')
     except KeyError:
@@ -128,6 +128,7 @@ def export_json(dict_: Dict, filename: str) -> None:
     
     ### google colab:
     # files.download(filename)
+
 
 Project = Tuple[str, str]
 def set_project_name(project_name: Optional[str]=None) -> Project:
