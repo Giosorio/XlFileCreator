@@ -26,7 +26,7 @@ def get_column_to_split_by(df_settings, split_by):
 def get_headers(df_settings: pd.DataFrame) -> Tuple[List, pd.DataFrame]:
     """
     Validate if all headers are included in the pre-stablished set of all_indexes
-    If there is a value included in the index that is not part of all_indexes it will raise an error
+    If there is a value included in the index that is not part of accepted_idx it will raise an error
 
     Organise the headers according to headers_all
     'description_header' on the top
@@ -34,10 +34,10 @@ def get_headers(df_settings: pd.DataFrame) -> Tuple[List, pd.DataFrame]:
     'example_row' third
     """
 
-    all_indexes = ['CONFIG_MANAGER','header_format','lock_sheet_config','column_width','description_header','HEADER','example_row']
+    accepted_idx = ['CONFIG_MANAGER','header_format','lock_sheet_config','conditional_formatting','column_width','description_header','HEADER','example_row']
     for hd_i in df_settings.index:
-        if hd_i not in all_indexes:
-            raise HeaderIndexNotIdentified(hd_i)
+        if hd_i not in accepted_idx:
+            raise HeaderIndexNotIdentified(hd_i, accepted_idx)
 
     headers_all = ['description_header','HEADER','test_test_','example_row']
     header_index_list = [hd for hd in headers_all if hd in df_settings.index]
