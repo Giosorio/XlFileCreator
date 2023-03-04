@@ -7,7 +7,7 @@ from typing import List, Dict, Optional, Union, Callable
 
 from .formats import format_lock_config_dict
 from .header_format import set_headers_format
-from .data_validation import set_data_validation
+from .data_validation import DataValDict, set_data_validation
 
 
 def protect_workbook(path: str, password: str) -> None:
@@ -113,8 +113,8 @@ sheet_password: str) -> Union[lock_sheet_simple_func, None]:
     ws.protect(sheet_password)
 
 
-def create_xl_file(file_path: str, df: pd.DataFrame, df_settings: pd.DataFrame, data_validation_opts_dict: Dict, 
-data_val_headers: List, df_data_validation: pd.DataFrame, header_index: int, header_index_list: List, allow_input_extra_rows: Optional[bool]=False, 
+def create_xl_file(file_path: str, df: pd.DataFrame, df_settings: pd.DataFrame, data_validation_opts_dict: DataValDict, 
+data_val_headers: List[str], df_data_validation: pd.DataFrame, header_index: int, header_index_list: List[str], allow_input_extra_rows: Optional[bool]=False, 
 dropdown_list_sheet: Optional[str]=None, sheet_password: Optional[str]=None, workbook_password: Optional[str]=None) -> None:
     """
     file_path: complete filename of the excel file

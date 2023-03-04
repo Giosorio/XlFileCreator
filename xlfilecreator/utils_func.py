@@ -4,9 +4,9 @@ import collections
 import datetime
 import json
 import os
-import string
 from typing import List, Tuple, Dict, Optional
 
+from .data_validation_typing import DataValDict
 from .terminal_colors import yellow
 from .xlfilecreator_errors import HeaderIndexNotIdentified
 
@@ -120,14 +120,11 @@ def get_google_sheet_validation(sheet_id: str, dropdown_list_sheet: str) -> pd.D
         return df
 
 
-def export_json(dict_: Dict, filename: str) -> None:
+def export_json(dict_: DataValDict, filename: str) -> None:
     json_str_format = json.dumps(dict_, indent=2)   ## string
     filename = f'{filename}.json'
     with open(filename, 'w') as outfile:
         outfile.write(json_str_format)
-    
-    ### google colab:
-    # files.download(filename)
 
 
 Project = Tuple[str, str]

@@ -50,8 +50,8 @@ class XlFileTemp:
             self.data_validation_dict = None
             self.data_val_headers = None
         else:
-            self.data_validation_dict, self.data_val_headers = get_data_validation_dict(self.df_settings, self.df_data_validation_complete, self.df_data_validation, self.dropdown_list_sheet)
-        
+            self.data_val_headers = self.df_data_validation.columns.tolist()
+            self.data_validation_dict = get_data_validation_dict(self.df_settings, self.df_data_validation_complete, self.df_data_validation, self.dropdown_list_sheet)
 
     @property
     def df_data(self) -> pd.DataFrame:
@@ -147,7 +147,7 @@ class XlFileTemp:
         if split_by is None:
             if not project_name.endswith('.xlsx'):
                 project_name = project_name + '.xlsx'
-                
+
             create_xl_file(project_name, self.df_data, self.df_settings, self.data_validation_dict, 
             self.data_val_headers, self.df_data_validation, self.hd_index, self.header_index_list, 
             self.extra_rows, self.dropdown_list_sheet, sheet_password, workbook_password)
