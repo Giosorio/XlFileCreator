@@ -6,20 +6,61 @@ from typing import List, Dict, Tuple, Optional, Union
 from .utils_func import export_json
 
 
+Header = str # 'Worker Type'
+Source = str # '=Droptdownlist!$F$2:$F$3'
+SourceDict = Dict[Header, Source]
+            # {
+                # 'Worker Gender': '=Droptdownlist!$B$2:$B$4',
+                # 'Worker Pay Type Name': '=Droptdownlist!$C$2:$C$5',
+                # 'Rate type': '=Droptdownlist!$F$2:$F$3'
+            # }
+SingleOptionsDict = Dict[Header, Dict[str,str]] 
+                # {'Worker Type':{
+                                # 'validate': 'list',
+                                #   'source': '=Droptdownlist!$F$2:$F$3',
+                                #   'error_type': 'warning',
+                                #   'input_title': 'Worker Paytype',
+                                #   'input_message': 'Select a value from the picklist',
+                                #   'error_title': 'Input value not valid!',
+                                #   'error_message': 'It should be a value from the picklist'
+                                #   }
+                        # }
+DataValDict = Dict[Header,SingleOptionsDict]
+            # {
+                # 'Worker Gender': 
+                        # {'validate': 'list',
+                        #   'source': '=Dropdown_Lists!$A$2:$A$4',
+                        #   'error_type': 'stop',
+                        #   'error_title': 'Worker Gender ERROR TITLE'},
+                #  'Worker Pay Type Name': 
+                        # {'validate': 'list',
+                        #   'source': '=Dropdown_Lists!$B$2:$B$5',
+                        #   'error_type': 'information'},
+                #  'ACTIVE WORKER?': 
+                        # {'validate': 'list',
+                        #   'source': '=Dropdown_Lists!$C$2:$C$3',
+                        #   'error_type': 'stop',
+                        #   'input_title': 'Active worker?',
+                        #   'input_message': 'Is this worker an active employee?',
+                        #   'error_message': 'it must be an option from the picklist'
+            #  }
+
+
+
 def set_data_validation(ws: xlsxwriter.worksheet.Worksheet, df: pd.DataFrame, 
-data_validation_opts_dict: Dict, data_val_headers: List) -> None:
+data_validation_opts_dict: Dict[str,Dict], data_val_headers: List[str]) -> None:
     """
     Set up data validation, dropdown lists 
     Parameters:
     ws: worksheet
     df: dataframe used to create the template header=None
-    df_data_validation_complete: dataframe containing all settings for data validation
-    df_data_validation: dataframe containing only the dropdownlists 
+    data_validation_opts_dict: Dictionary containing the opctions_dict for each field in scope for data validation
+    data_val_headers: dataframe containing only the dropdownlists 
     """
 
     column_indexes_to_apply_data_validation = [i for i, hd in enumerate(df.loc['HEADER']) if hd in data_val_headers]  
-    initial_index = df.index.tolist().index('')
-    last_row_index = df.shape[0] + 1  ## df index 0 = excel row 1
+    initial_index = df.index.tolist().index('')  ## df index 0 = excel row 1
+    last_row_index = df.shape[0] - 1  
 
     for col in column_indexes_to_apply_data_validation:
         hd = df.loc['HEADER', col]
@@ -30,16 +71,23 @@ data_validation_opts_dict: Dict, data_val_headers: List) -> None:
 
 
 def get_data_validation_sources_dict(df_settings: pd.DataFrame, df_data_validation: pd.DataFrame, 
-dropdown_list_sheet: str) -> Tuple[Dict, List]:
+dropdown_list_sheet: str) -> Tuple[SourceDict, List[Header]]:
     """
-    Generate a dictionary where the Keys are the headers to apply data validation and the Values are 
-    the string formats of the excel range where the data validation is located.
+    Return a dictionary and a list
+    - The dictionary where the Keys are the headers to apply data validation and the Values are 
+        the string formats of the excel range where the data validation is located
+        
+        It assumes that all the ranges start from row 2 in excel  
+        SourceDict: 
+            data_source_dict = {
+                'Worker Gender': '=Droptdownlist!$B$2:$B$4',
+                'Worker Pay Type Name': '=Droptdownlist!$C$2:$C$5',
+                'Rate type': '=Droptdownlist!$F$2:$F$3'
+            }
 
-    It assumes that all the ranges start from row 2 in excel  
-    data_source_dict = {
-        'Worker Gender': '=$B$2:$B$4',
-        'Worker Pay Type Name': '=$C$2:$C$5',
-        'Rate type': '=$F$2:$F$3'}
+    - The list of the headers in to apply data validation.
+        i.e ['Worker Gender','Worker Pay Type Name','ACTIVE WORKER?','Rate type']
+    
     """
 
     data_source_dict = {}
@@ -58,7 +106,7 @@ dropdown_list_sheet: str) -> Tuple[Dict, List]:
 
 
 def get_options_dict_data_validation(hd: str, source: str, opts_dv_included: List, 
-df_data_validation_complete: pd.DataFrame) -> Dict:
+df_data_validation_complete: pd.DataFrame) -> SingleOptionsDict:
     """
     Creates the options_dictionary for data validation FOR EACH HEADER
     The header as a key and the options dictionary as the value 
@@ -84,7 +132,7 @@ df_data_validation_complete: pd.DataFrame) -> Dict:
 
 
 def get_data_validation_dict(df_settings: pd.DataFrame, df_data_validation_complete: pd.DataFrame, 
-df_data_validation: pd.DataFrame, dropdown_list_sheet: Optional[str]='Dropdown_Lists') -> Union[None, Tuple[Dict, List]]:
+df_data_validation: pd.DataFrame, dropdown_list_sheet: Optional[str]='Dropdown_Lists') -> Union[None, Tuple[DataValDict, List[Header]]]:
     """
     Generate a dictionary where the keys are the headers to apply data validation 
     and the values are the dictionaries containing the options for the data validation 
