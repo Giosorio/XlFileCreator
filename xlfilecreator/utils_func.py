@@ -23,7 +23,7 @@ def get_column_to_split_by(df_settings: pd.DataFrame, split_by: str) -> int:
         return col_to_split
 
 
-def get_headers(df_settings: pd.DataFrame) -> Tuple[List, pd.DataFrame]:
+def get_headers(df_settings: pd.DataFrame) -> Tuple[List[str], pd.DataFrame]:
     """
     Validate if all headers are included in the pre-stablished set of all_indexes
     If there is a value included in the index that is not part of accepted_idx it will raise an error

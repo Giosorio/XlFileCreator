@@ -149,7 +149,7 @@ class XlFileTemp:
                 project_name = project_name + '.xlsx'
 
             create_xl_file(project_name, self.df_data, self.df_settings, self.data_validation_dict, 
-            self.data_val_headers, self.df_data_validation, self.hd_index, self.header_index_list, 
+            self.data_val_headers, self.df_data_validation, self.hd_index, self.data_index, self.header_index_list, 
             self.extra_rows, self.dropdown_list_sheet, sheet_password, workbook_password)
             return None
 
@@ -182,7 +182,7 @@ class XlFileTemp:
 
             ### Create Excel file
             create_xl_file(file_path, df_split_value, self.df_settings, self.data_validation_dict, 
-            self.data_val_headers, self.df_data_validation, self.hd_index, self.header_index_list, 
+            self.data_val_headers, self.df_data_validation, self.hd_index, self.data_index, self.header_index_list, 
             self.extra_rows, self.dropdown_list_sheet, sheet_password, workbook_password)
 
             ### Create Password master df

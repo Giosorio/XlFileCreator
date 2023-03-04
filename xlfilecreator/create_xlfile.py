@@ -5,6 +5,7 @@ from openpyxl.workbook.protection import WorkbookProtection
 
 from typing import List, Dict, Optional, Union, Callable
 
+from .conditional_formatting import highlight_mandatory
 from .formats import format_lock_config_dict
 from .header_format import set_headers_format
 from .data_validation import DataValDict, set_data_validation
@@ -114,7 +115,7 @@ sheet_password: str) -> Union[lock_sheet_simple_func, None]:
 
 
 def create_xl_file(file_path: str, df: pd.DataFrame, df_settings: pd.DataFrame, data_validation_opts_dict: DataValDict, 
-data_val_headers: List[str], df_data_validation: pd.DataFrame, header_index: int, header_index_list: List[str], allow_input_extra_rows: Optional[bool]=False, 
+data_val_headers: List[str], df_data_validation: pd.DataFrame, header_index: int, data_index: int, header_index_list: List[str], allow_input_extra_rows: Optional[bool]=False, 
 dropdown_list_sheet: Optional[str]=None, sheet_password: Optional[str]=None, workbook_password: Optional[str]=None) -> None:
     """
     file_path: complete filename of the excel file
@@ -145,6 +146,8 @@ dropdown_list_sheet: Optional[str]=None, sheet_password: Optional[str]=None, wor
         ### Insert Dropdown lists
         if df_data_validation is not None: 
             set_data_validation(ws, df, data_validation_opts_dict, data_val_headers)
+
+        highlight_mandatory(wb, ws, df, df_settings, data_index)
 
         ### Set column width
         column_width(ws, df, df_settings)
