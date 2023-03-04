@@ -11,6 +11,8 @@ from .terminal_colors import yellow
 from .xlfilecreator_errors import HeaderIndexNotIdentified
 
 
+EXTRA_ROWS = 100
+
 
 def get_column_to_split_by(df_settings: pd.DataFrame, split_by: str) -> int:
     """returns Dataframe integer column of the column to split by"""
@@ -47,7 +49,7 @@ def get_headers(df_settings: pd.DataFrame) -> Tuple[List[str], pd.DataFrame]:
 
 
 def rows_extra(df_data_only: pd.DataFrame) -> pd.DataFrame:
-    blank_rows = ['' for _ in range(100)]
+    blank_rows = ['' for _ in range(EXTRA_ROWS)]
     rows_extra = {col:blank_rows for col in df_data_only.columns}
     df_rows_extra = pd.DataFrame(rows_extra)
 

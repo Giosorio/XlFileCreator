@@ -147,7 +147,8 @@ dropdown_list_sheet: Optional[str]=None, sheet_password: Optional[str]=None, wor
         if df_data_validation is not None: 
             set_data_validation(ws, df, data_validation_opts_dict, data_val_headers)
 
-        highlight_mandatory(wb, ws, df, df_settings, data_index)
+        ### Set Conditional Formatting
+        highlight_mandatory(wb, ws, df, df_settings, data_index, allow_input_extra_rows)
 
         ### Set column width
         column_width(ws, df, df_settings)

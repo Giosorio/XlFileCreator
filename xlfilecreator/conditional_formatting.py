@@ -4,12 +4,14 @@ import xlsxwriter
 from typing import List
 
 from .formats import format_dict
+from .utils_func import EXTRA_ROWS
 
 
 def highlight_mandatory(wb: xlsxwriter.workbook.Workbook, ws: xlsxwriter.worksheet.Worksheet, 
-df: pd.DataFrame, df_settings: pd.DataFrame, data_index: int) -> None:
+df: pd.DataFrame, df_settings: pd.DataFrame, data_index: int, allow_input_extra_rows: bool) -> None:
     """
     Highlight mandatory fields in yellow
+    If allow_input_extra_rows is True, the extra rows will not have conditional formatting.
     
     wb: workbook
     ws: worksheet
@@ -21,7 +23,11 @@ df: pd.DataFrame, df_settings: pd.DataFrame, data_index: int) -> None:
     if 'conditional_formatting' not in df_settings.index:
         return None
 
-    length = df.shape[0]
+    if allow_input_extra_rows:
+        length = df.shape[0] - EXTRA_ROWS
+    else:
+        length = df.shape[0]
+
     cond_formatting = df_settings.loc['conditional_formatting']
     for col_num, cond_f in zip(df.columns, cond_formatting):
         if cond_f == 'Mandatory':
