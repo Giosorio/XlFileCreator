@@ -26,6 +26,8 @@ class DataValidationConfiguration(ABC):
         self.data_validation_dict: DataValDict Dictionary containing the opctions_dict for each field in scope for data validation
         self.data_validation_dict.keys(): List[Header] List of headers in scope for data validation
         """
+        if self.data_validation_dict is None:
+            return None
 
         column_indexes_to_apply_data_validation = [i for i, hd in enumerate(df.loc['HEADER']) if hd in self.data_val_headers]  
         initial_index = df.index.tolist().index('')  ## df index 0 = excel row 1
@@ -43,6 +45,8 @@ class DataValidationConfig1(DataValidationConfiguration):
     """
     df_data_validation_complete: dataframe containing all the dropdown lists and the settings for the data validation
     df_data_validation: dataframe contaning only the dropdown lists 
+    data_validation_dict: DataValDict
+
     """
 
     def __init__(self, df_dvconfig1: Union[pd.DataFrame,None], dropdown_list_sheet: str, df_settings: pd.DataFrame) -> None:

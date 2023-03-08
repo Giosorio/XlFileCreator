@@ -8,6 +8,7 @@ from typing import List, Dict, Optional, Union, Callable
 from .conditional_formatting import highlight_mandatory
 from .formats import format_lock_config_dict
 from .header_format import set_headers_format
+from .data_validation import DataValidationConfig1
 from .data_validation_typing import DataValDict, Header
 
 
@@ -114,32 +115,9 @@ sheet_password: str) -> Union[lock_sheet_simple_func, None]:
     ws.protect(sheet_password)
 
 
-def set_data_validation(ws: xlsxwriter.worksheet.Worksheet, df: pd.DataFrame, 
-data_validation_opts_dict: DataValDict, data_val_headers: List[Header]) -> None:
-    """
-    Set up data validation, dropdown lists 
-    Parameters:
-    ws: worksheet
-    df: dataframe used to create the template header=None
-    data_validation_opts_dict: Dictionary containing the opctions_dict for each field in scope for data validation
-    data_val_headers: dataframe containing only the dropdownlists 
-    """
-
-    column_indexes_to_apply_data_validation = [i for i, hd in enumerate(df.loc['HEADER']) if hd in data_val_headers]  
-    initial_index = df.index.tolist().index('')  ## df index 0 = excel row 1
-    last_row_index = df.shape[0] - 1  
-
-    for col in column_indexes_to_apply_data_validation:
-        hd = df.loc['HEADER', col]
-        opts_dict = data_validation_opts_dict[hd]
-        ### ws.data_validation(first_row, first_col, last_row, last_col, options_dict={...})
-        # ws.data_validation(initial_index, col, last_row_index, col, {'validate':'list', 'source':data_source_dict[hd], 'error_type':'stop'})
-        ws.data_validation(initial_index, col, last_row_index, col, opts_dict)
-
-
-def create_xl_file(file_path: str, df: pd.DataFrame, df_settings: pd.DataFrame, data_validation_opts_dict: DataValDict, 
-data_val_headers: List[str], df_data_validation: pd.DataFrame, header_index: int, data_index: int, header_index_list: List[str], allow_input_extra_rows: Optional[bool]=False, 
-dropdown_list_sheet: Optional[str]=None, sheet_password: Optional[str]=None, workbook_password: Optional[str]=None) -> None:
+def create_xl_file(file_path: str, df: pd.DataFrame, df_settings: pd.DataFrame, dv_config1: DataValidationConfig1, 
+header_index: int, data_index: int, header_index_list: List[str], allow_input_extra_rows: Optional[bool]=False, 
+sheet_password: Optional[str]=None, workbook_password: Optional[str]=None) -> None:
     """
     file_path: complete filename of the excel file
     df: dataframe containing only the headers and data of the main sheet of the excel file
@@ -155,9 +133,9 @@ dropdown_list_sheet: Optional[str]=None, sheet_password: Optional[str]=None, wor
     
     with pd.ExcelWriter(file_path, engine='xlsxwriter') as writer:
         df.to_excel(writer, sheet_name='Sheet1', index=False, header=False)
-        if df_data_validation is not None: 
-            df_data_validation.to_excel(writer,sheet_name=dropdown_list_sheet, index=False)
-            ws_dv = writer.sheets[dropdown_list_sheet]
+        if dv_config1.df_data_validation is not None: 
+            dv_config1.df_data_validation.to_excel(writer,sheet_name=dv_config1.dropdown_list_sheet, index=False)
+            ws_dv = writer.sheets[dv_config1.dropdown_list_sheet]
             ws_dv.hide()
 
         wb = writer.book
@@ -167,8 +145,7 @@ dropdown_list_sheet: Optional[str]=None, sheet_password: Optional[str]=None, wor
         set_headers_format(wb, ws, df, df_settings, header_index_list, header_index)
 
         ### Insert Dropdown lists
-        if df_data_validation is not None: 
-            set_data_validation(ws, df, data_validation_opts_dict, data_val_headers)
+        dv_config1.set_data_validation(ws, df)
 
         ### Set Conditional Formatting
         highlight_mandatory(wb, ws, df, df_settings, data_index, allow_input_extra_rows)

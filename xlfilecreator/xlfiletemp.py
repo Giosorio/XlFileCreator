@@ -140,9 +140,9 @@ class XlFileTemp:
             if not project_name.endswith('.xlsx'):
                 project_name = project_name + '.xlsx'
 
-            create_xl_file(project_name, self.df_data, self.df_settings, self.dv_conffig1.data_validation_dict, 
-            self.dv_conffig1.data_val_headers, self.dv_conffig1.df_data_validation, self.hd_index, self.data_index, self.header_index_list, 
-            self.extra_rows, self.dv_conffig1.dropdown_list_sheet, sheet_password, workbook_password)
+            create_xl_file(project_name, self.df_data, self.df_settings, self.dv_conffig1, 
+            self.hd_index, self.data_index, self.header_index_list, self.extra_rows, 
+            sheet_password, workbook_password)
             return None
 
         if self.extra_rows or allow_input_extra_rows:
@@ -173,9 +173,9 @@ class XlFileTemp:
             file_path = f'{path_1}/{file_name}'
 
             ### Create Excel file
-            create_xl_file(file_path, df_split_value, self.df_settings, self.dv_conffig1.data_validation_dict, 
-            self.dv_conffig1.data_val_headers, self.dv_conffig1.df_data_validation, self.hd_index, self.data_index, self.header_index_list, 
-            self.extra_rows, self.dv_conffig1.dropdown_list_sheet, sheet_password, workbook_password)
+            create_xl_file(file_path, df_split_value, self.df_settings, self.dv_conffig1, 
+            self.hd_index, self.data_index, self.header_index_list, self.extra_rows, 
+            sheet_password, workbook_password)
 
             ### Create Password master df
             if protect_files is True:
