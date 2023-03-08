@@ -94,6 +94,7 @@ def get_excel_df(xl_file:str, sheet_name: str, header: Optional[str]=None) -> pd
 
 
 def check_google_sh_reader(sheet_id: str, sheet_name: str, na_filter: bool, header: Union[int,None], index_col:int):
+    """Check if the google sheet workbook is readeble"""
     try:
         df = pd.read_csv(f'https://docs.google.com/spreadsheets/d/{sheet_id}/gviz/tq?tqx=out:csv&sheet={sheet_name}', na_filter=na_filter, header=header, index_col=index_col)
     except pd.errors.ParserError as pe:
@@ -104,8 +105,7 @@ def check_google_sh_reader(sheet_id: str, sheet_name: str, na_filter: bool, head
 
 
 def get_google_sheet_df(sheet_id: str, sheet_name: str) -> pd.DataFrame:
-    """header: index 'HEADER' from the dropdows list sheet"""
-    ### Read google sheets file
+    """Read google sheets main sheet"""
     df = check_google_sh_reader(sheet_id, sheet_name, na_filter=False, header=None, index_col=0)
     df.index.name = 'Index'
     
@@ -114,7 +114,9 @@ def get_google_sheet_df(sheet_id: str, sheet_name: str) -> pd.DataFrame:
 
 
 def get_google_sheet_validation(sheet_id: str, dropdown_list_sheet: str) -> pd.DataFrame:
+    """Read google sheets data_validation_config1"""
     df = check_google_sh_reader(sheet_id, dropdown_list_sheet, na_filter=False, header=None, index_col=0)
+    ## header: index 'HEADER' from the dropdows list sheet
     try:
         df.columns = df.loc['HEADER']
     except KeyError:
