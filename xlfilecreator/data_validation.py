@@ -7,28 +7,6 @@ from .data_validation_typing import Header, SourceDict, SingleOptionsDict, DataV
 from .utils_func import export_json
 
 
-def set_data_validation(ws: xlsxwriter.worksheet.Worksheet, df: pd.DataFrame, 
-data_validation_opts_dict: DataValDict, data_val_headers: List[Header]) -> None:
-    """
-    Set up data validation, dropdown lists 
-    Parameters:
-    ws: worksheet
-    df: dataframe used to create the template header=None
-    data_validation_opts_dict: Dictionary containing the opctions_dict for each field in scope for data validation
-    data_val_headers: dataframe containing only the dropdownlists 
-    """
-
-    column_indexes_to_apply_data_validation = [i for i, hd in enumerate(df.loc['HEADER']) if hd in data_val_headers]  
-    initial_index = df.index.tolist().index('')  ## df index 0 = excel row 1
-    last_row_index = df.shape[0] - 1  
-
-    for col in column_indexes_to_apply_data_validation:
-        hd = df.loc['HEADER', col]
-        opts_dict = data_validation_opts_dict[hd]
-        ### ws.data_validation(first_row, first_col, last_row, last_col, options_dict={...})
-        # ws.data_validation(initial_index, col, last_row_index, col, {'validate':'list', 'source':data_source_dict[hd], 'error_type':'stop'})
-        ws.data_validation(initial_index, col, last_row_index, col, opts_dict)
-
 
 def get_options_dict_data_validation(hd: str, source: str, opts_dv_included: List[str], 
 df_data_validation_complete: pd.DataFrame) -> SingleOptionsDict:

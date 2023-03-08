@@ -8,7 +8,7 @@ from typing import List, Dict, Optional, Union, Callable
 from .conditional_formatting import highlight_mandatory
 from .formats import format_lock_config_dict
 from .header_format import set_headers_format
-from .data_validation import DataValDict, set_data_validation
+from .data_validation_typing import DataValDict, Header
 
 
 def protect_workbook(path: str, password: str) -> None:
@@ -112,6 +112,29 @@ sheet_password: str) -> Union[lock_sheet_simple_func, None]:
                 ws.write_column(initial_index, col, unlocked_cells, cell_format=eval(format_lock_config_dict[lock_config]))          
 
     ws.protect(sheet_password)
+
+
+def set_data_validation(ws: xlsxwriter.worksheet.Worksheet, df: pd.DataFrame, 
+data_validation_opts_dict: DataValDict, data_val_headers: List[Header]) -> None:
+    """
+    Set up data validation, dropdown lists 
+    Parameters:
+    ws: worksheet
+    df: dataframe used to create the template header=None
+    data_validation_opts_dict: Dictionary containing the opctions_dict for each field in scope for data validation
+    data_val_headers: dataframe containing only the dropdownlists 
+    """
+
+    column_indexes_to_apply_data_validation = [i for i, hd in enumerate(df.loc['HEADER']) if hd in data_val_headers]  
+    initial_index = df.index.tolist().index('')  ## df index 0 = excel row 1
+    last_row_index = df.shape[0] - 1  
+
+    for col in column_indexes_to_apply_data_validation:
+        hd = df.loc['HEADER', col]
+        opts_dict = data_validation_opts_dict[hd]
+        ### ws.data_validation(first_row, first_col, last_row, last_col, options_dict={...})
+        # ws.data_validation(initial_index, col, last_row_index, col, {'validate':'list', 'source':data_source_dict[hd], 'error_type':'stop'})
+        ws.data_validation(initial_index, col, last_row_index, col, opts_dict)
 
 
 def create_xl_file(file_path: str, df: pd.DataFrame, df_settings: pd.DataFrame, data_validation_opts_dict: DataValDict, 
