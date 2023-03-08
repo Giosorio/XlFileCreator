@@ -4,7 +4,7 @@ import collections
 import datetime
 import json
 import os
-from typing import List, Tuple, Dict, Optional
+from typing import List, Tuple, Dict, Optional, Union
 
 from .data_validation_typing import DataValDict
 from .terminal_colors import yellow
@@ -93,32 +93,35 @@ def get_excel_df(xl_file:str, sheet_name: str, header: Optional[str]=None) -> pd
     return df
 
 
-def get_google_sheet_df(sheet_id: str, sheet_name: str, header: Optional[str]=None) -> pd.DataFrame:
-    """header: index 'HEADER' from the dropdows list sheet"""
-    ### Read google sheets file
+def check_google_sh_reader(sheet_id: str, sheet_name: str, na_filter: bool, header: Union[int,None], index_col:int):
     try:
-        df = pd.read_csv(f'https://docs.google.com/spreadsheets/d/{sheet_id}/gviz/tq?tqx=out:csv&sheet={sheet_name}', na_filter=False, header=None, index_col=0)
+        df = pd.read_csv(f'https://docs.google.com/spreadsheets/d/{sheet_id}/gviz/tq?tqx=out:csv&sheet={sheet_name}', na_filter=na_filter, header=header, index_col=index_col)
     except pd.errors.ParserError as pe:
         print(pe)
         raise pd.errors.ParserError('The Google sheet workbook is restricted. It must be accessible to Anyone with the link')
-
-    df.index.name = 'Index'
-
-    if header is None:
-        df.columns = range(df.shape[1])
     else:
-        df.columns = df.loc[header]
+        return df
 
+
+def get_google_sheet_df(sheet_id: str, sheet_name: str) -> pd.DataFrame:
+    """header: index 'HEADER' from the dropdows list sheet"""
+    ### Read google sheets file
+    df = check_google_sh_reader(sheet_id, sheet_name, na_filter=False, header=None, index_col=0)
+    df.index.name = 'Index'
+    
+    df.columns = range(df.shape[1])
     return df
 
 
 def get_google_sheet_validation(sheet_id: str, dropdown_list_sheet: str) -> pd.DataFrame:
+    df = check_google_sh_reader(sheet_id, dropdown_list_sheet, na_filter=False, header=None, index_col=0)
     try:
-        df = get_google_sheet_df(sheet_id, dropdown_list_sheet, header='HEADER')
+        df.columns = df.loc['HEADER']
     except KeyError:
         print(yellow(f"\nWARNING: 'HEADER' not found in '{dropdown_list_sheet}', dropdown_list_sheet set as None\nEnsure '{dropdown_list_sheet}'is the correct name of the sheet and that it is in the correct format.\n"))
         return None
     else:
+        df.index.name = 'Index'
         return df
 
 
