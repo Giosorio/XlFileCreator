@@ -45,7 +45,7 @@ class XlFileTemp:
         self.data_index = self.df_data.index.tolist().index('')
         
         self.dropdown_list_sheet = dropdown_list_sheet
-        self.dv_conffig1 = DataValidationConfig1(df_dvconfig1, dropdown_list_sheet, self.df_settings)
+        self.dv_config1 = DataValidationConfig1(df_dvconfig1, dropdown_list_sheet, self.df_settings)
         
     @property
     def df_data(self) -> pd.DataFrame:
@@ -140,7 +140,7 @@ class XlFileTemp:
             if not project_name.endswith('.xlsx'):
                 project_name = project_name + '.xlsx'
 
-            create_xl_file(project_name, self.df_data, self.df_settings, self.dv_conffig1, 
+            create_xl_file(project_name, self.df_data, self.df_settings, self.dv_config1, 
             self.hd_index, self.data_index, self.header_index_list, self.extra_rows, 
             sheet_password, workbook_password)
             return None
@@ -173,7 +173,7 @@ class XlFileTemp:
             file_path = f'{path_1}/{file_name}'
 
             ### Create Excel file
-            create_xl_file(file_path, df_split_value, self.df_settings, self.dv_conffig1, 
+            create_xl_file(file_path, df_split_value, self.df_settings, self.dv_config1, 
             self.hd_index, self.data_index, self.header_index_list, self.extra_rows, 
             sheet_password, workbook_password)
 
