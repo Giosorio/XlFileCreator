@@ -115,6 +115,9 @@ def get_google_sheet_df(sheet_id: str, sheet_name: str) -> pd.DataFrame:
 
 def get_google_sheet_validation(sheet_id: str, dropdown_list_sheet: str) -> pd.DataFrame:
     """Read google sheets data_validation_config1"""
+    if dropdown_list_sheet is None or dropdown_list_sheet == '':
+        return None
+        
     df = check_google_sh_reader(sheet_id, dropdown_list_sheet, na_filter=False, header=None, index_col=0)
     ## header: index 'HEADER' from the dropdows list sheet
     try:

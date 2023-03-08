@@ -7,7 +7,7 @@ from typing import Optional
 
 from .create_xlfile import create_xl_file
 from .config_file import config_file
-from .data_validation import clean_df_data_validation, get_data_validation_dict
+from .data_validation import DataValidationConfig1
 from .encrypt_xl import set_password, create_password
 from .utils_func import get_google_sheet_df, get_headers, get_df_data, rows_extra, set_project_name
 from .utils_func import create_output_folders, clean_df_main, get_google_sheet_validation, get_column_to_split_by, get_excel_df
@@ -32,7 +32,7 @@ class XlFileTemp:
     read_google_sheets_file(cls): Creates a XlFileTemp object from a google sheeets workbook
     """
 
-    def __init__(self, df_main: pd.DataFrame, df_data_validation_complete: Optional[pd.DataFrame]=None, 
+    def __init__(self, df_main: pd.DataFrame, df_dvconfig1: Optional[pd.DataFrame]=None, 
     allow_input_extra_rows: Optional[bool]=False, dropdown_list_sheet: Optional[str]='Dropdown_Lists') -> None:
 
         self.__df_data = None
@@ -45,14 +45,8 @@ class XlFileTemp:
         self.data_index = self.df_data.index.tolist().index('')
         
         self.dropdown_list_sheet = dropdown_list_sheet
-        self.df_data_validation_complete, self.df_data_validation = clean_df_data_validation(df_data_validation_complete, self.df_settings)
-        if df_data_validation_complete is None:
-            self.data_validation_dict = None
-            self.data_val_headers = None
-        else:
-            self.data_val_headers = self.df_data_validation.columns.tolist()
-            self.data_validation_dict = get_data_validation_dict(self.df_settings, self.df_data_validation_complete, self.df_data_validation, self.dropdown_list_sheet)
-
+        self.dv_conffig1 = DataValidationConfig1(df_dvconfig1, dropdown_list_sheet, self.df_settings)
+        
     @property
     def df_data(self) -> pd.DataFrame:
         if self.__df_data is None or self.extra_rows != self.__last_extra_rows:
@@ -91,25 +85,23 @@ class XlFileTemp:
         return cls(df_main, df_data_validation_complete, dropdown_list_sheet=dropdown_list_sheet)
 
     @classmethod
-    def read_google_sheets_file(cls, sheet_id: str, sheet_name: str, dropdown_list_sheet: Optional[str]=None):
+    def read_google_sheets_file(cls, sheet_id: str, sheet_name: str, data_validation_config1_sheet: Optional[str]=None):
         """
         Returns a XlFileTemp object
 
         Parameters
         sheet_id: google sheets id 
         sheet_name: name of the sheet where the data is stored
+        df_dvconfig1: dataframe Data Validation Config 1
         dropdown_list_sheet: name of the sheet where the dropdownlists and data validation settings are located, default=None
         """
 
         ### Read google sheets file
         df_main = get_google_sheet_df(sheet_id, sheet_name)
         df_main = clean_df_main(df_main)
-        if dropdown_list_sheet is None or dropdown_list_sheet == '':
-            df_data_validation_complete = None
-        else:
-            df_data_validation_complete = get_google_sheet_validation(sheet_id, dropdown_list_sheet)
-
-        return cls(df_main, df_data_validation_complete, dropdown_list_sheet=dropdown_list_sheet)
+        df_dvconfig1 = get_google_sheet_validation(sheet_id, data_validation_config1_sheet)
+        
+        return cls(df_main, df_dvconfig1, dropdown_list_sheet=data_validation_config1_sheet)
 
     @staticmethod
     def export_config_file() -> None:
@@ -148,9 +140,9 @@ class XlFileTemp:
             if not project_name.endswith('.xlsx'):
                 project_name = project_name + '.xlsx'
 
-            create_xl_file(project_name, self.df_data, self.df_settings, self.data_validation_dict, 
-            self.data_val_headers, self.df_data_validation, self.hd_index, self.data_index, self.header_index_list, 
-            self.extra_rows, self.dropdown_list_sheet, sheet_password, workbook_password)
+            create_xl_file(project_name, self.df_data, self.df_settings, self.dv_conffig1.data_validation_dict, 
+            self.dv_conffig1.data_val_headers, self.dv_conffig1.df_data_validation, self.hd_index, self.data_index, self.header_index_list, 
+            self.extra_rows, self.dv_conffig1.dropdown_list_sheet, sheet_password, workbook_password)
             return None
 
         if self.extra_rows or allow_input_extra_rows:
@@ -181,9 +173,9 @@ class XlFileTemp:
             file_path = f'{path_1}/{file_name}'
 
             ### Create Excel file
-            create_xl_file(file_path, df_split_value, self.df_settings, self.data_validation_dict, 
-            self.data_val_headers, self.df_data_validation, self.hd_index, self.data_index, self.header_index_list, 
-            self.extra_rows, self.dropdown_list_sheet, sheet_password, workbook_password)
+            create_xl_file(file_path, df_split_value, self.df_settings, self.dv_conffig1.data_validation_dict, 
+            self.dv_conffig1.data_val_headers, self.dv_conffig1.df_data_validation, self.hd_index, self.data_index, self.header_index_list, 
+            self.extra_rows, self.dv_conffig1.dropdown_list_sheet, sheet_password, workbook_password)
 
             ### Create Password master df
             if protect_files is True:
