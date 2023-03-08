@@ -63,4 +63,3 @@ class DataValidationConfig1(DataValidationConfiguration):
 
 
 
-    

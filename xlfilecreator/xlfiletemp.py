@@ -85,7 +85,8 @@ class XlFileTemp:
         return cls(df_main, df_data_validation_complete, dropdown_list_sheet=dropdown_list_sheet)
 
     @classmethod
-    def read_google_sheets_file(cls, sheet_id: str, sheet_name: str, data_validation_config1_sheet: Optional[str]=None):
+    def read_google_sheets_file(cls, sheet_id: str, sheet_name: str, data_validation_sheet_config1: Optional[str]=None): 
+    # data_validation_sheet_config2: Optional[str]=None):
         """
         Returns a XlFileTemp object
 
@@ -99,9 +100,10 @@ class XlFileTemp:
         ### Read google sheets file
         df_main = get_google_sheet_df(sheet_id, sheet_name)
         df_main = clean_df_main(df_main)
-        df_dvconfig1 = get_google_sheet_validation(sheet_id, data_validation_config1_sheet)
+        df_dvconfig1 = get_google_sheet_validation(sheet_id, data_validation_sheet_config1)
+        # df_dvconfig2 = get_google_sheet_validation(sheet_id, data_validation_sheet_config2)
         
-        return cls(df_main, df_dvconfig1, dropdown_list_sheet=data_validation_config1_sheet)
+        return cls(df_main, df_dvconfig1, dropdown_list_sheet=data_validation_sheet_config1)
 
     @staticmethod
     def export_config_file() -> None:
