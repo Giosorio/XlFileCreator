@@ -7,10 +7,12 @@ from typing import Optional
 
 from .create_xlfile import create_xl_file
 from .config_file import config_file
-from .data_validation import DataValidationConfig1
+from .data_validation import DataValidationConfig1, DataValidationConfig2
 from .encrypt_xl import set_password, create_password
-from .utils_func import get_google_sheet_df, get_headers, get_df_data, rows_extra, set_project_name
-from .utils_func import create_output_folders, clean_df_main, get_google_sheet_validation, get_column_to_split_by, get_excel_df
+from .utils_func import (get_google_sheet_df, get_headers, get_df_data, 
+                        rows_extra, set_project_name, get_google_sheet_validation2,
+                        create_output_folders, clean_df_main, get_google_sheet_validation, 
+                        get_column_to_split_by, get_excel_df)
 
 
 class XlFileTemp:
@@ -32,8 +34,9 @@ class XlFileTemp:
     read_google_sheets_file(cls): Creates a XlFileTemp object from a google sheeets workbook
     """
 
-    def __init__(self, df_main: pd.DataFrame, df_dvconfig1: Optional[pd.DataFrame]=None, 
-    allow_input_extra_rows: Optional[bool]=False, dropdown_list_sheet: Optional[str]='Dropdown_Lists') -> None:
+    def __init__(self, df_main: pd.DataFrame, df_dvconfig1: Optional[pd.DataFrame]=None, df_dvconfig2: Optional[pd.DataFrame]=None,
+    allow_input_extra_rows: Optional[bool]=False, data_validation_sheet_config1: Optional[str]='Dropdown_Lists',
+    dropdown_lists_sheet_config2: Optional[str]='Dropdown_Lists_2', df_picklists: Optional[pd.DataFrame]=None) -> None:
 
         self.__df_data = None
         self.df_data_only = df_main[df_main.index=='']
@@ -44,9 +47,12 @@ class XlFileTemp:
         self.hd_index = self.df_data.index.tolist().index('HEADER')
         self.data_index = self.df_data.index.tolist().index('')
         
-        self.dropdown_list_sheet = dropdown_list_sheet
-        self.dv_config1 = DataValidationConfig1(df_dvconfig1, dropdown_list_sheet, self.df_settings)
+        self.data_validation_sheet_config1 = data_validation_sheet_config1
+        self.dv_config1 = DataValidationConfig1(df_dvconfig1, data_validation_sheet_config1, self.df_settings)
         
+        self.dropdown_lists_sheet_config2 = dropdown_lists_sheet_config2
+        self.dv_config2 = DataValidationConfig2(df_picklists, dropdown_lists_sheet_config2, df_dvconfig2)
+
     @property
     def df_data(self) -> pd.DataFrame:
         if self.__df_data is None or self.extra_rows != self.__last_extra_rows:
@@ -85,8 +91,8 @@ class XlFileTemp:
         return cls(df_main, df_data_validation_complete, dropdown_list_sheet=dropdown_list_sheet)
 
     @classmethod
-    def read_google_sheets_file(cls, sheet_id: str, sheet_name: str, data_validation_sheet_config1: Optional[str]=None): 
-    # data_validation_sheet_config2: Optional[str]=None):
+    def read_google_sheets_file(cls, sheet_id: str, sheet_name: str, data_validation_sheet_config1: Optional[str]=None,
+        data_validation_sheet_config2: Optional[str]=None, dropdown_lists_sheet_config2: Optional[str]=None):
         """
         Returns a XlFileTemp object
 
@@ -101,9 +107,10 @@ class XlFileTemp:
         df_main = get_google_sheet_df(sheet_id, sheet_name)
         df_main = clean_df_main(df_main)
         df_dvconfig1 = get_google_sheet_validation(sheet_id, data_validation_sheet_config1)
-        # df_dvconfig2 = get_google_sheet_validation(sheet_id, data_validation_sheet_config2)
+        df_dvconfig2, df_picklists = get_google_sheet_validation2(sheet_id, data_validation_sheet_config2, dropdown_lists_sheet_config2)
         
-        return cls(df_main, df_dvconfig1, dropdown_list_sheet=data_validation_sheet_config1)
+        return cls(df_main, df_dvconfig1, df_dvconfig2, data_validation_sheet_config1=data_validation_sheet_config1, 
+                dropdown_lists_sheet_config2=dropdown_lists_sheet_config2, df_picklists=df_picklists)
 
     @staticmethod
     def export_config_file() -> None:
@@ -142,7 +149,7 @@ class XlFileTemp:
             if not project_name.endswith('.xlsx'):
                 project_name = project_name + '.xlsx'
 
-            create_xl_file(project_name, self.df_data, self.df_settings, self.dv_config1, 
+            create_xl_file(project_name, self.df_data, self.df_settings, self.dv_config1, self.dv_config2,
             self.hd_index, self.data_index, self.header_index_list, self.extra_rows, 
             sheet_password, workbook_password)
             return None
@@ -175,7 +182,7 @@ class XlFileTemp:
             file_path = f'{path_1}/{file_name}'
 
             ### Create Excel file
-            create_xl_file(file_path, df_split_value, self.df_settings, self.dv_config1, 
+            create_xl_file(file_path, df_split_value, self.df_settings, self.dv_config1, self.dv_config2, 
             self.hd_index, self.data_index, self.header_index_list, self.extra_rows, 
             sheet_password, workbook_password)
 

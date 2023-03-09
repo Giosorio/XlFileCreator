@@ -5,6 +5,7 @@ from abc import ABC, abstractclassmethod
 from typing import List, Dict, Tuple, Optional, Union
 
 from .data_validation_config1_func import get_data_validation_dict,clean_df_data_validation
+from .data_validation_config2_func import get_data_validation_dict_config2
 from .data_validation_typing import Header, SourceDict, SingleOptionsDict, DataValDict
 
 
@@ -62,4 +63,17 @@ class DataValidationConfig1(DataValidationConfiguration):
             self.data_validation_dict = get_data_validation_dict(df_settings, self.df_data_validation_complete, self.df_data_validation, self.dropdown_list_sheet)
 
 
+class DataValidationConfig2(DataValidationConfiguration):
 
+    def __init__(self, df_picklists: Union[pd.DataFrame,None], dropdown_list_sheet: str, df_dvconfig2: Union[pd.DataFrame,None]) -> None:
+        if df_dvconfig2 is None or df_picklists is None:
+            self.data_validation_dict = None
+            self.data_val_headers = None
+            self.picklists = None
+        else:
+            self.picklists = df_picklists
+            self.dropdown_list_sheet = dropdown_list_sheet
+            self.data_validation_dict = get_data_validation_dict_config2(df_dvconfig2)
+            self.data_val_headers = self.data_validation_dict.keys()
+
+    

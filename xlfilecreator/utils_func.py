@@ -113,11 +113,12 @@ def get_google_sheet_df(sheet_id: str, sheet_name: str) -> pd.DataFrame:
     return df
 
 
+## data_validation_config1
 def get_google_sheet_validation(sheet_id: str, dropdown_list_sheet: str) -> pd.DataFrame:
     """Read google sheets data_validation_config1"""
     if dropdown_list_sheet is None or dropdown_list_sheet == '':
         return None
-        
+
     df = check_google_sh_reader(sheet_id, dropdown_list_sheet, na_filter=False, header=None, index_col=0)
     ## header: index 'HEADER' from the dropdows list sheet
     try:
@@ -128,6 +129,24 @@ def get_google_sheet_validation(sheet_id: str, dropdown_list_sheet: str) -> pd.D
     else:
         df.index.name = 'Index'
         return df
+
+
+## data_validation_config2
+def get_google_sheet_validation2(sheet_id: str, data_validation_sheet_config2: str, dropdown_list_sheet: str) -> Tuple[pd.DataFrame,pd.DataFrame]:
+    """
+    Read google sheets data_validation_config2
+    data_validation_sheet_config2: name of the sheet where the data_validation_config2 is located
+    dropdown_list_sheet: name of the sheet where the dropdown lists are located
+    """
+
+    if data_validation_sheet_config2 is None or data_validation_sheet_config2 == '':
+        return None
+    if dropdown_list_sheet is None or dropdown_list_sheet == '':
+        return None
+        
+    df_dvconfig2 = check_google_sh_reader(sheet_id, data_validation_sheet_config2, na_filter=False, header=0, index_col=None)
+    df_picklists = check_google_sh_reader(sheet_id, dropdown_list_sheet, na_filter=False, header=0, index_col=None)
+    return df_dvconfig2, df_picklists
 
 
 def export_json(dict_: DataValDict, filename: str) -> None:

@@ -8,7 +8,7 @@ from typing import List, Dict, Optional, Union, Callable
 from .conditional_formatting import highlight_mandatory
 from .formats import format_lock_config_dict
 from .header_format import set_headers_format
-from .data_validation import DataValidationConfig1
+from .data_validation import DataValidationConfig1, DataValidationConfig2
 from .data_validation_typing import DataValDict, Header
 
 
@@ -115,7 +115,7 @@ sheet_password: str) -> Union[lock_sheet_simple_func, None]:
     ws.protect(sheet_password)
 
 
-def create_xl_file(file_path: str, df: pd.DataFrame, df_settings: pd.DataFrame, dv_config1: DataValidationConfig1, 
+def create_xl_file(file_path: str, df: pd.DataFrame, df_settings: pd.DataFrame, dv_config1: DataValidationConfig1, dv_config2: DataValidationConfig2,
 header_index: int, data_index: int, header_index_list: List[str], allow_input_extra_rows: Optional[bool]=False, 
 sheet_password: Optional[str]=None, workbook_password: Optional[str]=None) -> None:
     """
@@ -138,6 +138,11 @@ sheet_password: Optional[str]=None, workbook_password: Optional[str]=None) -> No
             ws_dv = writer.sheets[dv_config1.dropdown_list_sheet]
             ws_dv.hide()
 
+        if dv_config2.data_validation_dict is not None: 
+            dv_config2.picklists.to_excel(writer,sheet_name=dv_config2.dropdown_list_sheet, index=False)
+            ws_dv2 = writer.sheets[dv_config2.dropdown_list_sheet]
+            ws_dv2.hide()
+
         wb = writer.book
         ws = writer.sheets['Sheet1']
         
@@ -146,6 +151,7 @@ sheet_password: Optional[str]=None, workbook_password: Optional[str]=None) -> No
 
         ### Insert Dropdown lists
         dv_config1.set_data_validation(ws, df)
+        dv_config2.set_data_validation(ws, df)
 
         ### Set Conditional Formatting
         highlight_mandatory(wb, ws, df, df_settings, data_index, allow_input_extra_rows)
