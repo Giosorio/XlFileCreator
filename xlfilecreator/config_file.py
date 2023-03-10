@@ -38,8 +38,9 @@ def config_file() -> None:
             ws_format.write_string(i,0, format_, cell_format=eval(format_dict[format_]))
         ws_format.set_column(0, 0, width=17)
 
-        column_formats = ['COLUMN FORMATS','unlocked_text','unlocked_dollars','unlocked_pounds','unlocked_euros','unlocked_percent']
-        ws_format.write_column(0,1,column_formats)
+        column_formats = format_lock_config_dict.keys()
+        ws_format.write(0,1,'COLUMN FORMATS')
+        ws_format.write_column(1,1,column_formats)
         ws_format.set_column(1, 1, width=20)
 
         ### IMPORT_FILE Sheet
@@ -68,5 +69,5 @@ def config_file() -> None:
 
         ws_main.data_validation('A5:A100', {'validate': 'list', 'source': ['description_header','HEADER','example_row']})
         ws_main.data_validation('B2:AM2', {'validate': 'list', 'source': f'=FORMATS!$A$1:$A${len(format_dict)}'})
-        ws_main.data_validation('B4:AM4', {'validate': 'list', 'source': f'=FORMATS!$B$2:$B${len(format_lock_config_dict)}'})
+        ws_main.data_validation('B4:AM4', {'validate': 'list', 'source': f'=FORMATS!$B$2:$B${len(format_lock_config_dict)+1}'})
         
