@@ -5,7 +5,6 @@ from abc import ABC, abstractclassmethod
 from typing import List, Dict, Tuple, Optional, Union
 
 from .data_validation_config1_func import get_data_validation_dict,clean_df_data_validation
-# from .data_validation_config2_func import get_data_validation_dict_config2
 from .data_validation_typing import Header, SourceDict, SingleOptionsDict, DataValDict
 
 
