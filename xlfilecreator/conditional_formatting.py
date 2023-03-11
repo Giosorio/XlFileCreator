@@ -1,7 +1,6 @@
 import pandas as pd
 import xlsxwriter
 
-from collections import namedtuple
 from typing import List, Dict
 
 from .formats import format_dict

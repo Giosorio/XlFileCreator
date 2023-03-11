@@ -5,7 +5,7 @@ from openpyxl.workbook.protection import WorkbookProtection
 
 from typing import List, Dict, Optional, Union, Callable
 
-from .conditional_formatting import highlight_mandatory
+from .conditional_formatting import highlight_mandatory, CondFormatting
 from .formats import format_lock_config_dict
 from .header_format import set_headers_format
 from .data_validation import DataValidationConfig1, DataValidationConfig2
@@ -116,7 +116,7 @@ sheet_password: str) -> Union[lock_sheet_simple_func, None]:
 
 
 def create_xl_file(file_path: str, df: pd.DataFrame, df_settings: pd.DataFrame, dv_config1: DataValidationConfig1, dv_config2: DataValidationConfig2,
-header_index: int, data_index: int, header_index_list: List[str], allow_input_extra_rows: Optional[bool]=False, 
+cond_formatting: CondFormatting, header_index: int, data_index: int, header_index_list: List[str], allow_input_extra_rows: Optional[bool]=False, 
 sheet_password: Optional[str]=None, workbook_password: Optional[str]=None) -> None:
     """
     file_path: complete filename of the excel file
@@ -155,6 +155,7 @@ sheet_password: Optional[str]=None, workbook_password: Optional[str]=None) -> No
 
         ### Set Conditional Formatting
         highlight_mandatory(wb, ws, df, df_settings, data_index, allow_input_extra_rows)
+        cond_formatting.set_conditional_formatting(wb, ws, df)
 
         ### Set column width
         column_width(ws, df, df_settings)
