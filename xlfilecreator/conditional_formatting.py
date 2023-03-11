@@ -4,6 +4,7 @@ import xlsxwriter
 from typing import List, Dict
 
 from .formats import format_dict
+from .terminal_colors import yellow
 from .utils_func import EXTRA_ROWS
 
 
@@ -47,16 +48,20 @@ class CondFormatting:
         if df_condf is None:
             return None
 
-        df_condf['valid_apply_to'] = [hd in df.loc['HEADER'].tolist() for hd in df_condf['apply_to']]
-        ### Valid type should be validated against a list of accepted values for future versions
-        df_condf['valid_type'] = [t != '' for t in df_condf['type']]
-        df_condf['valid_criteria'] = [c != '' for c in df_condf['criteria']]
-        df_condf['valid_format'] = [format_dict[f] if f in format_dict.keys() else False for f in df_condf['format']]
-        
-        ### Overall Validation
-        df_condf = df_condf[df_condf['valid_format']!=False]
-        df_condf['overall_validation'] = [all((v_apply_to, v_type, v_criteria)) for v_apply_to, v_type, v_criteria in zip(df_condf['valid_apply_to'], df_condf['valid_type'], df_condf['valid_criteria'])]
-        df_condf = df_condf[df_condf['overall_validation']==True]
+        try:
+            df_condf['valid_apply_to'] = [hd in df.loc['HEADER'].tolist() for hd in df_condf['apply_to']]
+            ### Valid type should be validated against a list of accepted values for future versions
+            df_condf['valid_type'] = [t != '' for t in df_condf['type']]
+            df_condf['valid_criteria'] = [c != '' for c in df_condf['criteria']]
+            df_condf['valid_format'] = [format_dict[f] if f in format_dict.keys() else False for f in df_condf['format']]
+            
+            ### Overall Validation
+            df_condf = df_condf[df_condf['valid_format']!=False]
+            df_condf['overall_validation'] = [all((v_apply_to, v_type, v_criteria)) for v_apply_to, v_type, v_criteria in zip(df_condf['valid_apply_to'], df_condf['valid_type'], df_condf['valid_criteria'])]
+            df_condf = df_condf[df_condf['overall_validation']==True]
+        except KeyError as ke:
+            print(yellow(f"\nWARNING: Column {ke} not found in the conditional formatting sheet.\nconditional_formatting set as None\n"))
+            return None
 
         return df_condf
 
