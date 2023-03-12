@@ -8,7 +8,7 @@ from typing import List, Tuple, Dict, Optional, Union
 
 from .data_validation_typing import DataValDict
 from .terminal_colors import yellow
-from .xlfilecreator_errors import HeaderIndexNotIdentified
+from .xlfilecreator_errors import HeaderIndexNotIdentified, MainSheetNoData
 
 
 EXTRA_ROWS = 100
@@ -73,7 +73,9 @@ def clean_df_main(df_main: pd.DataFrame) -> pd.DataFrame:
     """Remove blank columns"""
 
     columns_scope = [col for col in df_main.columns if df_main.loc['HEADER', col] != '']
-    
+    if len(columns_scope) == 0:
+        raise MainSheetNoData
+
     return df_main[columns_scope]
 
 
