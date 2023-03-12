@@ -154,8 +154,11 @@ sheet_password: Optional[str]=None, workbook_password: Optional[str]=None) -> No
         dv_config2.set_data_validation(ws, df)
 
         ### Set Conditional Formatting
-        highlight_mandatory(wb, ws, df, df_settings, data_index, allow_input_extra_rows)
+        ## The order of the conditions matter. A new condition do not overwrite a previous condition.
+        ## The conditions in the conditional_formatting sheet are superimposed over the Mandatory fields
+        ## The mandtory flag does not overwrite an existing condition in the conditional_formatting sheet
         cond_formatting.set_conditional_formatting(wb, ws, df)
+        highlight_mandatory(wb, ws, df, df_settings, data_index, allow_input_extra_rows)
 
         ### Set column width
         column_width(ws, df, df_settings)
