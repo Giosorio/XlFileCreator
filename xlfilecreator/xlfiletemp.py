@@ -83,8 +83,11 @@ class XlFileTemp:
 
         Parameters
         xl_file: Excel file path
-        sheet_name: name of the sheet where the data is stored
-        dropdown_list_sheet: name of the sheet where the dropdownlists and data validation settings are located, default=None
+        sheet_name: name of the sheet where the READ_SHEET main sheet is located
+        data_validation_sheet_config1: name of the sheet where the data validation configuration 1 is located
+        data_validation_sheet_config2: name of the sheet where the data validation configuration 2 is located
+        dropdown_lists_sheet_config2: name of the sheet where the dropdown lists for the data validation confuration 2 are located
+        conditional_formatting_sheet: name of the sheet where the conditional formatting settings are located
         """
         
         df_main = get_excel_df(xl_file, sheet_name)
@@ -113,9 +116,11 @@ class XlFileTemp:
 
         Parameters
         sheet_id: google sheets id 
-        sheet_name: name of the sheet where the data is stored
-        df_dvconfig1: dataframe Data Validation Config 1
-        dropdown_list_sheet: name of the sheet where the dropdownlists and data validation settings are located, default=None
+        sheet_name: name of the sheet where the READ_SHEET main sheet is located
+        data_validation_sheet_config1: name of the sheet where the data validation configuration 1 is located
+        data_validation_sheet_config2: name of the sheet where the data validation configuration 2 is located
+        dropdown_lists_sheet_config2: name of the sheet where the dropdown lists for the data validation confuration 2 are located
+        conditional_formatting_sheet: name of the sheet where the conditional formatting settings are located
         """
 
         ### Read google sheets file
