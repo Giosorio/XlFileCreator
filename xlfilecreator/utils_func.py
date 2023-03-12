@@ -78,7 +78,7 @@ def clean_df_main(df_main: pd.DataFrame) -> pd.DataFrame:
 
 
 def get_excel_df(xl_file:str, sheet_name: str, header: Optional[str]=None) -> pd.DataFrame:
-
+    """This function is only used to create the df_main or the df_dvconfig1"""
     df = pd.read_excel(xl_file, sheet_name=sheet_name, header=None, na_filter=False, index_col=0)
     df.index.name = 'Index'
 
@@ -146,6 +146,23 @@ def get_google_sheet_validation2(sheet_id: str, data_validation_sheet_config2: s
         
     df_dvconfig2 = check_google_sh_reader(sheet_id, data_validation_sheet_config2, na_filter=False, header=0, index_col=None)
     df_picklists = check_google_sh_reader(sheet_id, dropdown_list_sheet, na_filter=False, header=0, index_col=None)
+    return df_dvconfig2, df_picklists
+
+
+def get_excel_dvalidation2(xl_file:str, data_validation_sheet_config2: str, dropdown_list_sheet: str) -> Tuple[pd.DataFrame,pd.DataFrame]:
+    """
+    Read excel file data_validation_config2
+    data_validation_sheet_config2: name of the sheet where the data_validation_config2 is located
+    dropdown_list_sheet: name of the sheet where the dropdown lists are located
+    """
+
+    if data_validation_sheet_config2 is None or data_validation_sheet_config2 == '':
+        return None
+    if dropdown_list_sheet is None or dropdown_list_sheet == '':
+        return None
+        
+    df_dvconfig2 = pd.read_excel(xl_file, sheet_name=data_validation_sheet_config2, na_filter=False)
+    df_picklists = pd.read_excel(xl_file, sheet_name=dropdown_list_sheet, na_filter=False)
     return df_dvconfig2, df_picklists
 
 

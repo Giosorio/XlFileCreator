@@ -10,8 +10,8 @@ from .conditional_formatting import CondFormatting
 from .config_file import config_file
 from .data_validation import DataValidationConfig1, DataValidationConfig2
 from .encrypt_xl import set_password, create_password
-from .utils_func import (get_google_sheet_df, get_headers, get_df_data, check_google_sh_reader,
-                        rows_extra, set_project_name, get_google_sheet_validation2,
+from .utils_func import (get_google_sheet_df, get_headers, get_df_data, check_google_sh_reader,rows_extra,
+                        set_project_name, get_google_sheet_validation2, get_excel_dvalidation2,
                         create_output_folders, clean_df_main, get_google_sheet_validation, 
                         get_column_to_split_by, get_excel_df)
 
@@ -74,7 +74,9 @@ class XlFileTemp:
         return self.df_data.shape[0]
     
     @classmethod
-    def read_excel(cls, xl_file: str, sheet_name: str, dropdown_list_sheet: Optional[str]=None):
+    def read_excel(cls, xl_file: str, sheet_name: str, data_validation_sheet_config1: Optional[str]=None,
+        data_validation_sheet_config2: Optional[str]=None, dropdown_lists_sheet_config2: Optional[str]=None,
+        conditional_formatting_sheet: Optional[str]=None):
         """
         Constructor of XlFileTemp
         Creates an XlFileTemp object from an excel file
@@ -87,12 +89,20 @@ class XlFileTemp:
         
         df_main = get_excel_df(xl_file, sheet_name)
         df_main = clean_df_main(df_main)
-        if dropdown_list_sheet is None or dropdown_list_sheet == '':
-            df_data_validation_complete = None
+        if conditional_formatting_sheet is None or conditional_formatting_sheet == '':
+            df_condf = None
         else:
-            df_data_validation_complete = get_excel_df(xl_file, sheet_name=dropdown_list_sheet, header='HEADER')
+            df_condf = pd.read_excel(xl_file, sheet_name=conditional_formatting_sheet, na_filter=False)
+
+        if data_validation_sheet_config1 is None or data_validation_sheet_config1 == '':
+            df_dvconfig1 = None
+        else:
+            df_dvconfig1 = get_excel_df(xl_file, sheet_name=data_validation_sheet_config1, header='HEADER')
         
-        return cls(df_main, df_data_validation_complete, dropdown_list_sheet=dropdown_list_sheet)
+        df_dvconfig2, df_picklists = get_excel_dvalidation2(xl_file, data_validation_sheet_config2, dropdown_lists_sheet_config2)
+        
+        return cls(df_main, df_dvconfig1, df_dvconfig2, data_validation_sheet_config1=data_validation_sheet_config1, 
+                dropdown_lists_sheet_config2=dropdown_lists_sheet_config2, df_picklists=df_picklists, df_condf=df_condf)
 
     @classmethod
     def read_google_sheets_file(cls, sheet_id: str, sheet_name: str, data_validation_sheet_config1: Optional[str]=None,
