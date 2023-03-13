@@ -122,11 +122,9 @@ sheet_password: Optional[str]=None, workbook_password: Optional[str]=None) -> No
     file_path: complete filename of the excel file
     df: dataframe containing only the headers and data of the main sheet of the excel file
     df_settings: dataframe containing the config requirements for the main sheet (width, header_format, description_header...)
-    data_validation_opts_dict: dictionary where the keys are the headers to apply data validation and the values are the dictionaries containing the options for the data validation 
-    data_val_headers: list of headers/columns to apply data validation
-    df_data_validation: dataframe containing the dropdown lists for data validation ready to be set as a second sheet in the excel file 
+    dv_config1: DataValidationConfig1 object containing the configuration for Data Validation 1
+    dv_config2: DataValidationConfig2 object containing the configuration for Data Validation 2
     header_index_list: list of headers included in the index ['Description_header', 'HEADER', 'Example_header']
-    dropdown_list_sheet: Name of the sheet contaning the dropdown lists and settings for data validation, default=None 
     sheet_password: sheet password for the excel file to avoid the users to change the format of the main sheet, default=None 
     workbook_password: workbook password to avoid the users to add more sheets in the excel file, defaul=None
     """
