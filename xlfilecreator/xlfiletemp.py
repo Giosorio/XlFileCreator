@@ -26,13 +26,19 @@ class XlFileTemp:
     header_index_list: list of header indexes in scope i.e ['Description_header','HEADER','example_row'] 
     hd_index: interger index where the header is located in the df_data
     data_index: interger index where the data starts in the df_data
-    lenght: number of rows of the data 
-    df_data_validation_complete (optional): dataframe containing all the dropdown lists and the settings for the data validation
-    df_data_validation (optional): dataframe contaning only the dropdown lists 
+    lenght: number of rows of the data
+    data_validation_sheet_config1 (optional): name of the sheet containing the data validation configuration 1
+    dv_config1 (optional): DataValidationConfig1 object containing the configuration for Data Validation 1
+    dv_config2 (optional): DataValidationConfig2 object containing the configuration for Data Validation 2
+    dropdown_lists_sheet_config2 (optional): name of the sheet where the dropdown lists used in data validation 2 are located
+    cond_formatting (optional): CondFormatting object containing the settings for conditional formatting
     
     Methods:
 
     read_google_sheets_file(cls): Creates a XlFileTemp object from a google sheeets workbook
+    read_excel(cls): Creates a XlFileTemp object from an excel file
+    export_config_file(): Creates an excel file that can be imported google sheets to test or as a template for a new project
+    to_excel(self): Method to create an excel template or split into multiple templates based on a field part of the header of the main sheet
     """
 
     def __init__(self, df_main: pd.DataFrame, df_dvconfig1: Optional[pd.DataFrame]=None, df_dvconfig2: Optional[pd.DataFrame]=None,
