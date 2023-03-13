@@ -74,7 +74,7 @@ class XlFileTemp:
         return self.df_data.shape[0]
     
     @classmethod
-    def read_excel(cls, xl_file: str, sheet_name: str, data_validation_sheet_config1: Optional[str]=None,
+    def read_excel(cls, xl_file: str, main_sheet: str, data_validation_sheet_config1: Optional[str]=None,
         data_validation_sheet_config2: Optional[str]=None, dropdown_lists_sheet_config2: Optional[str]=None,
         conditional_formatting_sheet: Optional[str]=None):
         """
@@ -83,14 +83,14 @@ class XlFileTemp:
 
         Parameters
         xl_file: Excel file path
-        sheet_name: name of the sheet where the READ_SHEET main sheet is located
+        main_sheet: name of the sheet where the READ_SHEET main sheet is located
         data_validation_sheet_config1: name of the sheet where the data validation configuration 1 is located
         data_validation_sheet_config2: name of the sheet where the data validation configuration 2 is located
         dropdown_lists_sheet_config2: name of the sheet where the dropdown lists for the data validation confuration 2 are located
         conditional_formatting_sheet: name of the sheet where the conditional formatting settings are located
         """
         
-        df_main = get_excel_df(xl_file, sheet_name)
+        df_main = get_excel_df(xl_file, main_sheet)
         df_main = clean_df_main(df_main)
         if conditional_formatting_sheet is None or conditional_formatting_sheet == '':
             df_condf = None
@@ -108,7 +108,7 @@ class XlFileTemp:
                 dropdown_lists_sheet_config2=dropdown_lists_sheet_config2, df_picklists=df_picklists, df_condf=df_condf)
 
     @classmethod
-    def read_google_sheets_file(cls, sheet_id: str, sheet_name: str, data_validation_sheet_config1: Optional[str]=None,
+    def read_google_sheets_file(cls, sheet_id: str, main_sheet: str, data_validation_sheet_config1: Optional[str]=None,
         data_validation_sheet_config2: Optional[str]=None, dropdown_lists_sheet_config2: Optional[str]=None,
         conditional_formatting_sheet: Optional[str]=None):
         """
@@ -116,7 +116,7 @@ class XlFileTemp:
 
         Parameters
         sheet_id: google sheets id 
-        sheet_name: name of the sheet where the READ_SHEET main sheet is located
+        main_sheet: name of the sheet where the READ_SHEET main sheet is located
         data_validation_sheet_config1: name of the sheet where the data validation configuration 1 is located
         data_validation_sheet_config2: name of the sheet where the data validation configuration 2 is located
         dropdown_lists_sheet_config2: name of the sheet where the dropdown lists for the data validation confuration 2 are located
@@ -124,7 +124,7 @@ class XlFileTemp:
         """
 
         ### Read google sheets file
-        df_main = get_google_sheet_df(sheet_id, sheet_name)
+        df_main = get_google_sheet_df(sheet_id, main_sheet)
         df_main = clean_df_main(df_main)
         df_dvconfig1 = get_google_sheet_validation(sheet_id, data_validation_sheet_config1)
         df_dvconfig2, df_picklists = get_google_sheet_validation2(sheet_id, data_validation_sheet_config2, dropdown_lists_sheet_config2)
