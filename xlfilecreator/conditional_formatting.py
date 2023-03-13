@@ -1,7 +1,7 @@
 import pandas as pd
 import xlsxwriter
 
-from typing import List, Dict
+from typing import Dict
 
 from .formats import format_dict
 from .terminal_colors import yellow

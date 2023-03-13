@@ -3,13 +3,12 @@ import xlsxwriter
 from openpyxl import load_workbook
 from openpyxl.workbook.protection import WorkbookProtection
 
-from typing import List, Dict, Optional, Union, Callable
+from typing import List, Optional, Union, Callable
 
 from .conditional_formatting import highlight_mandatory, CondFormatting
 from .formats import format_lock_config_dict
 from .header_format import set_headers_format
 from .data_validation import DataValidationConfig1, DataValidationConfig2
-from .data_validation_typing import DataValDict, Header
 
 
 def protect_workbook(path: str, password: str) -> None:

@@ -1,9 +1,9 @@
 import pandas as pd
 import xlsxwriter
 
-from typing import List, Dict, Tuple, Optional, Union
+from typing import List, Tuple, Optional, Union
 
-from .data_validation_typing import Header, SourceDict, SingleOptionsDict, DataValDict
+from .data_validation_typing import SourceDict, SingleOptionsDict, DataValDict
 from .utils_func import export_json
 
 

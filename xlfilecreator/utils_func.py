@@ -4,7 +4,7 @@ import collections
 import datetime
 import json
 import os
-from typing import List, Tuple, Dict, Optional, Union
+from typing import List, Tuple, Optional, Union
 
 from .data_validation_typing import DataValDict
 from .terminal_colors import yellow
