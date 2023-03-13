@@ -76,8 +76,10 @@ def config_file() -> None:
         ### Conditional Formatting
         df_condf.to_excel(writer, sheet_name='conditional_formatting', index=False)
         ws_condf = writer.sheets['conditional_formatting']
-        ws_condf.data_validation('D2:D30', {'validate': 'list', 'source': f'=FORMATS!$A$1:$A${len(format_dict)}'})
+        ws_condf.data_validation('D2:D50', {'validate': 'list', 'source': f'=FORMATS!$A$1:$A${len(format_dict)}'})
+        ws_condf.data_validation('B2:B50', {'validate': 'list', 'source': ['','formula']})
         ws_condf.set_tab_color('#ff00ff')
+        ws_condf.write_comment('C1', 'Use Search and Replace to replace \ for \' to keep the formula visible including the \'=\' sign\nThe order of the conditions matters. A new condition do not overwrite a previous condition.\nThe conditions in the conditional_formatting sheet are superimposed over the Mandatory fields.\nThe mandtory flag does not overwrite an existing condition in the conditional_formatting sheet')
 
         ### Data Validation 1 sheet
         dv_config1.to_excel(writer, sheet_name='data_validation_config1', header=False, index=False)
@@ -95,8 +97,10 @@ def config_file() -> None:
         ### Data Validation 2 sheet
         dv_config2.to_excel(writer, sheet_name='data_validation_config2', index=False)
         ws_dv2 = writer.sheets['data_validation_config2']
-        ws_dv2.data_validation('D2:D30', {'validate': 'list', 'source': ['stop','warning','information']})
+        ws_dv2.data_validation('D2:D50', {'validate': 'list', 'source': ['stop','warning','information']})
+        ws_dv2.data_validation('B2:B50', {'validate': 'list', 'source': ['','list']})
         ws_dv2.set_tab_color('#9900ff')
+        ws_dv2.write_comment('C1', 'Use Search and Replace to replace \ for \' to keep the formula visible including the \'=\' sign\n')
 
         ### Dropdown lists DV2
         df_dropdowns_dv2.to_excel(writer, sheet_name='dropdown_lists_config2', index=False)
