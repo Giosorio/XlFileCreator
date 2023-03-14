@@ -24,7 +24,7 @@ df: pd.DataFrame, df_settings: pd.DataFrame, header_index_list: List, header_ind
 
     def set_format_hd(wb: xlsxwriter.workbook.Workbook, header_index: int, header_values: List, header_format: Union[List, str]):
         """
-        wb: workbook is needed otherwise eval function will not recognise the 'wb' in the string value of the format_dict
+        wb: workbook object
         header_index: index where the values to format are located
         header_values: list of the headers in string format 
         header_format: List or string value of the format to apply, or list of string values of the formats to apply (string values must be part of the keys of format_dict)
@@ -37,9 +37,9 @@ df: pd.DataFrame, df_settings: pd.DataFrame, header_index_list: List, header_ind
 
         for col, header, hd_format in zip(df.columns, header_values, header_format):
             if hd_format == '':
-                ws.write(header_index, col, header, eval(format_dict['format_0']))
+                ws.write(header_index, col, header, wb.add_format(format_dict['format_0']))
             else:
-                ws.write(header_index, col, header, eval(format_dict[hd_format]))
+                ws.write(header_index, col, header, wb.add_format(format_dict[hd_format]))
 
 
     # header_index = df.index.tolist().index('HEADER')

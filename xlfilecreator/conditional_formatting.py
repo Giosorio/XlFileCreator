@@ -33,7 +33,7 @@ df: pd.DataFrame, df_settings: pd.DataFrame, data_index: int, allow_input_extra_
     for col_num, cond_f in zip(df.columns, cond_formatting):
         if cond_f == 'Mandatory':
             col_letter = xlsxwriter.utility.xl_col_to_name(col_num)
-            ws.conditional_format(f'{col_letter}{data_index+1}:{col_letter}{length}',{'type': 'formula', 'criteria': f'=${col_letter}{data_index+1}=""', 'format': eval(format_dict['format_12'])})
+            ws.conditional_format(f'{col_letter}{data_index+1}:{col_letter}{length}',{'type': 'formula', 'criteria': f'=${col_letter}{data_index+1}=""', 'format': wb.add_format(format_dict['format_12'])})
 
 
 
@@ -53,11 +53,10 @@ class CondFormatting:
             ### Valid type should be validated against a list of accepted values for future versions
             df_condf['valid_type'] = [t != '' for t in df_condf['type']]
             df_condf['valid_criteria'] = [c != '' for c in df_condf['criteria']]
-            df_condf['valid_format'] = [format_dict[f] if f in format_dict.keys() else False for f in df_condf['format']]
+            df_condf['valid_format'] = [f in format_dict.keys() for f in df_condf['format']]
             
             ### Overall Validation
-            df_condf = df_condf[df_condf['valid_format']!=False]
-            df_condf['overall_validation'] = [all((v_apply_to, v_type, v_criteria)) for v_apply_to, v_type, v_criteria in zip(df_condf['valid_apply_to'], df_condf['valid_type'], df_condf['valid_criteria'])]
+            df_condf['overall_validation'] = [all((v_apply_to, v_type, v_criteria, v_format)) for v_apply_to, v_type, v_criteria, v_format in zip(df_condf['valid_apply_to'], df_condf['valid_type'], df_condf['valid_criteria'], df_condf['valid_format'])]
             df_condf = df_condf[df_condf['overall_validation']==True]
         except KeyError as ke:
             print(yellow(f"\nWARNING: Column {ke} not found in the conditional formatting sheet.\nconditional_formatting set as None\n"))
@@ -67,10 +66,11 @@ class CondFormatting:
 
     @staticmethod
     def create_opts_dict(wb, opts_settings:pd.Series) -> Dict[str,str]:
+        format_opts_dict = format_dict[opts_settings['format']]
 
         opts_dict={'type': opts_settings['type'],
             'criteria': opts_settings['criteria'],
-            'format': eval(opts_settings['valid_format'])}
+            'format': wb.add_format(format_opts_dict)}
 
         return opts_dict
 

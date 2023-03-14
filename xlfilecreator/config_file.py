@@ -46,7 +46,7 @@ def config_file() -> None:
         ws_format = wb.add_worksheet(name='FORMATS')
         ws_format.set_tab_color('#80ccff')
         for i, format_ in enumerate(format_dict.keys()):
-            ws_format.write_string(i,0, format_, cell_format=eval(format_dict[format_]))
+            ws_format.write_string(i,0, format_, cell_format=wb.add_format(format_dict[format_]))
         ws_format.set_column(0, 0, width=17)
 
         column_formats = format_lock_config_dict.keys()
@@ -71,7 +71,7 @@ def config_file() -> None:
         ws_main.data_validation('A6:A100', {'validate': 'list', 'source': ['description_header','HEADER','example_row']})
         ws_main.data_validation('B3:AM3', {'validate': 'list', 'source': ['','Mandatory']})
         ws_main.data_validation('B4:AM4', {'validate': 'list', 'source': f'=FORMATS!$A$1:$A${len(format_dict)}'})
-        ws_main.data_validation('B5:AM5', {'validate': 'list', 'source': f'=FORMATS!$B$2:$B${len(format_lock_config_dict)+1}'})
+        ws_main.data_validation('B5:AM5', {'validate': 'list', 'error_type': 'warning', 'error_message': 'This column will be locked by default','source': f'=FORMATS!$B$2:$B${len(format_lock_config_dict)+1}'})
 
         ### Conditional Formatting
         df_condf.to_excel(writer, sheet_name='conditional_formatting', index=False)

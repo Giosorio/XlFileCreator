@@ -102,14 +102,14 @@ sheet_password: str) -> Union[lock_sheet_simple_func, None]:
             if lock_config not in format_lock_config_dict.keys():
                 unlocked_cells = df.loc[0:, col]                           #### range from which blank rows start
                 # unlocked_cells = df.iloc[first_blank_row_index:, col]    #### range from which blank rows start
-                ws.write_column(first_blank_row_index, col, unlocked_cells, cell_format=eval(format_lock_config_dict['unlocked_text']))
+                ws.write_column(first_blank_row_index, col, unlocked_cells, cell_format=wb.add_format(format_lock_config_dict['unlocked_text']))
             else:
                 unlocked_cells = df.iloc[initial_index:, col]
-                ws.write_column(initial_index, col, unlocked_cells, cell_format=eval(format_lock_config_dict[lock_config]))
+                ws.write_column(initial_index, col, unlocked_cells, cell_format=wb.add_format(format_lock_config_dict[lock_config]))
         else:
             if lock_config in format_lock_config_dict.keys():
                 unlocked_cells = df.iloc[initial_index:, col]        
-                ws.write_column(initial_index, col, unlocked_cells, cell_format=eval(format_lock_config_dict[lock_config]))          
+                ws.write_column(initial_index, col, unlocked_cells, cell_format=wb.add_format(format_lock_config_dict[lock_config]))          
 
     ws.protect(sheet_password)
 
