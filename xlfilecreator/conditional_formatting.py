@@ -91,7 +91,7 @@ class CondFormatting:
         last_row_index = df.shape[0] - 1
         header_list = df.loc['HEADER'].tolist()
 
-        for row in range(self.df_condf.shape[0]):
+        for row in self.df_condf.index:
             hd_apply_to = self.df_condf.loc[row, 'apply_to']
             col_idx = header_list.index(hd_apply_to)
             opts_dict = CondFormatting.create_opts_dict(wb, self.df_condf.loc[row])
