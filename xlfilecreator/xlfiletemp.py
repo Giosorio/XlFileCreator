@@ -80,7 +80,8 @@ class XlFileTemp:
         return self.df_data.shape[0]
 
     @staticmethod
-    def apply_data_types(df_main):
+    def apply_data_types(df_main: pd.DataFrame) -> pd.DataFrame:
+        """Convert the numbers read as text into float values"""
         float_formats = ['unlocked_dollars','unlocked_pounds','unlocked_euros','unlocked_percent']
         format_cols = df_main.loc['lock_sheet_config']
         df_data_only = df_main[df_main.index=='']
