@@ -32,7 +32,7 @@ class XlFileTemp:
     dv_config2 (optional): DataValidationConfig2 object containing the configuration for Data Validation 2
     dropdown_lists_sheet_config2 (optional): name of the sheet where the dropdown lists used in data validation 2 are located
     cond_formatting (optional): CondFormatting object containing the settings for conditional formatting
-    
+    identify_data_types (optional): Converts string number values into float. Passing identify_data_types=False can improve the performance of reading a large file.
     Methods:
 
     read_google_sheets_file(cls): Creates a XlFileTemp object from a google sheeets workbook
@@ -44,10 +44,10 @@ class XlFileTemp:
     def __init__(self, df_main: pd.DataFrame, df_dvconfig1: Optional[pd.DataFrame]=None, df_dvconfig2: Optional[pd.DataFrame]=None,
     allow_input_extra_rows: Optional[bool]=False, data_validation_sheet_config1: Optional[str]='Dropdown_Lists',
     dropdown_lists_sheet_config2: Optional[str]='Dropdown_Lists_2', df_picklists: Optional[pd.DataFrame]=None,
-    df_condf: Optional[pd.DataFrame]=None) -> None:
+    df_condf: Optional[pd.DataFrame]=None, identify_data_types: Optional[bool]=True) -> None:
 
         self.__df_data = None
-        self.df_data_only = XlFileTemp.apply_data_types(df_main)
+        self.df_data_only = XlFileTemp.apply_data_types(df_main,identify_data_types)
         self.df_settings = df_main[df_main.index!='']
         self.extra_rows = allow_input_extra_rows
         self.__last_extra_rows = allow_input_extra_rows
@@ -80,21 +80,26 @@ class XlFileTemp:
         return self.df_data.shape[0]
 
     @staticmethod
-    def apply_data_types(df_main: pd.DataFrame) -> pd.DataFrame:
-        """Convert the numbers read as text into float values"""
-        float_formats = ['unlocked_dollars','unlocked_pounds','unlocked_euros','unlocked_percent']
-        format_cols = df_main.loc['lock_sheet_config']
-        df_data_only = df_main[df_main.index==''].copy(deep=True)
-        for f, col in zip(format_cols, df_main.columns):
-            if f in float_formats:
-                df_data_only[col] = df_data_only[col].apply(to_number)
+    def apply_data_types(df_main: pd.DataFrame, identify_data_types: bool) -> pd.DataFrame:
+        """Convert the numbers read as text into float values
+        identify_data_types: passing identify_data_types=False can improve the performance of reading a large file.
+        """
+        if identify_data_types:
+            float_formats = ['unlocked_dollars','unlocked_pounds','unlocked_euros','unlocked_percent']
+            format_cols = df_main.loc['lock_sheet_config']
+            df_data_only = df_main[df_main.index==''].copy(deep=True)
+            for f, col in zip(format_cols, df_main.columns):
+                if f in float_formats:
+                    df_data_only[col] = df_data_only[col].apply(to_number)
+        else:
+            df_data_only = df_main[df_main.index==''].copy(deep=True)
 
         return df_data_only
     
     @classmethod
     def read_excel(cls, xl_file: str, main_sheet: str, data_validation_sheet_config1: Optional[str]=None,
         data_validation_sheet_config2: Optional[str]=None, dropdown_lists_sheet_config2: Optional[str]=None,
-        conditional_formatting_sheet: Optional[str]=None):
+        conditional_formatting_sheet: Optional[str]=None, identify_data_types: Optional[bool]=False):
         """
         Constructor of XlFileTemp
         Creates an XlFileTemp object from an excel file
@@ -106,6 +111,7 @@ class XlFileTemp:
         data_validation_sheet_config2: name of the sheet where the data validation configuration 2 is located
         dropdown_lists_sheet_config2: name of the sheet where the dropdown lists for the data validation confuration 2 are located
         conditional_formatting_sheet: name of the sheet where the conditional formatting settings are located
+        identify_data_types (optional): default FALSE for read_excel(). Converts string number values into float. Passing identify_data_types=False can improve the performance of reading a large file.
         """
         
         df_main = get_excel_df(xl_file, main_sheet)
@@ -123,12 +129,13 @@ class XlFileTemp:
         df_dvconfig2, df_picklists = get_excel_dvalidation2(xl_file, data_validation_sheet_config2, dropdown_lists_sheet_config2)
         
         return cls(df_main, df_dvconfig1, df_dvconfig2, data_validation_sheet_config1=data_validation_sheet_config1, 
-                dropdown_lists_sheet_config2=dropdown_lists_sheet_config2, df_picklists=df_picklists, df_condf=df_condf)
+                dropdown_lists_sheet_config2=dropdown_lists_sheet_config2, df_picklists=df_picklists, df_condf=df_condf,
+                identify_data_types=identify_data_types)
 
     @classmethod
     def read_google_sheets_file(cls, sheet_id: str, main_sheet: str, data_validation_sheet_config1: Optional[str]=None,
         data_validation_sheet_config2: Optional[str]=None, dropdown_lists_sheet_config2: Optional[str]=None,
-        conditional_formatting_sheet: Optional[str]=None):
+        conditional_formatting_sheet: Optional[str]=None, identify_data_types: Optional[bool]=True):
         """
         Returns a XlFileTemp object
 
@@ -139,6 +146,7 @@ class XlFileTemp:
         data_validation_sheet_config2: name of the sheet where the data validation configuration 2 is located
         dropdown_lists_sheet_config2: name of the sheet where the dropdown lists for the data validation confuration 2 are located
         conditional_formatting_sheet: name of the sheet where the conditional formatting settings are located
+        identify_data_types (optional): default TRUE for read_google_sheets_file(). Converts string number values into float. Passing identify_data_types=False can improve the performance of reading a large file.
         """
 
         ### Read google sheets file
@@ -149,7 +157,8 @@ class XlFileTemp:
         df_condf = check_google_sh_reader(sheet_id, conditional_formatting_sheet, na_filter=False, header=0, index_col=None)
 
         return cls(df_main, df_dvconfig1, df_dvconfig2, data_validation_sheet_config1=data_validation_sheet_config1, 
-                dropdown_lists_sheet_config2=dropdown_lists_sheet_config2, df_picklists=df_picklists, df_condf=df_condf)
+                dropdown_lists_sheet_config2=dropdown_lists_sheet_config2, df_picklists=df_picklists, df_condf=df_condf,
+                identify_data_types=identify_data_types)
 
     @staticmethod
     def export_config_file() -> None:
