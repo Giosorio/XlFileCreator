@@ -84,7 +84,7 @@ class XlFileTemp:
         """Convert the numbers read as text into float values"""
         float_formats = ['unlocked_dollars','unlocked_pounds','unlocked_euros','unlocked_percent']
         format_cols = df_main.loc['lock_sheet_config']
-        df_data_only = df_main[df_main.index=='']
+        df_data_only = df_main[df_main.index==''].copy(deep=True)
         for f, col in zip(format_cols, df_main.columns):
             if f in float_formats:
                 df_data_only[col] = df_data_only[col].apply(to_number)
