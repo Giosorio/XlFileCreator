@@ -14,6 +14,15 @@ from .xlfilecreator_errors import HeaderIndexNotIdentified
 EXTRA_ROWS = 100
 
 
+def to_number(x):
+	try:      
+		x = float(x)
+	except ValueError:
+		pass
+	
+	return x
+    
+
 def get_column_to_split_by(df_settings: pd.DataFrame, split_by: str) -> int:
     """returns Dataframe integer column of the column to split by"""
 

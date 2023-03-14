@@ -10,7 +10,7 @@ from .conditional_formatting import CondFormatting
 from .config_file import config_file
 from .data_validation import DataValidationConfig1, DataValidationConfig2
 from .encrypt_xl import set_password, create_password
-from .utils_func import (get_google_sheet_df, get_headers, get_df_data, check_google_sh_reader,rows_extra,
+from .utils_func import (to_number, get_google_sheet_df, get_headers, get_df_data, check_google_sh_reader,rows_extra,
                         set_project_name, get_google_sheet_validation2, get_excel_dvalidation2,
                         create_output_folders, clean_df_main, get_google_sheet_validation, 
                         get_column_to_split_by, get_excel_df)
@@ -47,7 +47,7 @@ class XlFileTemp:
     df_condf: Optional[pd.DataFrame]=None) -> None:
 
         self.__df_data = None
-        self.df_data_only = df_main[df_main.index=='']
+        self.df_data_only = XlFileTemp.apply_data_types(df_main)
         self.df_settings = df_main[df_main.index!='']
         self.extra_rows = allow_input_extra_rows
         self.__last_extra_rows = allow_input_extra_rows
@@ -78,6 +78,17 @@ class XlFileTemp:
         """lenght: number of rows of the data """
         
         return self.df_data.shape[0]
+
+    @staticmethod
+    def apply_data_types(df_main):
+        float_formats = ['unlocked_dollars','unlocked_pounds','unlocked_euros','unlocked_percent']
+        format_cols = df_main.loc['lock_sheet_config']
+        df_data_only = df_main[df_main.index=='']
+        for f, col in zip(format_cols, df_main.columns):
+            if f in float_formats:
+                df_data_only[col] = df_data_only[col].apply(to_number)
+
+        return df_data_only
     
     @classmethod
     def read_excel(cls, xl_file: str, main_sheet: str, data_validation_sheet_config1: Optional[str]=None,
