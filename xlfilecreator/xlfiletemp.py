@@ -193,10 +193,10 @@ class XlFileTemp:
         if allow_input_extra_rows is not None:
             self.extra_rows = allow_input_extra_rows 
         
-        if project_name is None or '':
+        if project_name is None or project_name == '':
             project_name = f'Project-{today}'
 
-        if split_by is None:
+        if split_by is None or split_by == '':
             if not project_name.endswith('.xlsx'):
                 project_name = project_name + '.xlsx'
 
