@@ -10,6 +10,7 @@ from .conditional_formatting import CondFormatting
 from .config_file import config_file
 from .data_validation import DataValidationConfig1, DataValidationConfig2
 from .encrypt_xl import set_password, create_password
+from .terminal_colors import blue
 from .utils_func import (to_number, get_google_sheet_df, get_headers, get_df_data, check_google_sh_reader,rows_extra,
                         set_project_name, get_google_sheet_validation2, get_excel_dvalidation2,
                         create_output_folders, clean_df_main, get_google_sheet_validation, 
@@ -148,6 +149,8 @@ class XlFileTemp:
         conditional_formatting_sheet: name of the sheet where the conditional formatting settings are located
         identify_data_types (optional): default TRUE for read_google_sheets_file(). Converts string number values into float. Passing identify_data_types=False can improve the performance of reading a large file.
         """
+        if identify_data_types:
+            print(blue('Passing identify_data_types=False can improve the performance of reading a large file. Only necessary if the template includes percentage values, or currency values'))
 
         ### Read google sheets file
         df_main = get_google_sheet_df(sheet_id, main_sheet)
