@@ -42,6 +42,8 @@ format_lock_config_dict = {
     'unlocked_euros': {'locked': False, 'text_wrap':False, 'num_format': '€#,##0.00'},
     'unlocked_percent': {'locked': False, 'text_wrap':False, 'num_format': '0.00%'},
     'unlocked_number': {'locked': False, 'text_wrap':False, 'num_format': '#,##0.00'},
+    'locked_hidden': {'locked': True, 'hidden':True},
+    'locked_hidden_grey': {'locked': True, 'hidden':True, 'bg_color': '#d9d9d9'},
     # 'locked_percent': {'text_wrap':False, 'num_format': '0.00%'},
     # 'locked_dollars': {'text_wrap':False, 'num_format': '$#,##0.00'},
     # 'locked_pounds': {'text_wrap':False, 'num_format': '£#,##0.00'},

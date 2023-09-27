@@ -1,3 +1,4 @@
+from tqdm import tqdm 
 import pandas as pd
 
 import datetime
@@ -219,7 +220,10 @@ class XlFileTemp:
         print('Number of files: ', len(values_to_split))
 
         password_master = []
+        pbar = tqdm(total=len(values_to_split))
         for i, split_value in enumerate(values_to_split,1):
+            pbar.update(1)
+            
             ### Filter the values to include in the template
             df_split_value = self.df_data[self.df_data[col_to_split]==split_value]
             
