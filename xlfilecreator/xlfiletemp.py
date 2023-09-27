@@ -253,6 +253,7 @@ class XlFileTemp:
             df_pw.to_csv(passwordMaster_name, index=False)
 
             set_password(path_1, path_2, passwordMaster_name)
+            print(df_pw)
         
         if in_zip:
             shutil.make_archive(path_1, 'zip', path_1)

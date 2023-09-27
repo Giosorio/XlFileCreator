@@ -59,7 +59,7 @@ def set_password(path_1: str, path_2: str, passwordMaster_name: str) -> None:
         path_in = '"{}/{}"'.format(path_1, file_n)
         path_out = '"{}/{}"'.format(path_2, file_n)
         encrypt_file(pw, path_in, path_out)
-        print(file_n, '   Password:', pw, f'---->{count}/{num_files}')
+        # print(file_n, '   Password:', pw, f'---->{count}/{num_files}')
         count +=1
     
 
