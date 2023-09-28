@@ -256,7 +256,7 @@ class XlFileTemp:
 
         ### Encrypt Excel files
         if protect_files is True:
-            df_pw = pd.DataFrame(password_master, columns=['File ID', 'Filename', 'Supplier', 'Password'])
+            df_pw = pd.DataFrame(password_master, columns=['File ID', 'Filename', split_by, 'Password'])
             passwordMaster_name = f'{project.name}-PasswordMaster-{today}.csv'
             df_pw.to_csv(passwordMaster_name, index=False)
 
