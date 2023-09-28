@@ -160,9 +160,9 @@ num_rows_extra: Optional[int]=100, sheet_password: Optional[str]=None, workbook_
         ### Set column width
         column_width(ws, df, df_settings)
 
-        if allow_input_extra_rows is False:
-            ### Hide all rows without data.
-            ws.set_default_row(hide_unused_rows=True)
+        ### Hide all rows without data. Even when the empty extra rows are allowed
+        ## it will only shhow those that can be filled in
+        ws.set_default_row(hide_unused_rows=True)
         
         ### Hide unused columns 
         last_col_num = df.columns[-1]
