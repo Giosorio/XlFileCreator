@@ -1,5 +1,5 @@
 import pandas as pd
-from tqdm import tqdm 
+from tqdm.auto import tqdm 
 
 import datetime
 import os
@@ -93,7 +93,7 @@ class XlFileTemp:
             float_formats = ['unlocked_dollars','unlocked_pounds','unlocked_euros','unlocked_percent','unlocked_number']
             format_cols = df_main.loc['lock_sheet_config']
             df_data_only = df_main[df_main.index==''].copy(deep=True)
-
+            
             tqdm.pandas(desc='TextValues into Float')
             for f, col in zip(format_cols, df_main.columns):
                 if f in float_formats:
@@ -156,7 +156,7 @@ class XlFileTemp:
         identify_data_types (optional): default TRUE for read_google_sheets_file(). Converts string number values into float. Passing identify_data_types=False can improve the performance of reading a large file.
         """
         if identify_data_types:
-            print(blue('Passing identify_data_types=False can improve the performance of reading a large file. Only necessary if the template includes percentage values, or currency values\nConvert the numbers read as text into float values'))
+            print(blue('identify_data_types: Convert the numbers read as text into float values\nPassing identify_data_types=False can improve the performance of reading a large file and numbers will remain in text format'))
 
         ### Read google sheets file
         df_main = get_google_sheet_df(sheet_id, main_sheet)
@@ -228,7 +228,7 @@ class XlFileTemp:
         print('Number of files: ', len(values_to_split))
 
         password_master = []
-        pbar = tqdm(total=len(values_to_split))
+        pbar = tqdm(total=len(values_to_split), ncols=80)
         for i, split_value in enumerate(values_to_split,1):
             pbar.update(1)
 
