@@ -94,7 +94,7 @@ class XlFileTemp:
             format_cols = df_main.loc['lock_sheet_config']
             df_data_only = df_main[df_main.index==''].copy(deep=True)
             
-            tqdm.pandas(desc='TextValues into Float')
+            tqdm.pandas(desc='TextValues >>> Float')
             for f, col in zip(format_cols, df_main.columns):
                 if f in float_formats:
                     df_data_only[col] = df_data_only[col].progress_apply(to_number)
