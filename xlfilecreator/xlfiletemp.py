@@ -15,7 +15,7 @@ from .terminal_colors import blue
 from .utils_func import (to_number, get_google_sheet_df, get_headers, get_df_data, check_google_sh_reader,rows_extra,
                         set_project_name, get_google_sheet_validation2, get_excel_dvalidation2,
                         create_output_folders, clean_df_main, get_google_sheet_validation, 
-                        get_column_to_split_by, get_excel_df)
+                        get_column_to_split_by, get_excel_df, validate_interger_input)
 
 
 class XlFileTemp:
@@ -44,7 +44,7 @@ class XlFileTemp:
     """
 
     def __init__(self, df_main: pd.DataFrame, df_dvconfig1: Optional[pd.DataFrame]=None, df_dvconfig2: Optional[pd.DataFrame]=None,
-    allow_input_extra_rows: Optional[bool]=False, data_validation_sheet_config1: Optional[str]='Dropdown_Lists',
+    allow_input_extra_rows: Optional[bool]=False, num_rows_extra: Optional[int]=100, data_validation_sheet_config1: Optional[str]='Dropdown_Lists',
     dropdown_lists_sheet_config2: Optional[str]='Dropdown_Lists_2', df_picklists: Optional[pd.DataFrame]=None,
     df_condf: Optional[pd.DataFrame]=None, identify_data_types: Optional[bool]=True) -> None:
 
@@ -53,6 +53,7 @@ class XlFileTemp:
         self.df_settings = df_main[df_main.index!='']
         self.extra_rows = allow_input_extra_rows
         self.__last_extra_rows = allow_input_extra_rows
+        self.num_rows_extra = validate_interger_input(num_rows_extra, 'num_rows_extra')
         self.header_index_list, self.df_hd = get_headers(self.df_settings)
         self.hd_index = self.df_data.index.tolist().index('HEADER')
         self.data_index = self.df_data.index.tolist().index('')
@@ -68,7 +69,7 @@ class XlFileTemp:
     @property
     def df_data(self) -> pd.DataFrame:
         if self.__df_data is None or self.extra_rows != self.__last_extra_rows:
-            self.__df_data = get_df_data(self.df_hd, self.df_data_only, allow_input_extra_rows=self.extra_rows)
+            self.__df_data = get_df_data(self.df_hd, self.df_data_only, allow_input_extra_rows=self.extra_rows, num_rows_extra=self.num_rows_extra)
             if self.extra_rows != self.__last_extra_rows:
                 self.__last_extra_rows = self.extra_rows 
                 print(f'Update: allow_input_extra_rows= {self.extra_rows}')
@@ -175,7 +176,7 @@ class XlFileTemp:
 
     def to_excel(self, project_name: Optional[str]=None, split_by: Optional[str]=None, batch: Optional[int]=1, 
         sheet_password: Optional[str]=None, workbook_password: Optional[str]=None, allow_input_extra_rows: Optional[bool]=None, 
-        protect_files: Optional[bool]=False, random_password: Optional[bool]=False, in_zip: Optional[bool]=False) -> None:
+        num_rows_extra: Optional[int]=None, protect_files: Optional[bool]=False, random_password: Optional[bool]=False, in_zip: Optional[bool]=False) -> None:
         """
         Creates the excel file
         project_name: name of the project, it will be part of the filename of the templates. If split_by is None it will be the name of the single file generated
@@ -183,7 +184,8 @@ class XlFileTemp:
         batch: Number of the batch. Included in the filename of the templates 
         sheet_password: sheet password for the excel file to avoid the users to change the format of the main sheet, default=None 
         workbook_password: workbook password to avoid the users to add more sheets in the excel file, defaul=None
-        allow_input_extra_rows: False/True Determines if the templates allow the user to fill out more rows in the template
+        allow_input_extra_rows: False/True Determines if the templates allow the user to fill out more rows in the template, If None it will use self.extrarows
+        num_rows_extra: Number of extra rows in the template, if None it will use self.num_rows_extra: Optional[int]=100. 
         protect_files: False/True encrypt the files
         random_password: False/True if protect_files is True it determines if the password of the files should be random or based on a logic
         in_zip: False/True Download folders in zip 
@@ -193,6 +195,8 @@ class XlFileTemp:
 
         if allow_input_extra_rows is not None:
             self.extra_rows = allow_input_extra_rows 
+            if num_rows_extra is not None:
+                self.num_rows_extra = validate_interger_input(num_rows_extra, 'num_rows_extra')
         
         if project_name is None or project_name == '':
             project_name = f'Project-{today}'
@@ -203,11 +207,11 @@ class XlFileTemp:
 
             create_xl_file(project_name, self.df_data, self.df_settings, self.dv_config1, self.dv_config2,
             self.cond_formatting, self.hd_index, self.data_index, self.header_index_list, self.extra_rows, 
-            sheet_password, workbook_password)
+            self.num_rows_extra, sheet_password, workbook_password)
             return None
 
-        if self.extra_rows or allow_input_extra_rows:
-            df_rows_extra = rows_extra(self.df_data_only)
+        if self.extra_rows:
+            df_rows_extra = rows_extra(self.df_data_only, self.num_rows_extra)
         else:
             df_rows_extra = None
 
@@ -223,7 +227,7 @@ class XlFileTemp:
         pbar = tqdm(total=len(values_to_split))
         for i, split_value in enumerate(values_to_split,1):
             pbar.update(1)
-            
+            print(df_split_value)
             ### Filter the values to include in the template
             df_split_value = self.df_data[self.df_data[col_to_split]==split_value]
             
@@ -239,7 +243,7 @@ class XlFileTemp:
             ### Create Excel file
             create_xl_file(file_path, df_split_value, self.df_settings, self.dv_config1, self.dv_config2, 
             self.cond_formatting, self.hd_index, self.data_index, self.header_index_list, self.extra_rows, 
-            sheet_password, workbook_password)
+            self.num_rows_extra, sheet_password, workbook_password)
 
             ### Create Password master df
             if protect_files is True:

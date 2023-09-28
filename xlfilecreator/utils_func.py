@@ -11,7 +11,6 @@ from .terminal_colors import yellow
 from .xlfilecreator_errors import HeaderIndexNotIdentified
 
 
-EXTRA_ROWS = 100
 
 
 def to_number(x):
@@ -21,6 +20,21 @@ def to_number(x):
 		pass
 	
 	return x
+
+
+def validate_interger_input(x, source: str) -> int:
+    if isinstance(x, bool):
+        raise ValueError(f"Invalid integer input '{source}' --> {x}")
+
+    try:
+        x = int(x)
+    except ValueError:
+        raise ValueError(f"Invalid integer input '{source}' --> {x}")
+    
+    if x > 0:
+        return x
+
+    return 100
     
 
 def get_column_to_split_by(df_settings: pd.DataFrame, split_by: str) -> int:
@@ -57,19 +71,19 @@ def get_headers(df_settings: pd.DataFrame) -> Tuple[List[str], pd.DataFrame]:
     return header_index_list, df_hd
 
 
-def rows_extra(df_data_only: pd.DataFrame) -> pd.DataFrame:
-    blank_rows = ['' for _ in range(EXTRA_ROWS)]
+def rows_extra(df_data_only: pd.DataFrame, num_rows_extra: Optional[int]=100) -> pd.DataFrame:
+    blank_rows = ['' for _ in range(num_rows_extra)]
     rows_extra = {col:blank_rows for col in df_data_only.columns}
     df_rows_extra = pd.DataFrame(rows_extra)
 
     return df_rows_extra
 
 
-def get_df_data(df_hd: pd.DataFrame, df_data_only: pd.DataFrame, allow_input_extra_rows: Optional[bool]=False) -> pd.DataFrame:
+def get_df_data(df_hd: pd.DataFrame, df_data_only: pd.DataFrame, allow_input_extra_rows: Optional[bool]=False, num_rows_extra: Optional[int]=100) -> pd.DataFrame:
     """dataframe containing headers + data + extrarows"""
 
     if allow_input_extra_rows:
-        df_rows_extra = rows_extra(df_data_only)
+        df_rows_extra = rows_extra(df_data_only, num_rows_extra)
     else:
         df_rows_extra = None
         ### in case 'allow_input_extra_rows' has changed more than once

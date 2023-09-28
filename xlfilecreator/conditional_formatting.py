@@ -5,11 +5,10 @@ from typing import Dict
 
 from .formats import format_dict
 from .terminal_colors import yellow
-from .utils_func import EXTRA_ROWS
 
 
 def highlight_mandatory(wb: xlsxwriter.workbook.Workbook, ws: xlsxwriter.worksheet.Worksheet, 
-df: pd.DataFrame, df_settings: pd.DataFrame, data_index: int, allow_input_extra_rows: bool) -> None:
+df: pd.DataFrame, df_settings: pd.DataFrame, data_index: int, allow_input_extra_rows: bool, num_rows_extra: int) -> None:
     """
     Highlight mandatory fields in yellow
     If allow_input_extra_rows is True, the extra rows will not have conditional formatting.
@@ -25,7 +24,7 @@ df: pd.DataFrame, df_settings: pd.DataFrame, data_index: int, allow_input_extra_
         return None
 
     if allow_input_extra_rows:
-        length = df.shape[0] - EXTRA_ROWS
+        length = df.shape[0] - num_rows_extra
     else:
         length = df.shape[0]
 

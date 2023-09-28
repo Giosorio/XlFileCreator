@@ -116,7 +116,7 @@ sheet_password: str) -> Union[lock_sheet_simple_func, None]:
 
 def create_xl_file(file_path: str, df: pd.DataFrame, df_settings: pd.DataFrame, dv_config1: DataValidationConfig1, dv_config2: DataValidationConfig2,
 cond_formatting: CondFormatting, header_index: int, data_index: int, header_index_list: List[str], allow_input_extra_rows: Optional[bool]=False, 
-sheet_password: Optional[str]=None, workbook_password: Optional[str]=None) -> None:
+num_rows_extra: Optional[int]=100, sheet_password: Optional[str]=None, workbook_password: Optional[str]=None) -> None:
     """
     file_path: complete filename of the excel file
     df: dataframe containing only the headers and data of the main sheet of the excel file
@@ -155,7 +155,7 @@ sheet_password: Optional[str]=None, workbook_password: Optional[str]=None) -> No
         ## The conditions in the conditional_formatting sheet are superimposed over the Mandatory fields
         ## The mandtory flag does not overwrite an existing condition in the conditional_formatting sheet
         cond_formatting.set_conditional_formatting(wb, ws, df)
-        highlight_mandatory(wb, ws, df, df_settings, data_index, allow_input_extra_rows)
+        highlight_mandatory(wb, ws, df, df_settings, data_index, allow_input_extra_rows, num_rows_extra)
 
         ### Set column width
         column_width(ws, df, df_settings)

@@ -30,7 +30,11 @@ class DataValidationConfiguration(ABC):
             return None
 
         column_indexes_to_apply_data_validation = [i for i, hd in enumerate(df.loc['HEADER']) if hd in self.data_val_headers]  
-        initial_index = df.index.tolist().index('')  ## df index 0 = excel row 1
+        try:
+            initial_index = df.index.tolist().index('')  ## df index 0 = excel row 1
+        except ValueError as ve:
+            print(df)
+            raise(ve)
         last_row_index = df.shape[0] - 1  
 
         for col in column_indexes_to_apply_data_validation:
