@@ -1,5 +1,5 @@
-from tqdm import tqdm 
 import pandas as pd
+from tqdm import tqdm 
 
 import datetime
 import os
@@ -88,7 +88,7 @@ class XlFileTemp:
         identify_data_types: passing identify_data_types=False can improve the performance of reading a large file.
         """
         if identify_data_types:
-            float_formats = ['unlocked_dollars','unlocked_pounds','unlocked_euros','unlocked_percent']
+            float_formats = ['unlocked_dollars','unlocked_pounds','unlocked_euros','unlocked_percent','unlocked_number']
             format_cols = df_main.loc['lock_sheet_config']
             df_data_only = df_main[df_main.index==''].copy(deep=True)
             for f, col in zip(format_cols, df_main.columns):
@@ -227,7 +227,7 @@ class XlFileTemp:
         pbar = tqdm(total=len(values_to_split))
         for i, split_value in enumerate(values_to_split,1):
             pbar.update(1)
-            
+
             ### Filter the values to include in the template
             df_split_value = self.df_data[self.df_data[col_to_split]==split_value]
             
