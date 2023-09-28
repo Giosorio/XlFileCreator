@@ -15,7 +15,7 @@ from .terminal_colors import blue
 from .utils_func import (to_number, get_google_sheet_df, get_headers, get_df_data, check_google_sh_reader,rows_extra,
                         set_project_name, get_google_sheet_validation2, get_excel_dvalidation2,
                         create_output_folders, clean_df_main, get_google_sheet_validation, 
-                        get_column_to_split_by, get_excel_df, validate_interger_input)
+                        get_column_to_split_by, get_excel_df, validate_integer_input)
 
 
 class XlFileTemp:
@@ -53,7 +53,7 @@ class XlFileTemp:
         self.df_settings = df_main[df_main.index!='']
         self.extra_rows = allow_input_extra_rows
         self.__last_extra_rows = allow_input_extra_rows
-        self.num_rows_extra = validate_interger_input(num_rows_extra, 'num_rows_extra')
+        self.num_rows_extra = validate_integer_input(num_rows_extra, 'num_rows_extra')
         self.header_index_list, self.df_hd = get_headers(self.df_settings)
         self.hd_index = self.df_data.index.tolist().index('HEADER')
         self.data_index = self.df_data.index.tolist().index('')
@@ -196,7 +196,7 @@ class XlFileTemp:
         if allow_input_extra_rows is not None:
             self.extra_rows = allow_input_extra_rows 
             if num_rows_extra is not None:
-                self.num_rows_extra = validate_interger_input(num_rows_extra, 'num_rows_extra')
+                self.num_rows_extra = validate_integer_input(num_rows_extra, 'num_rows_extra')
         
         if project_name is None or project_name == '':
             project_name = f'Project-{today}'

@@ -22,7 +22,7 @@ def to_number(x):
 	return x
 
 
-def validate_interger_input(x, source: str) -> int:
+def validate_integer_input(x, source: str) -> int:
     if isinstance(x, bool):
         raise ValueError(f"Invalid integer input '{source}' --> {x}")
 
