@@ -227,7 +227,7 @@ class XlFileTemp:
         pbar = tqdm(total=len(values_to_split))
         for i, split_value in enumerate(values_to_split,1):
             pbar.update(1)
-            print(df_split_value)
+            
             ### Filter the values to include in the template
             df_split_value = self.df_data[self.df_data[col_to_split]==split_value]
             

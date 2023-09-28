@@ -86,8 +86,6 @@ def get_df_data(df_hd: pd.DataFrame, df_data_only: pd.DataFrame, allow_input_ext
         df_rows_extra = rows_extra(df_data_only, num_rows_extra)
     else:
         df_rows_extra = None
-        ### in case 'allow_input_extra_rows' has changed more than once
-        df_data_only = df_data_only[df_data_only[0]!='']
 
     return pd.concat([df_hd, df_data_only, df_rows_extra])
 
