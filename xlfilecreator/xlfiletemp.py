@@ -24,6 +24,8 @@ class XlFileTemp:
 
     df_hd: dataframe contaning the headers (description_header, example_header, header)
     df_data: dataframe containing the headers + data + extra_rows(optional)
+    extra_rows: bool coming from allow_input_extra_rows
+    num_rows_extra: int number of extra empty rows
     df_settings: dataframe containing configuration of the excel file (format, width, lock columns, etc)
     header_index_list: list of header indexes in scope i.e ['Description_header','HEADER','example_row'] 
     hd_index: interger index where the header is located in the df_data
@@ -91,9 +93,11 @@ class XlFileTemp:
             float_formats = ['unlocked_dollars','unlocked_pounds','unlocked_euros','unlocked_percent','unlocked_number']
             format_cols = df_main.loc['lock_sheet_config']
             df_data_only = df_main[df_main.index==''].copy(deep=True)
+
+            tqdm.pandas(desc='TextValues into Float')
             for f, col in zip(format_cols, df_main.columns):
                 if f in float_formats:
-                    df_data_only[col] = df_data_only[col].apply(to_number)
+                    df_data_only[col] = df_data_only[col].progress_apply(to_number)
         else:
             df_data_only = df_main[df_main.index==''].copy(deep=True)
 
@@ -152,7 +156,7 @@ class XlFileTemp:
         identify_data_types (optional): default TRUE for read_google_sheets_file(). Converts string number values into float. Passing identify_data_types=False can improve the performance of reading a large file.
         """
         if identify_data_types:
-            print(blue('Passing identify_data_types=False can improve the performance of reading a large file. Only necessary if the template includes percentage values, or currency values'))
+            print(blue('Passing identify_data_types=False can improve the performance of reading a large file. Only necessary if the template includes percentage values, or currency values\nConvert the numbers read as text into float values'))
 
         ### Read google sheets file
         df_main = get_google_sheet_df(sheet_id, main_sheet)
