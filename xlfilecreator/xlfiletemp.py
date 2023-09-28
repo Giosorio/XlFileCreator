@@ -228,7 +228,7 @@ class XlFileTemp:
         print('Number of files: ', len(values_to_split))
 
         password_master = []
-        pbar = tqdm(total=len(values_to_split), ncols=80)
+        pbar = tqdm(total=len(values_to_split))
         for i, split_value in enumerate(values_to_split,1):
             pbar.update(1)
 
@@ -263,6 +263,8 @@ class XlFileTemp:
             set_password(path_1, path_2, passwordMaster_name)
             print(df_pw)
         
+        pbar.close()
+
         if in_zip:
             shutil.make_archive(path_1, 'zip', path_1)
             shutil.make_archive(path_2, 'zip', path_2)
