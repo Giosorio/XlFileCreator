@@ -12,7 +12,6 @@ from .xlfilecreator_errors import HeaderIndexNotIdentified
 
 
 
-
 def to_number(x):
 	try:      
 		x = float(x)
