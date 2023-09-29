@@ -160,19 +160,19 @@ num_rows_extra: Optional[int]=100, sheet_password: Optional[str]=None, workbook_
         ### Set column width
         column_width(ws, df, df_settings)
 
-        ### Hide all rows without data. Even when the empty extra rows are allowed
-        ## it will only show those that can be filled in
-        ws.set_default_row(hide_unused_rows=True)
-        
-        ### Hide unused columns 
-        last_col_num = df.columns[-1]
-        hide_from_col_name = xlsxwriter.utility.xl_col_to_name(last_col_num + 1)
-        ws.set_column(f'{hide_from_col_name}:XFD', None, None, {"hidden": True})
-
         ### Protect Sheet
         if sheet_password is not None and sheet_password != '':
-            lock_sheet(wb, ws, df, df_settings, allow_input_extra_rows, sheet_password)
+            ### Hide all rows without data. Even when the empty extra rows are allowed
+            ## it will only show those that can be filled in
+            ws.set_default_row(hide_unused_rows=True)
+            
+            ### Hide unused columns 
+            last_col_num = df.columns[-1]
+            hide_from_col_name = xlsxwriter.utility.xl_col_to_name(last_col_num + 1)
+            ws.set_column(f'{hide_from_col_name}:XFD', None, None, {"hidden": True})
 
+            lock_sheet(wb, ws, df, df_settings, allow_input_extra_rows, sheet_password)
+     
     ### Protect Workbook
     if workbook_password is not None and workbook_password != '':
         protect_workbook(file_path, password=workbook_password)
