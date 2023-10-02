@@ -69,17 +69,17 @@ def config_file() -> None:
 
         set_idx_format(wb, ws_main, df_main)
         ws_main.write(0,1, df_main.iloc[0,1], orange_bg_color)
-        ws_main.write(5,1, df_main.iloc[5,1], orange_bg_color)
+        ws_main.write(5,1, df_main.iloc[6,1], orange_bg_color)
 
         ws_main.data_validation('A6:A100', {'validate': 'list', 'source': ['description_header','HEADER','example_row']})
         ws_main.data_validation('B3:AM3', {'validate': 'list', 'source': ['','Mandatory']})
         ws_main.data_validation('B4:AM4', {'validate': 'list', 'source': f'=FORMATS!$A$1:$A${len(format_dict)}'})
         ws_main.data_validation('B5:AM5', {'validate': 'list', 'error_type': 'warning', 'error_message': 'This column will be locked by default','source': f'=FORMATS!$B$2:$B${len(format_lock_config_dict)+1}'})
 
-        ws_main.write_comment('P4', 'Select the entire formula row range and Use Search and Replace to replace \ for \' to keep the formula visible including the \'=\' sign', comments_format)
-        ws_main.write_comment('R4', 'Select the entire formula row range and Use Search and Replace to replace \ for \' to keep the formula visible including the \'=\' sign', comments_format)
-        ws_main.write_comment('X4', 'Select the entire formula row range and Use Search and Replace to replace \ for \' to keep the formula visible including the \'=\' sign', comments_format)
-        ws_main.write_comment('AB4', 'Select the entire formula row range and Use Search and Replace to replace \ for \' to keep the formula visible including the \'=\' sign', comments_format)
+        ws_main.write_comment('P6', 'Select the entire formula row range and Use Search and Replace to replace \ for \' to keep the formula visible including the \'=\' sign', comments_format)
+        ws_main.write_comment('R6', 'Select the entire formula row range and Use Search and Replace to replace \ for \' to keep the formula visible including the \'=\' sign', comments_format)
+        ws_main.write_comment('X6', 'Select the entire formula row range and Use Search and Replace to replace \ for \' to keep the formula visible including the \'=\' sign', comments_format)
+        ws_main.write_comment('AB6', 'Select the entire formula row range and Use Search and Replace to replace \ for \' to keep the formula visible including the \'=\' sign', comments_format)
 
         ### Conditional Formatting
         df_condf.to_excel(writer, sheet_name='conditional_formatting', index=False)
