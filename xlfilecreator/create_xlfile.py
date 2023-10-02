@@ -39,8 +39,8 @@ def set_formula(df: pd.DataFrame, df_settings: pd.DataFrame, allow_input_extra_r
         df['index'].iloc[first_blank_row:] = ''
         df.set_index('index', inplace=True)
 
-    df_hd = df[df.index != '']
-    df_data = df[df.index == '']
+    df_hd = df[df.index != ''].copy(deep=True)
+    df_data = df[df.index == ''].copy(deep=True)
 
     formula_settings_row = df_settings.loc['formula'].tolist()
     for col, formula_ in zip(df.columns, formula_settings_row):
