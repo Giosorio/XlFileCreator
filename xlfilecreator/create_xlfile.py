@@ -26,6 +26,36 @@ def protect_workbook(path: str, password: str) -> None:
     wb.save(path)
 
 
+def set_formula(df: pd.DataFrame, df_settings: pd.DataFrame, allow_input_extra_rows: Optional[bool]=False) -> pd.DataFrame:
+    
+    if 'formula' not in df_settings.index:
+        return df
+    if all(i == '' for i in df_settings.loc['formula']):
+        return df
+
+    if allow_input_extra_rows:
+        first_blank_row = df.index.tolist().index(0)
+        df.reset_index(inplace=True)
+        df['index'].iloc[first_blank_row:] = ''
+        df.set_index('index', inplace=True)
+
+    df_hd = df[df.index != '']
+    df_data = df[df.index == '']
+
+    formula_settings_row = df_settings.loc['formula'].tolist()
+    for col, formula_ in zip(df.columns, formula_settings_row):
+        if formula_ != '':
+            df_data[col] = formula_
+
+    if allow_input_extra_rows:
+        df_data.reset_index(inplace=True)
+        df_data['index'].iloc[first_blank_row] = 0
+        df_data.set_index('index', inplace=True)
+
+
+    return pd.concat([df_hd, df_data])
+
+
 def column_width(ws: xlsxwriter.worksheet.Worksheet, df: pd.DataFrame, df_settings: pd.DataFrame) -> None:
     """
     Set up the columns width in character units.
@@ -127,6 +157,8 @@ num_rows_extra: Optional[int]=100, sheet_password: Optional[str]=None, workbook_
     sheet_password: sheet password for the excel file to avoid the users to change the format of the main sheet, default=None 
     workbook_password: workbook password to avoid the users to add more sheets in the excel file, defaul=None
     """
+
+    df = set_formula(df, df_settings, allow_input_extra_rows)
     
     with pd.ExcelWriter(file_path, engine='xlsxwriter') as writer:
         df.to_excel(writer, sheet_name='Sheet1', index=False, header=False)
