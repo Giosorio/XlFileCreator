@@ -70,11 +70,10 @@ class XlFileTemp:
 
     @property
     def df_data(self) -> pd.DataFrame:
-        if self.__df_data is None or self.extra_rows != self.__last_extra_rows:
-            self.__df_data = get_df_data(self.df_hd, self.df_data_only, allow_input_extra_rows=self.extra_rows, num_rows_extra=self.num_rows_extra)
-            if self.extra_rows != self.__last_extra_rows:
-                self.__last_extra_rows = self.extra_rows 
-                print(f'Update: allow_input_extra_rows= {self.extra_rows}')
+        self.__df_data = get_df_data(self.df_hd, self.df_data_only, allow_input_extra_rows=self.extra_rows, num_rows_extra=self.num_rows_extra)
+        if self.extra_rows != self.__last_extra_rows:
+            self.__last_extra_rows = self.extra_rows 
+            print(f'Update: allow_input_extra_rows= {self.extra_rows}')
 
         return self.__df_data
 
