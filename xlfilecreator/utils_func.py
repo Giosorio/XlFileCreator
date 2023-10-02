@@ -58,7 +58,7 @@ def get_headers(df_settings: pd.DataFrame) -> Tuple[List[str], pd.DataFrame]:
     'example_row' third
     """
 
-    accepted_idx = ['CONFIG_MANAGER','header_format','lock_sheet_config','conditional_formatting','column_width','description_header','HEADER','example_row']
+    accepted_idx = ['CONFIG_MANAGER','header_format','lock_sheet_config','conditional_formatting','formula','column_width','description_header','HEADER','example_row']
     for hd_i in df_settings.index:
         if hd_i not in accepted_idx:
             raise HeaderIndexNotIdentified(hd_i, accepted_idx)
