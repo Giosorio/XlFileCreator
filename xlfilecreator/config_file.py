@@ -41,7 +41,7 @@ def config_file() -> None:
         wb = writer.book
 
         orange_bg_color = wb.add_format({'bg_color': '#ff9900', 'text_wrap':True})
-        comments_dict = {'visible': True, 'font_size': 10, 'height': 230, 'width': 200}
+        comments_format = {'visible': True, 'font_size': 10, 'height': 230, 'width': 200}
 
         ### FORMATS Sheet
         ws_format = wb.add_worksheet(name='FORMATS')
@@ -59,6 +59,10 @@ def config_file() -> None:
         df_impf.to_excel(writer,sheet_name='IMPORT_FILE', header=False, index=False)
         ws_root = writer.sheets['IMPORT_FILE']
         ws_root.set_tab_color('#0000ff')
+        ws_condf.write_comment('O4', 'Select the entire range and Use Search and Replace to replace \ for \' to keep the formula visible including the \'=\' sign', comments_format)
+        ws_condf.write_comment('Q4', 'Select the entire range and Use Search and Replace to replace \ for \' to keep the formula visible including the \'=\' sign', comments_format)
+        ws_condf.write_comment('W4', 'Select the entire range and Use Search and Replace to replace \ for \' to keep the formula visible including the \'=\' sign', comments_format)
+        ws_condf.write_comment('AA4', 'Select the entire range and Use Search and Replace to replace \ for \' to keep the formula visible including the \'=\' sign', comments_format)
 
         ### MAIN_SHEET
         df_main.to_excel(writer, sheet_name='MAIN_SHEET', header=False, index=False)
@@ -77,10 +81,10 @@ def config_file() -> None:
         ### Conditional Formatting
         df_condf.to_excel(writer, sheet_name='conditional_formatting', index=False)
         ws_condf = writer.sheets['conditional_formatting']
-        ws_condf.data_validation('D2:D50', {'validate': 'list', 'source': f'=FORMATS!$A$1:$A${len(format_dict)}'})
-        ws_condf.data_validation('B2:B50', {'validate': 'list', 'source': ['','formula']})
+        ws_condf.data_validation('D2:D100', {'validate': 'list', 'source': f'=FORMATS!$A$1:$A${len(format_dict)}'})
+        ws_condf.data_validation('B2:B100', {'validate': 'list', 'source': ['','formula']})
         ws_condf.set_tab_color('#ff00ff')
-        ws_condf.write_comment('C1', 'Use Search and Replace to replace \ for \' to keep the formula visible including the \'=\' sign\nThe order of the conditions matters. A new condition do not overwrite a previous condition.\nThe conditions in the conditional_formatting sheet are superimposed over the Mandatory fields.\nThe mandtory flag does not overwrite an existing condition in the conditional_formatting sheet', comments_dict)
+        ws_condf.write_comment('C1', 'Use Search and Replace to replace \ for \' to keep the formula visible including the \'=\' sign\nThe order of the conditions matters. A new condition do not overwrite a previous condition.\nThe conditions in the conditional_formatting sheet are superimposed over the Mandatory fields.\nThe mandtory flag does not overwrite an existing condition in the conditional_formatting sheet', comments_format)
 
         ### Data Validation 1 sheet
         dv_config1.to_excel(writer, sheet_name='data_validation_config1', header=False, index=False)
@@ -101,7 +105,7 @@ def config_file() -> None:
         ws_dv2.data_validation('D2:D50', {'validate': 'list', 'source': ['stop','warning','information']})
         ws_dv2.data_validation('B2:B50', {'validate': 'list', 'source': ['','list']})
         ws_dv2.set_tab_color('#9900ff')
-        ws_dv2.write_comment('C1', 'Use Search and Replace to replace \ for \' to keep the formula visible including the \'=\' sign\n', comments_dict)
+        ws_dv2.write_comment('C1', 'Use Search and Replace to replace \ for \' to keep the formula visible including the \'=\' sign\n', comments_format)
 
         ### Dropdown lists DV2
         df_dropdowns_dv2.to_excel(writer, sheet_name='dropdown_lists_config2', index=False)
