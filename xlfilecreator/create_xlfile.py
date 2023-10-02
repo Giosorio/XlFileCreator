@@ -34,7 +34,9 @@ def set_formula(df: pd.DataFrame, df_settings: pd.DataFrame, allow_input_extra_r
         return df
 
     if allow_input_extra_rows:
+        ### Identify where the extra rows start
         first_blank_row = df.index.tolist().index(0)
+        ### Remove index from the extra rows [0,1,2...] -> ''
         df.reset_index(inplace=True)
         df['index'].iloc[first_blank_row:] = ''
         df.set_index('index', inplace=True)
@@ -48,6 +50,7 @@ def set_formula(df: pd.DataFrame, df_settings: pd.DataFrame, allow_input_extra_r
             df_data[col] = formula_
 
     if allow_input_extra_rows:
+        ### Mark with 0 the index where the extra rows start 
         df_data.reset_index(inplace=True)
         df_data['index'].iloc[first_blank_row] = 0
         df_data.set_index('index', inplace=True)
