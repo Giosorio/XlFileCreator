@@ -10,15 +10,18 @@ from .utils_func import Project
 
 
 class PackageMsofficeMissing(Exception):
+
+    ### https://github.com/herumi/msoffice updates made on September 2023 do not work
+    ### https://github.com/Giosorio/msoffice last update March 2023 work OK 
     errormessage = """
     Install msoffice to be able to encrypt excel files
     Check documentation here:
-        https://github.com/herumi/msoffice
+        https://github.com/Giosorio/msoffice
 
     Follow the steps to install msoffice from the terminal in your main directory
     Linux, Mac
-        git clone https://github.com/herumi/cybozulib
-        git clone https://github.com/herumi/msoffice
+        git clone https://github.com/Giosorio/cybozulib
+        git clone https://github.com/Giosorio/msoffice
         cd msoffice
         make -j RELEASE=1
     
