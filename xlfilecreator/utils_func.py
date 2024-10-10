@@ -5,6 +5,7 @@ import datetime
 import json
 import os
 from typing import List, Tuple, Optional, Union
+from urllib.error import HTTPError
 
 from .data_validation_typing import DataValDict
 from .terminal_colors import yellow
@@ -120,7 +121,7 @@ def check_google_sh_reader(sheet_id: str, sheet_name: str, na_filter: bool, head
     """Check if the google sheet workbook is readeble"""
     try:
         df = pd.read_csv(f'https://docs.google.com/spreadsheets/d/{sheet_id}/gviz/tq?tqx=out:csv&sheet={sheet_name}', na_filter=na_filter, header=header, index_col=index_col)
-    except pd.errors.ParserError as pe:
+    except (pd.errors.ParserError, HTTPError) as pe:
         print(pe)
         raise pd.errors.ParserError('The Google sheet workbook is restricted. It must be accessible to Anyone with the link')
     else:
