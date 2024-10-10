@@ -119,6 +119,9 @@ def get_excel_df(xl_file:str, sheet_name: str, header: Optional[str]=None) -> pd
 
 def check_google_sh_reader(sheet_id: str, sheet_name: str, na_filter: bool, header: Union[int,None], index_col:Union[int,None]):
     """Check if the google sheet workbook is readeble"""
+    if sheet_name is None or sheet_name == '':
+        return None
+
     try:
         df = pd.read_csv(f'https://docs.google.com/spreadsheets/d/{sheet_id}/gviz/tq?tqx=out:csv&sheet={sheet_name}', na_filter=na_filter, header=header, index_col=index_col)
     except (pd.errors.ParserError, HTTPError) as pe:
