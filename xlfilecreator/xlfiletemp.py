@@ -4,7 +4,7 @@ from tqdm.auto import tqdm
 import datetime
 import os
 import shutil
-from typing import Optional
+from typing import Optional, List
 
 from .create_xlfile import create_xl_file
 from .conditional_formatting import CondFormatting
@@ -177,7 +177,7 @@ class XlFileTemp:
         """
         config_file()
 
-    def to_excel(self, project_name: Optional[str]=None, split_by: Optional[str]=None, batch: Optional[int]=1, 
+    def to_excel(self, project_name: Optional[str]=None, split_by: Optional[str]=None, split_by_range: Optional[List]=None, batch: Optional[int]=1, 
         sheet_password: Optional[str]=None, workbook_password: Optional[str]=None, allow_input_extra_rows: Optional[bool]=None, 
         num_rows_extra: Optional[int]=None, protect_files: Optional[bool]=False, random_password: Optional[bool]=False, in_zip: Optional[bool]=False) -> None:
         """
@@ -223,7 +223,12 @@ class XlFileTemp:
 
         ### Unique list of values to split 
         col_to_split = get_column_to_split_by(self.df_settings, split_by)
-        values_to_split = set(self.df_data_only[col_to_split])
+        if isinstance(split_by_range, list):
+            values_to_split = set(split_by_range)
+        else:
+            split_by_range = None
+            values_to_split = set(self.df_data_only[col_to_split])
+            
         print('Number of files: ', len(values_to_split))
 
         password_master = []
@@ -232,7 +237,11 @@ class XlFileTemp:
             pbar.update(1)
 
             ### Filter the values to include in the template
-            df_split_value = self.df_data[self.df_data[col_to_split]==split_value]
+            if split_by_range is None:
+                df_split_value = self.df_data[self.df_data[col_to_split]==split_value]
+            else:
+                df_split_value = self.df_data_only.copy()
+                df_split_value[col_to_split]=split_value
             
             ### Include the headers on the top
             df_split_value = pd.concat([self.df_hd, df_split_value, df_rows_extra])
