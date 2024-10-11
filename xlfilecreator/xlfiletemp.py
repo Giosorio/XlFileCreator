@@ -238,7 +238,7 @@ class XlFileTemp:
 
             ### Filter the values to include in the template
             if split_by_range is None:
-                df_split_value = self.df_data[self.df_data[col_to_split]==split_value]
+                df_split_value = self.df_data_only[self.df_data_only[col_to_split]==split_value]
             else:
                 df_split_value = self.df_data_only.copy()
                 df_split_value[col_to_split]=split_value
