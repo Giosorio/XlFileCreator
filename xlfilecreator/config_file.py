@@ -78,10 +78,10 @@ def config_file() -> None:
 
         ws_main.write_comment('B1','Google Sheets: Activate the formula by removing the first double quotation mark. \nExcel: Clear the content of this cell', comments_format)
         ws_main.write_comment('B7','Google Sheets: Activate the formula by removing the first double quotation mark. \nExcel: Replace for offset formula =OFFSET(IMPORT_FILE!A1,0,0,23,27)', comments_format)
-        ws_main.write_comment('P6', 'Select the entire formula row range and Use Search and Replace to replace \ for \' to keep the formula visible including the \'=\' sign', comments_format)
-        ws_main.write_comment('R6', 'Select the entire formula row range and Use Search and Replace to replace \ for \' to keep the formula visible including the \'=\' sign', comments_format)
-        ws_main.write_comment('X6', 'Select the entire formula row range and Use Search and Replace to replace \ for \' to keep the formula visible including the \'=\' sign', comments_format)
-        ws_main.write_comment('AB6', 'Select the entire formula row range and Use Search and Replace to replace \ for \' to keep the formula visible including the \'=\' sign', comments_format)
+        ws_main.write_comment('P6', 'Select the entire formula row range and Use Find and Replace to replace \ for \' to keep the formula visible including the \'=\' sign', comments_format)
+        ws_main.write_comment('R6', 'Select the entire formula row range and Use Find and Replace to replace \ for \' to keep the formula visible including the \'=\' sign', comments_format)
+        ws_main.write_comment('X6', 'Select the entire formula row range and Use Find and Replace to replace \ for \' to keep the formula visible including the \'=\' sign', comments_format)
+        ws_main.write_comment('AB6', 'Select the entire formula row range and Use Find and Replace to replace \ for \' to keep the formula visible including the \'=\' sign', comments_format)
 
         ### Conditional Formatting
         df_condf.to_excel(writer, sheet_name='conditional_formatting', index=False)
@@ -89,7 +89,7 @@ def config_file() -> None:
         ws_condf.data_validation('D2:D100', {'validate': 'list', 'source': f'=FORMATS!$A$1:$A${len(format_dict)}'})
         ws_condf.data_validation('B2:B100', {'validate': 'list', 'source': ['','formula']})
         ws_condf.set_tab_color('#ff00ff')
-        ws_condf.write_comment('C1', 'Use Search and Replace to replace \ for \' to keep the formula visible including the \'=\' sign\nThe order of the conditions matters. A new condition do not overwrite a previous condition.\nThe conditions in the conditional_formatting sheet are superimposed over the Mandatory fields.\nThe mandtory flag does not overwrite an existing condition in the conditional_formatting sheet', comments_format)
+        ws_condf.write_comment('C1', 'Use Find and Replace to replace \ for \' to keep the formula visible including the \'=\' sign\nThe order of the conditions matters. A new condition do not overwrite a previous condition.\nThe conditions in the conditional_formatting sheet are superimposed over the Mandatory fields.\nThe mandtory flag does not overwrite an existing condition in the conditional_formatting sheet', comments_format)
 
         ### Data Validation 1 sheet
         dv_config1.to_excel(writer, sheet_name='data_validation_config1', header=False, index=False)
@@ -104,7 +104,7 @@ def config_file() -> None:
         ws_dv.data_validation('A3:A100', {'validate': 'list', 'source': ['error_type','input_title','input_message','error_title','error_message','HEADER']})
         ws_dv.data_validation('B2:AM2', {'validate': 'list', 'source': ['stop','warning','information']})
 
-        ws_dv.write_comment('B1','Google Sheets: Activate the formula by removing the first double quotations mark. \nExcel: Earase the content of this cell', comments_format)
+        ws_dv.write_comment('B1','Google Sheets: Activate the formula by removing the first double quotation mark. \nExcel: Clear the content of this cell', comments_format)
 
         ### Data Validation 2 sheet
         dv_config2.to_excel(writer, sheet_name='data_validation_config2', index=False)
@@ -112,7 +112,7 @@ def config_file() -> None:
         ws_dv2.data_validation('D2:D50', {'validate': 'list', 'source': ['stop','warning','information']})
         ws_dv2.data_validation('B2:B50', {'validate': 'list', 'source': ['','list']})
         ws_dv2.set_tab_color('#9900ff')
-        ws_dv2.write_comment('C1', 'Use Search and Replace to replace \ for \' to keep the formula visible including the \'=\' sign\n', comments_format)
+        ws_dv2.write_comment('C1', 'Use Find and Replace to replace \ for \' to keep the formula visible including the \'=\' sign\n', comments_format)
 
         ### Dropdown lists DV2
         df_dropdowns_dv2.to_excel(writer, sheet_name='dropdown_lists_config2', index=False)
