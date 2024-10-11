@@ -183,7 +183,9 @@ class XlFileTemp:
         """
         Creates the excel file
         project_name: name of the project, it will be part of the filename of the templates. If split_by is None it will be the name of the single file generated
-        split_by: Name of the column to filter and create new templates
+        split_by: Name of the column to filter and create new templates. If split_by_range is provided then the data is not filtered by the values in the dataset. 
+        It will replicate the data from the main dataset for each unique value in split_by_range.
+        split_by_range: A Python list containing values to split the data by. It is used to create a separate template for each unique value in the list.
         batch: Number of the batch. Included in the filename of the templates 
         sheet_password: sheet password for the excel file to avoid the users to change the format of the main sheet, default=None 
         workbook_password: workbook password to avoid the users to add more sheets in the excel file, defaul=None
