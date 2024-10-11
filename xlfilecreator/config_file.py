@@ -77,7 +77,7 @@ def config_file() -> None:
         ws_main.data_validation('B5:AM5', {'validate': 'list', 'error_type': 'warning', 'error_message': 'This column will be locked by default','source': f'=FORMATS!$B$2:$B${len(format_lock_config_dict)+1}'})
 
         ws_main.write_comment('B1','Google Sheets: Activate the formula by removing the first double quotation mark. \nExcel: Clear the content of this cell', comments_format)
-        ws_main.write_comment('B7','Google Sheets: Activate the formula by removing the first double quotation mark. \nExcel: Replace for offset formula =OFFSET(IMPORT_FILE!A1,0,0,23,27)', comments_format)
+        ws_main.write_comment('B7','Google Sheets: Activate the formula by removing the first double quotation mark. \nExcel: Replace for offset formula =IF(OFFSET(IMPORT_FILE!A1,0,0,23,27)="","",OFFSET(IMPORT_FILE!A1,0,0,23,27)) \n\nADJUST the offset formula according to the dataset in the IMPORT_FILE sheet', comments_format)
         ws_main.write_comment('P6', 'Select the entire formula row range and Use Find and Replace to replace \ for \' to keep the formula visible including the \'=\' sign', comments_format)
         ws_main.write_comment('R6', 'Select the entire formula row range and Use Find and Replace to replace \ for \' to keep the formula visible including the \'=\' sign', comments_format)
         ws_main.write_comment('X6', 'Select the entire formula row range and Use Find and Replace to replace \ for \' to keep the formula visible including the \'=\' sign', comments_format)
