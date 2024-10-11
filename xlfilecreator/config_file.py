@@ -61,6 +61,7 @@ def config_file() -> None:
         df_impf.to_excel(writer,sheet_name='IMPORT_FILE', header=False, index=False)
         ws_root = writer.sheets['IMPORT_FILE']
         ws_root.set_tab_color('#0000ff')
+        ws_root.write_comment('A1','Google Sheets: Select the whole sheet and format it as Plain text', comments_format)
         
         ### MAIN_SHEET
         df_main.to_excel(writer, sheet_name='MAIN_SHEET', header=False, index=False)
