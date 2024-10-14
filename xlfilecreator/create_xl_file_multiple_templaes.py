@@ -57,11 +57,13 @@ def create_xl_file_multiple_temp(*, project_name: str, template_list: List[XlFil
         file_name = f'{id_file}-{name}-{today}.xlsx'
         file_path = f'{path_1}/{file_name}'
         
-        for j, template in enumerate(template_list, 1):
-            df = template.template_filtered(split_by=split_by, split_value=split_value)
-            df = set_formula(df, template.df_settings, template.extra_rows)
+        with pd.ExcelWriter(file_path, engine='xlsxwriter') as writer:
 
-            with pd.ExcelWriter(file_path, engine='xlsxwriter') as writer:
+            for j, template in enumerate(template_list, 1):
+                df = template.template_filtered(split_by=split_by, split_value=split_value)
+                df = set_formula(df, template.df_settings, template.extra_rows)
+
+                
                 df.to_excel(writer, sheet_name=f'Sheet{j}', index=False, header=False)
                 if template.dv_config1.df_data_validation is not None: 
                     template.dv_config1.df_data_validation.to_excel(writer,sheet_name=template.dv_config1.dropdown_list_sheet, index=False)
