@@ -311,7 +311,7 @@ class XlFileTemp:
             raise TypeError(f'{split_by_range} is not a list')
 
         for split_value in values_to_split:
-            if split_value not in self.df_data_only[col_to_split]:
+            if split_value not in self.df_data_only[col_to_split].tolist():
                 raise ValueError(f'{split_value} not in df_data')
     
     def template_filtered(self, *, split_by: str, split_value: str):

@@ -39,6 +39,7 @@ def create_xl_file_multiple_temp(*, project_name: str, template_list: List[XlFil
 
     ### Check feasibility
     for template in template_list:
+        print(f"Checking: {template.tab_names['main_sheet']}")
         template.check_split_by_range(split_by, split_by_range)
 
     ### Create output folders
@@ -58,7 +59,7 @@ def create_xl_file_multiple_temp(*, project_name: str, template_list: List[XlFil
         
         for j, template in enumerate(template_list, 1):
             df = template.template_filtered(split_by=split_by, split_value=split_value)
-            df = set_formula(df, template.df_settings, template.allow_input_extra_rows)
+            df = set_formula(df, template.df_settings, template.extra_rows)
 
             with pd.ExcelWriter(file_path, engine='xlsxwriter') as writer:
                 df.to_excel(writer, sheet_name=f'Sheet{j}', index=False, header=False)
@@ -76,7 +77,7 @@ def create_xl_file_multiple_temp(*, project_name: str, template_list: List[XlFil
                 ws = writer.sheets[f'Sheet{j}']
                 
                 ### Insert Header format
-                set_headers_format(wb, ws, df, template.df_settings, template.header_index_list, template.header_index)
+                set_headers_format(wb, ws, df, template.df_settings, template.header_index_list, template.hd_index)
 
                 ### Insert Dropdown lists
                 template.dv_config1.set_data_validation(ws, df)
@@ -87,7 +88,7 @@ def create_xl_file_multiple_temp(*, project_name: str, template_list: List[XlFil
                 ## The conditions in the conditional_formatting sheet are superimposed over the Mandatory fields
                 ## The mandtory flag does not overwrite an existing condition in the conditional_formatting sheet
                 template.cond_formatting.set_conditional_formatting(wb, ws, df)
-                highlight_mandatory(wb, ws, df, template.df_settings, template.data_index, template.allow_input_extra_rows, template.num_rows_extra)
+                highlight_mandatory(wb, ws, df, template.df_settings, template.data_index, template.extra_rows, template.num_rows_extra)
 
                 ### Set column width
                 column_width(ws, df, template.df_settings)
@@ -104,7 +105,7 @@ def create_xl_file_multiple_temp(*, project_name: str, template_list: List[XlFil
                     hide_from_col_name = xlsxwriter.utility.xl_col_to_name(last_col_num + 1)
                     ws.set_column(f'{hide_from_col_name}:XFD', None, None, {"hidden": True})
 
-                    lock_sheet(wb, ws, df, template.df_settings, template.allow_input_extra_rows, sheet_password)
+                    lock_sheet(wb, ws, df, template.df_settings, template.extra_rows, sheet_password)
                 
         ### Protect Workbook
         if workbook_password is not None and workbook_password != '':
