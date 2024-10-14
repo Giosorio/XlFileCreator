@@ -194,7 +194,7 @@ class XlFileTemp:
         """
         config_file()
 
-    def to_excel(self, project_name: Optional[str]=None, split_by: Optional[str]=None, split_by_range: Optional[List]=None, batch: Optional[int]=1, 
+    def to_excel(self, project_name: Optional[str]=None, split_by: Optional[str]=None, split_by_range: Optional[List[str]]=None, batch: Optional[int]=1, 
         sheet_password: Optional[str]=None, workbook_password: Optional[str]=None, allow_input_extra_rows: Optional[bool]=None, 
         num_rows_extra: Optional[int]=None, protect_files: Optional[bool]=False, random_password: Optional[bool]=False, in_zip: Optional[bool]=False) -> None:
         """
@@ -297,3 +297,33 @@ class XlFileTemp:
             shutil.make_archive(path_2, 'zip', path_2)
             os.system(f'rm -r {path_1}')
             os.system(f'rm -r {path_2}')
+
+    def template_filtered(self, *, split_by: str, split_by_range: List[str]):
+
+        if split_by is None and split_by_range is None:
+            return self
+
+        ### Unique list of values to split 
+        col_to_split = get_column_to_split_by(self.df_settings, split_by)
+        if isinstance(split_by_range, list):
+            values_to_split = set(split_by_range)
+        else:
+            raise TypeError(f'{split_by_range} is not a list')
+
+        for split_value in values_to_split:
+            if split_value not in self.df_data_only[col_to_split]:
+                raise ValueError(f'{split_value} not in df_data')
+
+        if self.extra_rows:
+            df_rows_extra = rows_extra(self.df_data_only, self.num_rows_extra)
+        else:
+            df_rows_extra = None
+
+        for i, split_value in enumerate(values_to_split,1):
+            df_split_value = self.df_data_only.copy()
+            df_split_value[col_to_split]=split_value
+
+            ### Include the headers on the top
+            df_split_value = pd.concat([self.df_hd, df_split_value, df_rows_extra])
+
+            yield df_split_value
