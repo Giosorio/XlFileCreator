@@ -4,7 +4,7 @@ from tqdm.auto import tqdm
 import datetime
 import os
 import shutil
-from typing import Optional, List
+from typing import Optional, List, Dict
 
 from .create_xlfile import create_xl_file
 from .conditional_formatting import CondFormatting
@@ -45,7 +45,7 @@ class XlFileTemp:
     to_excel(self): Method to create an excel template or split into multiple templates based on a field part of the header of the main sheet
     """
 
-    def __init__(self, df_main: pd.DataFrame, df_dvconfig1: Optional[pd.DataFrame]=None, df_dvconfig2: Optional[pd.DataFrame]=None,
+    def __init__(self, df_main: pd.DataFrame, tab_names: Dict[str,str], df_dvconfig1: Optional[pd.DataFrame]=None, df_dvconfig2: Optional[pd.DataFrame]=None,
     allow_input_extra_rows: Optional[bool]=False, num_rows_extra: Optional[int]=100, data_validation_sheet_config1: Optional[str]='Dropdown_Lists',
     dropdown_lists_sheet_config2: Optional[str]='Dropdown_Lists_2', df_picklists: Optional[pd.DataFrame]=None,
     df_condf: Optional[pd.DataFrame]=None, identify_data_types: Optional[bool]=True) -> None:
@@ -67,6 +67,7 @@ class XlFileTemp:
         self.dv_config2 = DataValidationConfig2(df_picklists, dropdown_lists_sheet_config2, df_dvconfig2)
 
         self.cond_formatting = CondFormatting(df_condf, self.df_data)
+        self.tab_names = tab_names
 
     @property
     def df_data(self) -> pd.DataFrame:
@@ -134,7 +135,15 @@ class XlFileTemp:
         
         df_dvconfig2, df_picklists = get_excel_dvalidation2(xl_file, data_validation_sheet_config2, dropdown_lists_sheet_config2)
         
-        return cls(df_main, df_dvconfig1, df_dvconfig2, data_validation_sheet_config1=data_validation_sheet_config1, 
+        tab_names = {
+            'main_sheet': main_sheet,
+            'data_validation_sheet_config1': data_validation_sheet_config1,
+            'data_validation_sheet_config2': data_validation_sheet_config2,
+            'dropdown_lists_sheet_config2': dropdown_lists_sheet_config2,
+            'conditional_formatting_sheet': conditional_formatting_sheet,
+        }
+        
+        return cls(df_main, tab_names, df_dvconfig1, df_dvconfig2, data_validation_sheet_config1=data_validation_sheet_config1, 
                 dropdown_lists_sheet_config2=dropdown_lists_sheet_config2, df_picklists=df_picklists, df_condf=df_condf,
                 identify_data_types=identify_data_types)
 
@@ -164,7 +173,15 @@ class XlFileTemp:
         df_dvconfig2, df_picklists = get_google_sheet_validation2(sheet_id, data_validation_sheet_config2, dropdown_lists_sheet_config2)
         df_condf = check_google_sh_reader(sheet_id, conditional_formatting_sheet, na_filter=False, header=0, index_col=None)
 
-        return cls(df_main, df_dvconfig1, df_dvconfig2, data_validation_sheet_config1=data_validation_sheet_config1, 
+        tab_names = {
+            'main_sheet': main_sheet,
+            'data_validation_sheet_config1': data_validation_sheet_config1,
+            'data_validation_sheet_config2': data_validation_sheet_config2,
+            'dropdown_lists_sheet_config2': dropdown_lists_sheet_config2,
+            'conditional_formatting_sheet': conditional_formatting_sheet,
+        }
+        
+        return cls(df_main, tab_names, df_dvconfig1, df_dvconfig2, data_validation_sheet_config1=data_validation_sheet_config1, 
                 dropdown_lists_sheet_config2=dropdown_lists_sheet_config2, df_picklists=df_picklists, df_condf=df_condf,
                 identify_data_types=identify_data_types)
 
