@@ -314,7 +314,7 @@ class XlFileTemp:
             if split_value not in self.df_data_only[col_to_split].tolist():
                 raise ValueError(f'{split_value} not in df_data')
     
-    def template_filtered(self, *, split_by: str, split_value: str):
+    def template_filtered(self, *, split_by: str, split_value: str) -> pd.DataFrame:
 
         if self.extra_rows:
             df_rows_extra = rows_extra(self.df_data_only, self.num_rows_extra)
