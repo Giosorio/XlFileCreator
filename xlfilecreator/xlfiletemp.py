@@ -298,7 +298,7 @@ class XlFileTemp:
             os.system(f'rm -r {path_1}')
             os.system(f'rm -r {path_2}')
 
-    def template_filtered(self, *, split_by: str, split_by_range: List[str]):
+    def check_split_by_range(self, split_by: str, split_by_range: List[str]) -> None:
 
         if split_by is None and split_by_range is None:
             return self
@@ -313,17 +313,20 @@ class XlFileTemp:
         for split_value in values_to_split:
             if split_value not in self.df_data_only[col_to_split]:
                 raise ValueError(f'{split_value} not in df_data')
+    
+    def template_filtered(self, *, split_by: str, split_value: str):
 
         if self.extra_rows:
             df_rows_extra = rows_extra(self.df_data_only, self.num_rows_extra)
         else:
             df_rows_extra = None
 
-        for i, split_value in enumerate(values_to_split,1):
-            df_split_value = self.df_data_only.copy()
-            df_split_value[col_to_split]=split_value
+        ### Unique list of values to split 
+        col_to_split = get_column_to_split_by(self.df_settings, split_by)
+        df_split_value = self.df_data_only.copy()
+        df_split_value[col_to_split]=split_value
 
-            ### Include the headers on the top
-            df_split_value = pd.concat([self.df_hd, df_split_value, df_rows_extra])
+        ### Include the headers on the top
+        df_split_value = pd.concat([self.df_hd, df_split_value, df_rows_extra])
 
-            yield df_split_value
+        return df_split_value
