@@ -19,6 +19,7 @@ def process_template(writer: pd.ExcelWriter, template: XlFileTemp, split_by_valu
     split_by: str, split_value: str, sheet_password: Optional[str]=None) -> None:
     """
     Transform the template into the excel file 
+
     writer: pd.ExcelWriter, Context manager that creates the Excel file
     template: XlFileTemp object
     split_by_value: A boolean flag (True or False). If True, the method filters by the split_value provided. If False, it uses all values from the split_by column.
@@ -78,18 +79,23 @@ def process_template(writer: pd.ExcelWriter, template: XlFileTemp, split_by_valu
         lock_sheet(wb, ws, df, template.df_settings, template.extra_rows, sheet_password)
 
 
-def create_xl_file_multiple_temp(*, project_name: str, template_list: List[XlFileTemp], split_by_value: bool, split_by: Optional[str]=None, split_by_range: Optional[List[str]]=None, 
-    batch: Optional[int]=1, sheet_password: Optional[str]=None, workbook_password: Optional[str]=None,
+def create_xl_file_multiple_temp(*, project_name: str, template_list: List[XlFileTemp], split_by_value: bool, split_by: Optional[str]=None, 
+    split_by_range: Optional[List[str]]=None, batch: Optional[int]=1, sheet_password: Optional[str]=None, workbook_password: Optional[str]=None,
     protect_files: Optional[bool]=False, random_password: Optional[bool]=False, in_zip: Optional[bool]=False) -> None:
     """
-    file_path: complete filename of the excel file
-    df: dataframe containing only the headers and data of the main sheet of the excel file
-    df_settings: dataframe containing the config requirements for the main sheet (width, header_format, description_header...)
-    dv_config1: DataValidationConfig1 object containing the configuration for Data Validation 1
-    dv_config2: DataValidationConfig2 object containing the configuration for Data Validation 2
-    header_index_list: list of headers included in the index ['Description_header', 'HEADER', 'Example_header']
+    Creates the Excel file with multiple tamples in it.
+
+    project_name: name of the project, it will be part of the filename of the templates. If split_by is None it will be the name of the single file generated
+    template_list: Python list containing the templates (XlFileTemp objects) to include in the Excel File.
+    split_by_value: A boolean flag (True or False). If True, the method filters by the split_value provided. If False, it uses all values from the split_by column.
+    split_by: The name of the column to filter by.
+    split_by_range: Python list contaning all the split_value items. If split_by_value=True All split_value items must be included in all templates provided.
+    batch: Number of the batch. Included in the filename of the templates.
     sheet_password: sheet password for the excel file to avoid the users to change the format of the main sheet, default=None 
     workbook_password: workbook password to avoid the users to add more sheets in the excel file, defaul=None
+    protect_files: False/True encrypt the files
+    random_password: False/True if protect_files is True it determines if the password of the files should be random or based on a logic
+    in_zip: False/True Download folders in zip
     """
 
     if split_by is None and split_by_range is None:
@@ -121,6 +127,7 @@ def create_xl_file_multiple_temp(*, project_name: str, template_list: List[XlFil
         file_name = f'{id_file}-{name}-{today}.xlsx'
         file_path = f'{path_1}/{file_name}'
         
+        ### Create Excel file
         with pd.ExcelWriter(file_path, engine='xlsxwriter') as writer:
 
             for j, template in enumerate(template_list, 1):
