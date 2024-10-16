@@ -314,17 +314,20 @@ class XlFileTemp:
             if split_value not in self.df_data_only[col_to_split].tolist():
                 raise ValueError(f'{split_value} not in df_data')
     
-    def template_filtered(self, *, split_by: str, split_value: str) -> pd.DataFrame:
+    def template_filtered(self, *, split_by: str, split_value: str, split_by_value: bool) -> pd.DataFrame:
 
         if self.extra_rows:
             df_rows_extra = rows_extra(self.df_data_only, self.num_rows_extra)
         else:
             df_rows_extra = None
 
-        ### Unique list of values to split 
+        ### Filter Main sheet
         col_to_split = get_column_to_split_by(self.df_settings, split_by)
         df_split_value = self.df_data_only.copy()
-        df_split_value[col_to_split]=split_value
+        if split_by_value:
+            df_split_value = df_split_value[df_split_value[col_to_split]==split_value]
+        else:
+            df_split_value[col_to_split]=split_value
 
         ### Include the headers on the top
         df_split_value = pd.concat([self.df_hd, df_split_value, df_rows_extra])

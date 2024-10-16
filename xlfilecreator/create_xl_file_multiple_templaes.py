@@ -15,10 +15,10 @@ from .utils_func import (set_project_name, create_output_folders)
 from .xlfiletemp import XlFileTemp
 
 
-def process_template(writer: pd.ExcelWriter, template: XlFileTemp, template_name: str, split_by: str,
-    split_value: str, sheet_password: Optional[str]=None) -> None:
+def process_template(writer: pd.ExcelWriter, template: XlFileTemp, split_by_value: bool, template_name: str, 
+    split_by: str, split_value: str, sheet_password: Optional[str]=None) -> None:
 
-    df = template.template_filtered(split_by=split_by, split_value=split_value)
+    df = template.template_filtered(split_by=split_by, split_value=split_value, split_by_value=split_by_value)
     df = set_formula(df, template.df_settings, template.extra_rows)
 
     
@@ -68,7 +68,7 @@ def process_template(writer: pd.ExcelWriter, template: XlFileTemp, template_name
         lock_sheet(wb, ws, df, template.df_settings, template.extra_rows, sheet_password)
 
 
-def create_xl_file_multiple_temp(*, project_name: str, template_list: List[XlFileTemp], split_by: Optional[str]=None, split_by_range: Optional[List[str]]=None, 
+def create_xl_file_multiple_temp(*, project_name: str, template_list: List[XlFileTemp], split_by_value: bool, split_by: Optional[str]=None, split_by_range: Optional[List[str]]=None, 
     batch: Optional[int]=1, sheet_password: Optional[str]=None, workbook_password: Optional[str]=None,
     protect_files: Optional[bool]=False, random_password: Optional[bool]=False, in_zip: Optional[bool]=False) -> None:
     """
@@ -114,7 +114,7 @@ def create_xl_file_multiple_temp(*, project_name: str, template_list: List[XlFil
 
             for j, template in enumerate(template_list, 1):
                 template_name = f'Sheet{j}'
-                process_template(writer, template, template_name, split_by, split_value, sheet_password)
+                process_template(writer, template, split_by_value, template_name, split_by, split_value, sheet_password)
                 
         ### Protect Workbook
         if workbook_password is not None and workbook_password != '':
