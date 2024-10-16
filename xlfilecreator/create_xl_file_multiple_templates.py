@@ -8,75 +8,11 @@ import shutil
 from typing import Optional, List
 
 from .conditional_formatting import highlight_mandatory
-from .create_xlfile import (set_formula, column_width, lock_sheet, protect_workbook)
+from .create_xlfile import process_template, protect_workbook
 from .encrypt_xl import set_password, create_password
 from .header_format import set_headers_format
 from .utils_func import (set_project_name, create_output_folders)
 from .xlfiletemp import XlFileTemp
-
-
-def process_template(writer: pd.ExcelWriter, template: XlFileTemp, split_by_value: bool, template_name: str, 
-    split_by: str, split_value: str, sheet_password: Optional[str]=None) -> None:
-    """
-    Transform the template into the excel file 
-
-    writer: pd.ExcelWriter, Context manager that creates the Excel file
-    template: XlFileTemp object
-    split_by_value: A boolean flag (True or False). If True, the method filters by the split_value provided. If False, it uses all values from the split_by column.
-    template_name: Name of the main sheet of the template in the excel file by default 'Sheet1' -> 'Sheet{j}
-    split_by: The name of the column to filter by.
-    split_value: The specific value to filter the data by. If set split_value=False it will set the split_value to all records in the split_by column.
-    sheet_password: sheet password for the excel file to avoid the users to change the format of the main sheet, default=None 
-    """
-
-    df = template.template_filtered(split_by=split_by, split_value=split_value, split_by_value=split_by_value)
-    df = set_formula(df, template.df_settings, template.extra_rows)
-
-    
-    df.to_excel(writer, sheet_name=template_name, index=False, header=False)
-    if template.dv_config1.df_data_validation is not None: 
-        template.dv_config1.df_data_validation.to_excel(writer,sheet_name=template.dv_config1.dropdown_list_sheet, index=False)
-        ws_dv = writer.sheets[template.dv_config1.dropdown_list_sheet]
-        ws_dv.hide()
-
-    if template.dv_config2.data_validation_dict is not None: 
-        template.dv_config2.picklists.to_excel(writer,sheet_name=template.dv_config2.dropdown_list_sheet, index=False)
-        ws_dv2 = writer.sheets[template.dv_config2.dropdown_list_sheet]
-        ws_dv2.hide()
-
-    wb = writer.book
-    ws = writer.sheets[template_name]
-    
-    ### Insert Header format
-    set_headers_format(wb, ws, df, template.df_settings, template.header_index_list, template.hd_index)
-
-    ### Insert Dropdown lists
-    template.dv_config1.set_data_validation(ws, df)
-    template.dv_config2.set_data_validation(ws, df)
-
-    ### Set Conditional Formatting
-    ## The order of the conditions matters. A new condition do not overwrite a previous condition.
-    ## The conditions in the conditional_formatting sheet are superimposed over the Mandatory fields
-    ## The mandtory flag does not overwrite an existing condition in the conditional_formatting sheet
-    template.cond_formatting.set_conditional_formatting(wb, ws, df)
-    highlight_mandatory(wb, ws, df, template.df_settings, template.data_index, template.extra_rows, template.num_rows_extra)
-
-    ### Set column width
-    column_width(ws, df, template.df_settings)
-
-    ### Protect Sheet
-    ### All sheets will have the password
-    if sheet_password is not None and sheet_password != '':
-        ### Hide all rows without data. Even when the empty extra rows are allowed
-        ## it will only show those that can be filled in
-        ws.set_default_row(hide_unused_rows=True)
-        
-        ### Hide unused columns 
-        last_col_num = df.columns[-1]
-        hide_from_col_name = xlsxwriter.utility.xl_col_to_name(last_col_num + 1)
-        ws.set_column(f'{hide_from_col_name}:XFD', None, None, {"hidden": True})
-
-        lock_sheet(wb, ws, df, template.df_settings, template.extra_rows, sheet_password)
 
 
 def create_xl_file_multiple_temp(*, project_name: str, template_list: List[XlFileTemp], split_by_value: bool, split_by: Optional[str]=None, 
