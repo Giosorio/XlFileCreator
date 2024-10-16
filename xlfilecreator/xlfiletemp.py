@@ -55,7 +55,7 @@ class XlFileTemp:
         self.df_settings = df_main[df_main.index!='']
         self.extra_rows = allow_input_extra_rows
         self.__last_extra_rows = allow_input_extra_rows
-        self.num_rows_extra = validate_integer_input(num_rows_extra, 'num_rows_extra')
+        self.__num_rows_extra = num_rows_extra
         self.header_index_list, self.df_hd = get_headers(self.df_settings)
         self.hd_index = self.df_data.index.tolist().index('HEADER')
         self.data_index = self.df_data.index.tolist().index('')
@@ -83,6 +83,14 @@ class XlFileTemp:
         """lenght: number of rows of the data """
         
         return self.df_data.shape[0]
+
+    @property
+    def num_rows_extra(self):
+        return self.__num_rows_extra
+
+    @num_rows_extra.setter
+    def num_rows_extra(self, num_rows_extra: int):
+        self.__num_rows_extra = validate_integer_input(num_rows_extra, 'num_rows_extra')
 
     @staticmethod
     def apply_data_types(df_main: pd.DataFrame, identify_data_types: bool) -> pd.DataFrame:
