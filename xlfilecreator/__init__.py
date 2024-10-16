@@ -1,5 +1,5 @@
 from .data_validation import *
-from .create_xl_file_multiple_templaes import create_xl_file_multiple_temp
+from .create_xl_file_multiple_templates import create_xl_file_multiple_temp
 from .encrypt_xl import PackageMsofficeMissing, _check_msoffice_installed, set_password, create_password
 from .formats import format_dict
 from .xlfiletemp import XlFileTemp
