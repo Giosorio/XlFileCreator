@@ -147,7 +147,7 @@ sheet_password: str) -> Union[lock_sheet_simple_func, None]:
     ws.protect(sheet_password)
 
 
-def process_template(writer: pd.ExcelWriter, template: XlFileTemp, split_by_value: bool, template_name: str, 
+def process_template(writer: pd.ExcelWriter, template, split_by_value: bool, template_name: str, 
     split_by: str, split_value: str, sheet_password: Optional[str]=None) -> None:
     """
     Transform the template into the excel file 
