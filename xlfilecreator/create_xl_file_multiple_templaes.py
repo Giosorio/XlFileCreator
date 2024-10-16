@@ -91,9 +91,10 @@ def create_xl_file_multiple_temp(*, project_name: str, template_list: List[XlFil
         raise TypeError(f'{split_by_range} is not a list')
 
     ### Check feasibility
-    for template in template_list:
-        print(f"Checking: {template.tab_names['main_sheet']}")
-        template.check_split_by_range(split_by, split_by_range)
+    if split_by_value:
+        for template in template_list:
+            print(f"Checking: {template.tab_names['main_sheet']}")
+            template.check_split_by_range(split_by, split_by_range)
 
     ### Create output folders
     today = datetime.datetime.today().strftime('%Y%m%d')

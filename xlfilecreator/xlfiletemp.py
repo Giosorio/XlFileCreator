@@ -315,7 +315,14 @@ class XlFileTemp:
                 raise ValueError(f'{split_value} not in df_data')
     
     def template_filtered(self, *, split_by: str, split_value: str, split_by_value: bool) -> pd.DataFrame:
-
+        """
+        Returns a df_data (dataframe) filtered by split_value or a full dataset of df_data if split_by_value=False
+        split_by: Name of the column to filter and create new templates. If split_by_range is provided then the data is not filtered by the values in the dataset.
+        split_value: String value in which the df_data will be filtered by. 
+        If split_by_value=False the split_value will be set to the entire split_by column of df_data.
+        split_by_value: bool determines whether the df_data is filtered by the split_value provided or set in the entire split_by column.
+        """
+        
         if self.extra_rows:
             df_rows_extra = rows_extra(self.df_data_only, self.num_rows_extra)
         else:
