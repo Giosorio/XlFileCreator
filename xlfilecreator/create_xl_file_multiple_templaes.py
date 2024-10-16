@@ -17,6 +17,16 @@ from .xlfiletemp import XlFileTemp
 
 def process_template(writer: pd.ExcelWriter, template: XlFileTemp, split_by_value: bool, template_name: str, 
     split_by: str, split_value: str, sheet_password: Optional[str]=None) -> None:
+    """
+    Transform the template into the excel file 
+    writer: pd.ExcelWriter, Context manager that creates the Excel file
+    template: XlFileTemp object
+    split_by_value: A boolean flag (True or False). If True, the method filters by the split_value provided. If False, it uses all values from the split_by column.
+    template_name: Name of the main sheet of the template in the excel file by default 'Sheet1' -> 'Sheet{j}
+    split_by: The name of the column to filter by.
+    split_value: The specific value to filter the data by. If set split_value=False it will set the split_value to all records in the split_by column.
+    sheet_password: sheet password for the excel file to avoid the users to change the format of the main sheet, default=None 
+    """
 
     df = template.template_filtered(split_by=split_by, split_value=split_value, split_by_value=split_by_value)
     df = set_formula(df, template.df_settings, template.extra_rows)

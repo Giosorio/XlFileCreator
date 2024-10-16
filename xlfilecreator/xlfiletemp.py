@@ -316,11 +316,13 @@ class XlFileTemp:
     
     def template_filtered(self, *, split_by: str, split_value: str, split_by_value: bool) -> pd.DataFrame:
         """
-        Returns a df_data (dataframe) filtered by split_value or a full dataset of df_data if split_by_value=False
-        split_by: Name of the column to filter and create new templates. If split_by_range is provided then the data is not filtered by the values in the dataset.
-        split_value: String value in which the df_data will be filtered by. 
-        If split_by_value=False the split_value will be set to the entire split_by column of df_data.
-        split_by_value: bool determines whether the df_data is filtered by the split_value provided or set in the entire split_by column.
+        The method returns a DataFrame df_data to create the template. If split_by_value=True, the df_data will be filtered by the provided split_value. 
+        Otherwise, it will set the split_value to the column split_by and return all records from the original df_data.
+
+        Parameters
+        split_by: The name of the column to filter by.
+        split_value: The specific value to filter the data by. If set split_value=False it will set the split_value to all records in the split_by column.
+        split_by_value: A boolean flag (True or False). If True, the method filters by the split_value provided. If False, it uses all values from the split_by column.
         """
         
         if self.extra_rows:
