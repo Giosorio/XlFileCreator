@@ -4,7 +4,7 @@ from tqdm.auto import tqdm
 import datetime
 import os
 import shutil
-from typing import Optional, List, Dict
+from typing import Optional, List, Dict, Union
 
 from .create_xlfile import create_xl_file
 from .conditional_formatting import CondFormatting
@@ -235,9 +235,11 @@ class XlFileTemp:
             if not project_name.endswith('.xlsx'):
                 project_name = project_name + '.xlsx'
 
-            create_xl_file(project_name, self.df_data, self.df_settings, self.dv_config1, self.dv_config2,
-            self.cond_formatting, self.hd_index, self.data_index, self.header_index_list, self.extra_rows, 
-            self.num_rows_extra, sheet_password, workbook_password)
+            create_xl_file(file_path=project_name, template=self, template_name='Sheet1',  
+            sheet_password=sheet_password, workbook_password=workbook_password)
+            # create_xl_file(project_name, self.df_data, self.df_settings, self.dv_config1, self.dv_config2,
+            # self.cond_formatting, self.hd_index, self.data_index, self.header_index_list, self.extra_rows, 
+            # self.num_rows_extra, sheet_password, workbook_password)
             return None
 
         if self.extra_rows:
@@ -263,16 +265,6 @@ class XlFileTemp:
         for i, split_value in enumerate(values_to_split,1):
             pbar.update(1)
 
-            ### Filter the values to include in the template
-            if split_by_range is None:
-                df_split_value = self.df_data_only[self.df_data_only[col_to_split]==split_value]
-            else:
-                df_split_value = self.df_data_only.copy()
-                df_split_value[col_to_split]=split_value
-            
-            ### Include the headers on the top
-            df_split_value = pd.concat([self.df_hd, df_split_value, df_rows_extra])
-
             ### Remove special characters from the supplier name
             name = ''.join(char for char in split_value if char == ' ' or char.isalnum())
             id_file = f'{project.name}ID{batch}{i:03d}'
@@ -280,9 +272,20 @@ class XlFileTemp:
             file_path = f'{path_1}/{file_name}'
 
             ### Create Excel file
-            create_xl_file(file_path, df_split_value, self.df_settings, self.dv_config1, self.dv_config2, 
-            self.cond_formatting, self.hd_index, self.data_index, self.header_index_list, self.extra_rows, 
-            self.num_rows_extra, sheet_password, workbook_password)
+            if split_by_range is None:
+                split_by_value = True
+            else:
+                split_by_value = False
+            
+            create_xl_file(split_by_value=split_by_value, file_path=file_path, template=self, split_by=split_by, 
+            split_value=split_value, sheet_password=sheet_password, workbook_password=workbook_password, 
+            template_name='Sheet1')
+        
+
+            # ### Create Excel file
+            # create_xl_file(file_path, df_split_value, self.df_settings, self.dv_config1, self.dv_config2, 
+            # self.cond_formatting, self.hd_index, self.data_index, self.header_index_list, self.extra_rows, 
+            # self.num_rows_extra, sheet_password, workbook_password)
 
             ### Create Password master df
             if protect_files is True:
@@ -322,7 +325,7 @@ class XlFileTemp:
             if split_value not in self.df_data_only[col_to_split].tolist():
                 raise ValueError(f'{split_value} not in df_data')
     
-    def template_filtered(self, *, split_by: str, split_value: str, split_by_value: bool) -> pd.DataFrame:
+    def template_filtered(self, *, split_by_value: bool, split_by: Union[str,None], split_value: Union[str,None]) -> pd.DataFrame:
         """
         The method returns a DataFrame df_data to create the template. If split_by_value=True, the df_data will be filtered by the provided split_value. 
         Otherwise, it will set the split_value to the column split_by and return all records from the original df_data.
@@ -332,7 +335,9 @@ class XlFileTemp:
         split_value: The specific value to filter the data by. If set split_value=False it will set the split_value to all records in the split_by column.
         split_by_value: A boolean flag (True or False). If True, the method filters by the split_value provided. If False, it uses all values from the split_by column.
         """
-        
+        if any([split_by is None, split_value is None, split_by_value is None]):
+            return self.df_data
+
         if self.extra_rows:
             df_rows_extra = rows_extra(self.df_data_only, self.num_rows_extra)
         else:

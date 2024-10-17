@@ -215,9 +215,8 @@ def process_template(writer: pd.ExcelWriter, template: XlFileTemp, split_by_valu
         lock_sheet(wb, ws, df, template.df_settings, template.extra_rows, sheet_password)
 
 
-def create_xl_file(file_path: str, df: pd.DataFrame, df_settings: pd.DataFrame, dv_config1: DataValidationConfig1, dv_config2: DataValidationConfig2,
-cond_formatting: CondFormatting, header_index: int, data_index: int, header_index_list: List[str], allow_input_extra_rows: Optional[bool]=False, 
-num_rows_extra: Optional[int]=100, sheet_password: Optional[str]=None, workbook_password: Optional[str]=None) -> None:
+def create_xl_file(*, template: XlFileTemp, file_path: str, template_name: str, split_by_value: Optional[bool]=None, split_by: Optional[str]=None,
+    split_value: Optional[str]=None, sheet_password: Optional[str]=None, workbook_password: Optional[str]=None) -> None:
     """
     file_path: complete filename of the excel file
     df: dataframe containing only the headers and data of the main sheet of the excel file
@@ -228,58 +227,79 @@ num_rows_extra: Optional[int]=100, sheet_password: Optional[str]=None, workbook_
     sheet_password: sheet password for the excel file to avoid the users to change the format of the main sheet, default=None 
     workbook_password: workbook password to avoid the users to add more sheets in the excel file, defaul=None
     """
-
-    df = set_formula(df, df_settings, allow_input_extra_rows)
     
     with pd.ExcelWriter(file_path, engine='xlsxwriter') as writer:
-        df.to_excel(writer, sheet_name='Sheet1', index=False, header=False)
-        if dv_config1.df_data_validation is not None: 
-            dv_config1.df_data_validation.to_excel(writer,sheet_name=dv_config1.dropdown_list_sheet, index=False)
-            ws_dv = writer.sheets[dv_config1.dropdown_list_sheet]
-            ws_dv.hide()
-
-        if dv_config2.data_validation_dict is not None: 
-            dv_config2.picklists.to_excel(writer,sheet_name=dv_config2.dropdown_list_sheet, index=False)
-            ws_dv2 = writer.sheets[dv_config2.dropdown_list_sheet]
-            ws_dv2.hide()
-
-        wb = writer.book
-        ws = writer.sheets['Sheet1']
+        process_template(writer, template, split_by_value, template_name, split_by, split_value, sheet_password)
         
-        ### Insert Header format
-        set_headers_format(wb, ws, df, df_settings, header_index_list, header_index)
-
-        ### Insert Dropdown lists
-        dv_config1.set_data_validation(ws, df)
-        dv_config2.set_data_validation(ws, df)
-
-        ### Set Conditional Formatting
-        ## The order of the conditions matters. A new condition do not overwrite a previous condition.
-        ## The conditions in the conditional_formatting sheet are superimposed over the Mandatory fields
-        ## The mandtory flag does not overwrite an existing condition in the conditional_formatting sheet
-        cond_formatting.set_conditional_formatting(wb, ws, df)
-        highlight_mandatory(wb, ws, df, df_settings, data_index, allow_input_extra_rows, num_rows_extra)
-
-        ### Set column width
-        column_width(ws, df, df_settings)
-
-        ### Protect Sheet
-        if sheet_password is not None and sheet_password != '':
-            ### Hide all rows without data. Even when the empty extra rows are allowed
-            ## it will only show those that can be filled in
-            ws.set_default_row(hide_unused_rows=True)
-            
-            ### Hide unused columns 
-            last_col_num = df.columns[-1]
-            hide_from_col_name = xlsxwriter.utility.xl_col_to_name(last_col_num + 1)
-            ws.set_column(f'{hide_from_col_name}:XFD', None, None, {"hidden": True})
-
-            lock_sheet(wb, ws, df, df_settings, allow_input_extra_rows, sheet_password)
      
     ### Protect Workbook
     if workbook_password is not None and workbook_password != '':
         protect_workbook(file_path, password=workbook_password)
 
 
+# def create_xl_file(file_path: str, df: pd.DataFrame, df_settings: pd.DataFrame, dv_config1: DataValidationConfig1, dv_config2: DataValidationConfig2,
+# cond_formatting: CondFormatting, header_index: int, data_index: int, header_index_list: List[str], allow_input_extra_rows: Optional[bool]=False, 
+# num_rows_extra: Optional[int]=100, sheet_password: Optional[str]=None, workbook_password: Optional[str]=None) -> None:
+#     """
+#     file_path: complete filename of the excel file
+#     df: dataframe containing only the headers and data of the main sheet of the excel file
+#     df_settings: dataframe containing the config requirements for the main sheet (width, header_format, description_header...)
+#     dv_config1: DataValidationConfig1 object containing the configuration for Data Validation 1
+#     dv_config2: DataValidationConfig2 object containing the configuration for Data Validation 2
+#     header_index_list: list of headers included in the index ['Description_header', 'HEADER', 'Example_header']
+#     sheet_password: sheet password for the excel file to avoid the users to change the format of the main sheet, default=None 
+#     workbook_password: workbook password to avoid the users to add more sheets in the excel file, defaul=None
+#     """
+
+#     df = set_formula(df, df_settings, allow_input_extra_rows)
+    
+#     with pd.ExcelWriter(file_path, engine='xlsxwriter') as writer:
+#         df.to_excel(writer, sheet_name='Sheet1', index=False, header=False)
+#         if dv_config1.df_data_validation is not None: 
+#             dv_config1.df_data_validation.to_excel(writer,sheet_name=dv_config1.dropdown_list_sheet, index=False)
+#             ws_dv = writer.sheets[dv_config1.dropdown_list_sheet]
+#             ws_dv.hide()
+
+#         if dv_config2.data_validation_dict is not None: 
+#             dv_config2.picklists.to_excel(writer,sheet_name=dv_config2.dropdown_list_sheet, index=False)
+#             ws_dv2 = writer.sheets[dv_config2.dropdown_list_sheet]
+#             ws_dv2.hide()
+
+#         wb = writer.book
+#         ws = writer.sheets['Sheet1']
+        
+#         ### Insert Header format
+#         set_headers_format(wb, ws, df, df_settings, header_index_list, header_index)
+
+#         ### Insert Dropdown lists
+#         dv_config1.set_data_validation(ws, df)
+#         dv_config2.set_data_validation(ws, df)
+
+#         ### Set Conditional Formatting
+#         ## The order of the conditions matters. A new condition do not overwrite a previous condition.
+#         ## The conditions in the conditional_formatting sheet are superimposed over the Mandatory fields
+#         ## The mandtory flag does not overwrite an existing condition in the conditional_formatting sheet
+#         cond_formatting.set_conditional_formatting(wb, ws, df)
+#         highlight_mandatory(wb, ws, df, df_settings, data_index, allow_input_extra_rows, num_rows_extra)
+
+#         ### Set column width
+#         column_width(ws, df, df_settings)
+
+#         ### Protect Sheet
+#         if sheet_password is not None and sheet_password != '':
+#             ### Hide all rows without data. Even when the empty extra rows are allowed
+#             ## it will only show those that can be filled in
+#             ws.set_default_row(hide_unused_rows=True)
+            
+#             ### Hide unused columns 
+#             last_col_num = df.columns[-1]
+#             hide_from_col_name = xlsxwriter.utility.xl_col_to_name(last_col_num + 1)
+#             ws.set_column(f'{hide_from_col_name}:XFD', None, None, {"hidden": True})
+
+#             lock_sheet(wb, ws, df, df_settings, allow_input_extra_rows, sheet_password)
+     
+#     ### Protect Workbook
+#     if workbook_password is not None and workbook_password != '':
+#         protect_workbook(file_path, password=workbook_password)
 
 
