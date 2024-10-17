@@ -239,11 +239,6 @@ class XlFileTemp:
             sheet_password=sheet_password, workbook_password=workbook_password)
             return None
 
-        if self.extra_rows:
-            df_rows_extra = rows_extra(self.df_data_only, self.num_rows_extra)
-        else:
-            df_rows_extra = None
-
         project = set_project_name(project_name)
         path_1, path_2 = create_output_folders(project.name, today, protect_files)
 
