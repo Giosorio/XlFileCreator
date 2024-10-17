@@ -217,12 +217,14 @@ def process_template(writer: pd.ExcelWriter, template: XlFileTemp, split_by_valu
 def create_xl_file(*, template: XlFileTemp, file_path: str, template_name: str, split_by_value: Optional[bool]=None, split_by: Optional[str]=None,
     split_value: Optional[str]=None, sheet_password: Optional[str]=None, workbook_password: Optional[str]=None) -> None:
     """
+    Creates the context manager pd.ExcelWriter (writer) to create the excel file of the template (XlFileTemp).
+
+    template: XlFileTemp object
     file_path: complete filename of the excel file
-    df: dataframe containing only the headers and data of the main sheet of the excel file
-    df_settings: dataframe containing the config requirements for the main sheet (width, header_format, description_header...)
-    dv_config1: DataValidationConfig1 object containing the configuration for Data Validation 1
-    dv_config2: DataValidationConfig2 object containing the configuration for Data Validation 2
-    header_index_list: list of headers included in the index ['Description_header', 'HEADER', 'Example_header']
+    template_name: Name of the main sheet of the template in the excel file by default 'Sheet1' -> 'Sheet{j}
+    split_by: The name of the column to filter by.
+    split_value: The specific value to filter the data by. If set split_value=False it will set the split_value to all records in the split_by column.
+    split_by_value: A boolean flag (True or False). If True, the method filters by the split_value provided. If False, it uses all values from the split_by column.
     sheet_password: sheet password for the excel file to avoid the users to change the format of the main sheet, default=None 
     workbook_password: workbook password to avoid the users to add more sheets in the excel file, defaul=None
     """
