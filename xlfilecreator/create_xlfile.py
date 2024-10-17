@@ -3,7 +3,7 @@ import xlsxwriter
 from openpyxl import load_workbook
 from openpyxl.workbook.protection import WorkbookProtection
 
-from typing import List, Optional, Union, Callable
+from typing import List, Optional, Union, Callable, Protocol
 
 from .conditional_formatting import highlight_mandatory, CondFormatting
 from .formats import format_lock_config_dict
@@ -147,7 +147,11 @@ sheet_password: str) -> Union[lock_sheet_simple_func, None]:
     ws.protect(sheet_password)
 
 
-def process_template(writer: pd.ExcelWriter, template, split_by_value: bool, template_name: str, 
+class XlFileTemp(Protocol):
+    ...
+
+
+def process_template(writer: pd.ExcelWriter, template: XlFileTemp, split_by_value: bool, template_name: str, 
     split_by: str, split_value: str, sheet_password: Optional[str]=None) -> None:
     """
     Transform the template into the excel file 
