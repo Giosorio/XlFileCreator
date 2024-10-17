@@ -237,9 +237,6 @@ class XlFileTemp:
 
             create_xl_file(file_path=project_name, template=self, template_name='Sheet1',  
             sheet_password=sheet_password, workbook_password=workbook_password)
-            # create_xl_file(project_name, self.df_data, self.df_settings, self.dv_config1, self.dv_config2,
-            # self.cond_formatting, self.hd_index, self.data_index, self.header_index_list, self.extra_rows, 
-            # self.num_rows_extra, sheet_password, workbook_password)
             return None
 
         if self.extra_rows:
@@ -281,11 +278,6 @@ class XlFileTemp:
             split_value=split_value, sheet_password=sheet_password, workbook_password=workbook_password, 
             template_name='Sheet1')
         
-
-            # ### Create Excel file
-            # create_xl_file(file_path, df_split_value, self.df_settings, self.dv_config1, self.dv_config2, 
-            # self.cond_formatting, self.hd_index, self.data_index, self.header_index_list, self.extra_rows, 
-            # self.num_rows_extra, sheet_password, workbook_password)
 
             ### Create Password master df
             if protect_files is True:

@@ -1,5 +1,4 @@
 import pandas as pd
-import xlsxwriter
 from tqdm.auto import tqdm 
 
 import datetime
@@ -7,11 +6,9 @@ import os
 import shutil
 from typing import Optional, List
 
-from .conditional_formatting import highlight_mandatory
 from .create_xlfile import process_template, protect_workbook
 from .encrypt_xl import set_password, create_password
-from .header_format import set_headers_format
-from .utils_func import (set_project_name, create_output_folders)
+from .utils_func import set_project_name, create_output_folders
 from .xlfiletemp import XlFileTemp
 
 
