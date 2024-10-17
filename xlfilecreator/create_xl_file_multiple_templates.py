@@ -8,7 +8,7 @@ from typing import Optional, List
 
 from .create_xlfile import process_template, protect_workbook
 from .encrypt_xl import set_password, create_password
-from .utils_func import set_project_name, create_output_folders, get_XlFile_details
+from .utils_func import set_project_name, create_output_folders, get_XlFile_details, password_dataframe
 from .xlfiletemp import XlFileTemp
 
 
@@ -76,12 +76,8 @@ def create_xl_file_multiple_temp(*, project_name: str, template_list: List[XlFil
 
     ### Encrypt Excel files
     if protect_files is True:
-        df_pw = pd.DataFrame(password_master, columns=['File ID', 'Filename', split_by, 'Password'])
-        passwordMaster_name = f'{project.name}-PasswordMaster-{today}.csv'
-        df_pw.to_csv(passwordMaster_name, index=False)
-
+        passwordMaster_name = password_dataframe(password_master, project, split_by, today)
         set_password(path_1, path_2, passwordMaster_name)
-        print(df_pw)
 
     pbar.close()
 

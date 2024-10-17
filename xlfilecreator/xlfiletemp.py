@@ -15,7 +15,7 @@ from .terminal_colors import blue
 from .utils_func import (to_number, get_google_sheet_df, get_headers, get_df_data, check_google_sh_reader,rows_extra,
                         set_project_name, get_google_sheet_validation2, get_excel_dvalidation2,
                         create_output_folders, clean_df_main, get_google_sheet_validation, 
-                        get_column_to_split_by, get_excel_df, validate_integer_input, get_XlFile_details)
+                        get_column_to_split_by, get_excel_df, validate_integer_input, get_XlFile_details, password_dataframe)
 
 
 class XlFileTemp:
@@ -277,12 +277,8 @@ class XlFileTemp:
 
         ### Encrypt Excel files
         if protect_files is True:
-            df_pw = pd.DataFrame(password_master, columns=['File ID', 'Filename', split_by, 'Password'])
-            passwordMaster_name = f'{project.name}-PasswordMaster-{today}.csv'
-            df_pw.to_csv(passwordMaster_name, index=False)
-
+            passwordMaster_name = password_dataframe(password_master, project, split_by, today)
             set_password(path_1, path_2, passwordMaster_name)
-            print(df_pw)
         
         pbar.close()
 

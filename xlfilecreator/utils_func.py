@@ -237,3 +237,12 @@ def get_XlFile_details(split_value: str, project: Project, batch: Union[str,int]
     file_path = f'{path_1}/{file_name}'
     
     return XlFile(id=id_file, name=file_name, path=file_path)
+
+
+def password_dataframe(password_master: List[Tuple[str,str,str,str]], project: Project, split_by: str, today: str) -> str:
+    df_pw = pd.DataFrame(password_master, columns=['File ID', 'Filename', split_by, 'Password'])
+    passwordMaster_name = f'{project.name}-PasswordMaster-{today}.csv'
+    df_pw.to_csv(passwordMaster_name, index=False)
+    print(df_pw)
+
+    return passwordMaster_name
