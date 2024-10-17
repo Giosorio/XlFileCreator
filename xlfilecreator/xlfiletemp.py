@@ -14,7 +14,7 @@ from .encrypt_xl import set_password, create_password
 from .terminal_colors import blue
 from .utils_func import (to_number, get_google_sheet_df, get_headers, get_df_data, check_google_sh_reader,rows_extra,
                         set_project_name, get_google_sheet_validation2, get_excel_dvalidation2,
-                        create_output_folders, clean_df_main, get_google_sheet_validation, 
+                        create_output_folders, clean_df_main, get_google_sheet_validation, to_zip,
                         get_column_to_split_by, get_excel_df, validate_integer_input, get_XlFile_details, password_dataframe)
 
 
@@ -279,14 +279,11 @@ class XlFileTemp:
         if protect_files is True:
             passwordMaster_name = password_dataframe(password_master, project, split_by, today)
             set_password(path_1, path_2, passwordMaster_name)
-        
-        pbar.close()
 
         if in_zip:
-            shutil.make_archive(path_1, 'zip', path_1)
-            shutil.make_archive(path_2, 'zip', path_2)
-            os.system(f'rm -r {path_1}')
-            os.system(f'rm -r {path_2}')
+            to_zip(path_1, path_2)
+
+        pbar.close()
 
     def check_split_by_range(self, split_by: str, split_by_range: List[str]) -> None:
 

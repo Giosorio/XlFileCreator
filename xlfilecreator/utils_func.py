@@ -4,6 +4,7 @@ import collections
 import datetime
 import json
 import os
+import shutil
 from typing import List, Tuple, Optional, Union
 from urllib.error import HTTPError
 
@@ -246,3 +247,11 @@ def password_dataframe(password_master: List[Tuple[str,str,str,str]], project: P
     print(df_pw)
 
     return passwordMaster_name
+
+
+def to_zip(path_1: str, path_2: str) -> None:
+    
+    shutil.make_archive(path_1, 'zip', path_1)
+    shutil.make_archive(path_2, 'zip', path_2)
+    os.system(f'rm -r {path_1}')
+    os.system(f'rm -r {path_2}')
