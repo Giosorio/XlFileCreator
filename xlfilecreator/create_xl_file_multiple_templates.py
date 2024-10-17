@@ -8,7 +8,7 @@ from typing import Optional, List
 
 from .create_xlfile import process_template, protect_workbook
 from .encrypt_xl import set_password, create_password
-from .utils_func import set_project_name, create_output_folders
+from .utils_func import set_project_name, create_output_folders, get_XlFile_details
 from .xlfiletemp import XlFileTemp
 
 
@@ -54,14 +54,12 @@ def create_xl_file_multiple_temp(*, project_name: str, template_list: List[XlFil
     password_master = []
     pbar = tqdm(total=len(values_to_split))
     for i, split_value in enumerate(values_to_split, 1):
-        ### Remove special characters from the supplier name
-        name = ''.join(char for char in split_value if char == ' ' or char.isalnum())
-        id_file = f'{project.name}ID{batch}{i:03d}'
-        file_name = f'{id_file}-{name}-{today}.xlsx'
-        file_path = f'{path_1}/{file_name}'
+        
+        ### Get Excelfile details (id, name, path)
+        xl_file = get_XlFile_details(split_value, project, batch, i, today, path_1)
         
         ### Create Excel file
-        with pd.ExcelWriter(file_path, engine='xlsxwriter') as writer:
+        with pd.ExcelWriter(xl_file.path, engine='xlsxwriter') as writer:
 
             for j, template in enumerate(template_list, 1):
                 template_name = f'Sheet{j}'
@@ -69,12 +67,12 @@ def create_xl_file_multiple_temp(*, project_name: str, template_list: List[XlFil
                 
         ### Protect Workbook
         if workbook_password is not None and workbook_password != '':
-            protect_workbook(file_path, password=workbook_password)
+            protect_workbook(xl_file.path, password=workbook_password)
 
         ### Create Password master df
         if protect_files is True:
             pw = create_password(project, split_value, random_password)    
-            password_master.append((id_file, file_name, split_value, pw))
+            password_master.append((xl_file.id, xl_file.name, split_value, pw))
 
     ### Encrypt Excel files
     if protect_files is True:

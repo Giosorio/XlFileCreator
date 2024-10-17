@@ -15,7 +15,7 @@ from .terminal_colors import blue
 from .utils_func import (to_number, get_google_sheet_df, get_headers, get_df_data, check_google_sh_reader,rows_extra,
                         set_project_name, get_google_sheet_validation2, get_excel_dvalidation2,
                         create_output_folders, clean_df_main, get_google_sheet_validation, 
-                        get_column_to_split_by, get_excel_df, validate_integer_input)
+                        get_column_to_split_by, get_excel_df, validate_integer_input, get_XlFile_details)
 
 
 class XlFileTemp:
@@ -257,11 +257,8 @@ class XlFileTemp:
         for i, split_value in enumerate(values_to_split,1):
             pbar.update(1)
 
-            ### Remove special characters from the supplier name
-            name = ''.join(char for char in split_value if char == ' ' or char.isalnum())
-            id_file = f'{project.name}ID{batch}{i:03d}'
-            file_name = f'{id_file}-{name}-{today}.xlsx'
-            file_path = f'{path_1}/{file_name}'
+            ### Get Excelfile details (id, name, path)
+            xl_file = get_XlFile_details(split_value, project, batch, i, today, path_1)
 
             ### Create Excel file
             if split_by_range is None:
@@ -269,15 +266,14 @@ class XlFileTemp:
             else:
                 split_by_value = False
             
-            create_xl_file(split_by_value=split_by_value, file_path=file_path, template=self, split_by=split_by, 
+            create_xl_file(split_by_value=split_by_value, file_path=xl_file.path, template=self, split_by=split_by, 
             split_value=split_value, sheet_password=sheet_password, workbook_password=workbook_password, 
             template_name='Sheet1')
         
-
             ### Create Password master df
             if protect_files is True:
                 pw = create_password(project, split_value, random_password)    
-                password_master.append((id_file, file_name, split_value, pw))
+                password_master.append((xl_file.id, xl_file.name, split_value, pw))
 
         ### Encrypt Excel files
         if protect_files is True:

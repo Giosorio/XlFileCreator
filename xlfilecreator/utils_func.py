@@ -224,3 +224,16 @@ def create_output_folders(project_name: str, today: str, protect_files: Optional
         os.mkdir(path_2)
     
     return path_1, path_2
+
+
+XlFile = Tuple[str,str,str]
+def get_XlFile_details(split_value: str, project: Project, batch: Union[str,int], i: int, today: str, path_1: str) -> XlFile:
+    XlFile = collections.namedtuple('XlFile', ['id', 'name', 'path']) 
+    
+    ### Remove special characters from the supplier name
+    name = ''.join(char for char in split_value if char == ' ' or char.isalnum())
+    id_file = f'{project.name}ID{batch}{i:03d}'
+    file_name = f'{id_file}-{name}-{today}.xlsx'
+    file_path = f'{path_1}/{file_name}'
+    
+    return XlFile(id=id_file, name=file_name, path=file_path)
