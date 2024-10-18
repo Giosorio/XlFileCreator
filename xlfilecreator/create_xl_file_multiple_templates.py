@@ -38,10 +38,20 @@ def create_xl_file_multiple_temp(*, project_name: str, template_list: List[XlFil
         raise TypeError(f'{split_by_range} is not a list')
 
     ### Check feasibility
-    if split_by_value:
+    ### All templates must have all split_value items provided in split_by_range list
+    if split_by_value is True:
         for template in template_list:
             print(f"Checking: {template.tab_names['main_sheet']}")
             template.check_split_by_range(split_by, split_by_range)
+
+    ### Check that all templates provided in template_list are part of the split_by_value dictionary.keys() and the other way around 
+    if isinstance(split_by_value, dict):
+        if not all(template in template_list for template in split_by_value.keys()):
+            raise ValueError('Not all templates provided in split_by_value are part of template_list')
+        if not all(template in split_by_value.keys() for template in template_list):
+            raise ValueError('Not all templates provided in template_list are part of split_by_value')
+        if not all(isinstance(v, bool) for v in split_by_value.values()):
+            raise ValueError(f'Invalid input split_by_value, only boolean values are accepted True/False. {split_by_value}')
 
     ### Create output folders
     today = datetime.datetime.today().strftime('%Y%m%d')
@@ -61,7 +71,12 @@ def create_xl_file_multiple_temp(*, project_name: str, template_list: List[XlFil
 
             for j, template in enumerate(template_list, 1):
                 template_name = f'Sheet{j}'
-                process_template(writer, template, split_by_value, template_name, split_by, split_value, sheet_password)
+                if isinstance(split_by_value, dict):
+                    sv = split_by_value[template]
+                else:
+                    sv = split_by_value
+
+                process_template(writer, template, split_by_value, template_name, split_by, sv, sheet_password)
                 
         ### Protect Workbook
         if workbook_password is not None and workbook_password != '':
