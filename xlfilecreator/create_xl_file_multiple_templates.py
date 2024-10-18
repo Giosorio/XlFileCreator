@@ -2,9 +2,7 @@ import pandas as pd
 from tqdm.auto import tqdm 
 
 import datetime
-import os
-import shutil
-from typing import Optional, List
+from typing import Optional, List, Union, Dict
 
 from .create_xlfile import process_template, protect_workbook
 from .encrypt_xl import set_password, create_password
@@ -12,7 +10,7 @@ from .utils_func import set_project_name, create_output_folders, get_XlFile_deta
 from .xlfiletemp import XlFileTemp
 
 
-def create_xl_file_multiple_temp(*, project_name: str, template_list: List[XlFileTemp], split_by_value: bool, split_by: Optional[str]=None, 
+def create_xl_file_multiple_temp(*, project_name: str, template_list: List[XlFileTemp], split_by_value: Union[bool,Dict[XlFileTemp,bool]], split_by: Optional[str]=None, 
     split_by_range: Optional[List[str]]=None, batch: Optional[int]=1, sheet_password: Optional[str]=None, workbook_password: Optional[str]=None,
     protect_files: Optional[bool]=False, random_password: Optional[bool]=False, in_zip: Optional[bool]=False) -> None:
     """
