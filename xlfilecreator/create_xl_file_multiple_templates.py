@@ -10,6 +10,27 @@ from .utils_func import set_project_name, create_output_folders, get_XlFile_deta
 from .xlfiletemp import XlFileTemp
 
 
+def check_tabnames(template_list: List[XlFileTemp]) -> None:
+    """
+    Check that the tabs that are going to be part of the excel file are different across all templates provided in template_list. 
+    Otherwise it could lead to issues with data validation.
+
+    template_list: Python list containing the templates (XlFileTemp objects) to include in the Excel File.
+    """
+    ### only the sheets that need to be different
+    sheets_to_check = ['data_validation_sheet_config1', 'dropdown_lists_sheet_config2']
+
+    tabnames_list = []
+    for sh in sheets_to_check:
+        for template in template_list:
+            tabname = template.tab_names[sh]
+            if tabname is not None:
+                if tabname in tabnames_list:
+                    raise ValueError(f'{tabname} exists in more than one template. {sheets_to_check} must be different across all templates')
+                else:
+                    tabnames_list.append(tabname)
+
+
 def check_feasibility(split_by_value: Union[bool,Dict[XlFileTemp,bool]], template_list: List[XlFileTemp], split_by: str, split_by_range: List[str]) -> None:
     """
     All templates must have all split_value items provided in split_by_range list
@@ -70,6 +91,7 @@ def create_xl_file_multiple_temp(*, project_name: str, template_list: List[XlFil
             raise ValueError(f'Invalid input split_by_value, only boolean values are accepted True/False. {split_by_value}')
 
     ### Check feasibility
+    check_tabnames(template_list)
     check_feasibility(split_by_value, template_list, split_by, split_by_range)
 
     ### Create output folders
