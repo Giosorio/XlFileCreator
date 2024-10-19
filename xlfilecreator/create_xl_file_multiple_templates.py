@@ -11,6 +11,13 @@ from .xlfiletemp import XlFileTemp
 
 
 def check_feasibility(template_list: List[XlFileTemp], split_by: str, split_by_range: List[str]) -> None:
+    """
+    All templates must have all split_value items provided in split_by_range list
+    
+    template_list: Python list containing the templates (XlFileTemp objects) to include in the Excel File.
+    split_by: The name of the column to filter by.
+    split_by_range: Python list contaning all the split_value items. If split_by_value=True All split_value items must be included in all templates provided.
+    """
     for template in template_list:
         print(f"Checking: {template.tab_names['main_sheet']}")
         template.check_split_by_range(split_by, split_by_range)
@@ -44,7 +51,6 @@ def create_xl_file_multiple_temp(*, project_name: str, template_list: List[XlFil
         raise TypeError(f'{split_by_range} is not a list')
 
     ### Check feasibility
-    ### All templates must have all split_value items provided in split_by_range list
     if split_by_value is True:
         check_feasibility(template_list, split_by, split_by_range)
 
