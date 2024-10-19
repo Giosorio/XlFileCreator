@@ -10,15 +10,25 @@ from .utils_func import set_project_name, create_output_folders, get_XlFile_deta
 from .xlfiletemp import XlFileTemp
 
 
-def check_feasibility(template_list: List[XlFileTemp], split_by: str, split_by_range: List[str]) -> None:
+def check_feasibility(split_by_value: Union[bool,Dict[XlFileTemp,bool]], template_list: List[XlFileTemp], split_by: str, split_by_range: List[str]) -> None:
     """
     All templates must have all split_value items provided in split_by_range list
     
+    split_by_value: A boolean flag (True or False) Or Dictionary {Temp: bool}. If True, the method filters by the split_value provided. If False, it uses all values from the split_by column.
     template_list: Python list containing the templates (XlFileTemp objects) to include in the Excel File.
     split_by: The name of the column to filter by.
     split_by_range: Python list contaning all the split_value items. If split_by_value=True All split_value items must be included in all templates provided.
     """
-    for template in template_list:
+    
+    if isinstance(split_by_value, dict):
+        ### Check feasibility on templates where the split_by_value=True
+        temp_list = [temp for temp, flag in split_by_value.items() if flag is True]
+    elif split_by_value is True:
+        temp_list = template_list
+    else:
+        return None
+
+    for template in temp_list:
         print(f"Checking: {template.tab_names['main_sheet']}")
         template.check_split_by_range(split_by, split_by_range)
 
@@ -31,7 +41,7 @@ def create_xl_file_multiple_temp(*, project_name: str, template_list: List[XlFil
 
     project_name: name of the project, it will be part of the filename of the templates. If split_by is None it will be the name of the single file generated
     template_list: Python list containing the templates (XlFileTemp objects) to include in the Excel File.
-    split_by_value: A boolean flag (True or False). If True, the method filters by the split_value provided. If False, it uses all values from the split_by column.
+    split_by_value: A boolean flag (True or False) Or Dictionary {Temp: bool}. If True, the method filters by the split_value provided. If False, it uses all values from the split_by column.
     split_by: The name of the column to filter by.
     split_by_range: Python list contaning all the split_value items. If split_by_value=True All split_value items must be included in all templates provided.
     batch: Number of the batch. Included in the filename of the templates.
@@ -49,11 +59,7 @@ def create_xl_file_multiple_temp(*, project_name: str, template_list: List[XlFil
         values_to_split = set(split_by_range)
     else:
         raise TypeError(f'{split_by_range} is not a list')
-
-    ### Check feasibility
-    if split_by_value is True:
-        check_feasibility(template_list, split_by, split_by_range)
-
+ 
     ### Check that all templates provided in template_list are part of the split_by_value dictionary.keys() and the other way around 
     if isinstance(split_by_value, dict):
         if not all(template in template_list for template in split_by_value.keys()):
@@ -63,10 +69,9 @@ def create_xl_file_multiple_temp(*, project_name: str, template_list: List[XlFil
         if not all(isinstance(v, bool) for v in split_by_value.values()):
             raise ValueError(f'Invalid input split_by_value, only boolean values are accepted True/False. {split_by_value}')
 
-        ### Check feasibility on templates where the split_by_value=True
-        split_by_value_true_templates = [temp for temp, flag in split_by_value.items() if flag is True]
-        check_feasibility(split_by_value_true_templates, split_by, split_by_range)
-    
+    ### Check feasibility
+    check_feasibility(split_by_value, template_list, split_by, split_by_range)
+
     ### Create output folders
     today = datetime.datetime.today().strftime('%Y%m%d')
     project = set_project_name(project_name)
