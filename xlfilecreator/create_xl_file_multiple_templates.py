@@ -72,11 +72,11 @@ def create_xl_file_multiple_temp(*, project_name: str, template_list: List[XlFil
             for j, template in enumerate(template_list, 1):
                 template_name = f'Sheet{j}'
                 if isinstance(split_by_value, dict):
-                    sv = split_by_value[template]
+                    sbv = split_by_value[template]
                 else:
-                    sv = split_by_value
+                    sbv = split_by_value
 
-                process_template(writer, template, split_by_value, template_name, split_by, sv, sheet_password)
+                process_template(writer, template, sbv, template_name, split_by, split_value, sheet_password)
                 
         ### Protect Workbook
         if workbook_password is not None and workbook_password != '':
