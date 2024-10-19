@@ -10,7 +10,7 @@ from .utils_func import set_project_name, create_output_folders, get_XlFile_deta
 from .xlfiletemp import XlFileTemp
 
 
-def check_feasibility(template_list: List[XlFileTemp], split_by: Optional[str]=None, split_by_range: Optional[List[str]]=None) -> None:
+def check_feasibility(template_list: List[XlFileTemp], split_by: str, split_by_range: List[str]) -> None:
     for template in template_list:
         print(f"Checking: {template.tab_names['main_sheet']}")
         template.check_split_by_range(split_by, split_by_range)
