@@ -144,9 +144,7 @@ class XlFileTemp:
         tab_names = {
             'main_sheet': main_sheet,
             'data_validation_sheet_config1': data_validation_sheet_config1,
-            'data_validation_sheet_config2': data_validation_sheet_config2,
             'dropdown_lists_sheet_config2': dropdown_lists_sheet_config2,
-            'conditional_formatting_sheet': conditional_formatting_sheet,
         }
         
         return cls(df_main, tab_names, df_dvconfig1, df_dvconfig2, data_validation_sheet_config1=data_validation_sheet_config1, 
@@ -182,9 +180,7 @@ class XlFileTemp:
         tab_names = {
             'main_sheet': main_sheet,
             'data_validation_sheet_config1': data_validation_sheet_config1,
-            'data_validation_sheet_config2': data_validation_sheet_config2,
             'dropdown_lists_sheet_config2': dropdown_lists_sheet_config2,
-            'conditional_formatting_sheet': conditional_formatting_sheet,
         }
         
         return cls(df_main, tab_names, df_dvconfig1, df_dvconfig2, data_validation_sheet_config1=data_validation_sheet_config1, 
