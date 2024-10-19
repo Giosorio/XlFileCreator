@@ -10,6 +10,12 @@ from .utils_func import set_project_name, create_output_folders, get_XlFile_deta
 from .xlfiletemp import XlFileTemp
 
 
+def check_feasibility(template_list: List[XlFileTemp], split_by: Optional[str]=None, split_by_range: Optional[List[str]]=None) -> None:
+    for template in template_list:
+        print(f"Checking: {template.tab_names['main_sheet']}")
+        template.check_split_by_range(split_by, split_by_range)
+
+
 def create_xl_file_multiple_temp(*, project_name: str, template_list: List[XlFileTemp], split_by_value: Union[bool,Dict[XlFileTemp,bool]], split_by: Optional[str]=None, 
     split_by_range: Optional[List[str]]=None, batch: Optional[int]=1, sheet_password: Optional[str]=None, workbook_password: Optional[str]=None,
     protect_files: Optional[bool]=False, random_password: Optional[bool]=False, in_zip: Optional[bool]=False) -> None:
@@ -40,9 +46,7 @@ def create_xl_file_multiple_temp(*, project_name: str, template_list: List[XlFil
     ### Check feasibility
     ### All templates must have all split_value items provided in split_by_range list
     if split_by_value is True:
-        for template in template_list:
-            print(f"Checking: {template.tab_names['main_sheet']}")
-            template.check_split_by_range(split_by, split_by_range)
+        check_feasibility(template_list, split_by, split_by_range)
 
     ### Check that all templates provided in template_list are part of the split_by_value dictionary.keys() and the other way around 
     if isinstance(split_by_value, dict):
@@ -53,6 +57,10 @@ def create_xl_file_multiple_temp(*, project_name: str, template_list: List[XlFil
         if not all(isinstance(v, bool) for v in split_by_value.values()):
             raise ValueError(f'Invalid input split_by_value, only boolean values are accepted True/False. {split_by_value}')
 
+        ### Check feasibility on templates where the split_by_value=True
+        split_by_value_true_templates = [temp for temp, flag in split_by_value.items() if flag is True]
+        check_feasibility(split_by_value_true_templates, split_by, split_by_range)
+    
     ### Create output folders
     today = datetime.datetime.today().strftime('%Y%m%d')
     project = set_project_name(project_name)
