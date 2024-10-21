@@ -68,7 +68,7 @@ def column_width(ws: xlsxwriter.worksheet.Worksheet, df: pd.DataFrame, df_settin
 ### VERSION 1
 lock_sheet_simple_func = Callable[[xlsxwriter.workbook.Workbook, xlsxwriter.worksheet.Worksheet, pd.DataFrame, str], None]
 def lock_sheet_simple(wb: xlsxwriter.workbook.Workbook, ws: xlsxwriter.worksheet.Worksheet, 
-df: pd.DataFrame, sheet_password: str) -> None:
+    data_index: int, df: pd.DataFrame, sheet_password: str) -> None:
     """
     Sets up the format of each column in the dataframe 
     initial_index -> data frame index from which the data starts, EXCLUDING THE HEADER (assuming the header willl be locked)
@@ -77,19 +77,17 @@ df: pd.DataFrame, sheet_password: str) -> None:
     # locked = wb.add_format({'locked': True})
     unlocked_text = wb.add_format({'locked': False, 'text_wrap':True})
 
-    ### Index where the first blank ('') is loacated in the df.index, that is where the data starts
-    initial_index = df.index.tolist().index('')
     for col, header in enumerate(df.columns):
-        unlocked_cells = df.iloc[initial_index:, col]        
-        ws.write_column(initial_index, col, unlocked_cells, cell_format=unlocked_text)
+        unlocked_cells = df.iloc[data_index:, col]        
+        ws.write_column(data_index, col, unlocked_cells, cell_format=unlocked_text)
 
     ws.protect(sheet_password)
 
 
 ### VERSION 2
 def lock_sheet(wb: xlsxwriter.workbook.Workbook, ws: xlsxwriter.worksheet.Worksheet, 
-df: pd.DataFrame, df_settings: pd.DataFrame, allow_input_extra_rows: bool, 
-sheet_password: str) -> Union[lock_sheet_simple_func, None]:
+    data_index: int, df: pd.DataFrame, df_settings: pd.DataFrame, allow_input_extra_rows: bool, 
+    sheet_password: str) -> Union[lock_sheet_simple_func, None]:
     """
     If 'lock_sheet_config' is not in the index of the dataframe, all excel columns will be editable 
     If 'lock_sheet_config' contains only blanks, all excel columns will be editable 
@@ -106,15 +104,13 @@ sheet_password: str) -> Union[lock_sheet_simple_func, None]:
     """
 
     if 'lock_sheet_config' not in df_settings.index:
-        return lock_sheet_simple(wb, ws, df, sheet_password)
+        return lock_sheet_simple(wb, ws, data_index, df, sheet_password)
     else:
         lock_sheet_config = [config_format if config_format in format_lock_config_dict.keys() else '' for config_format in df_settings.loc['lock_sheet_config']]
         all_blanks = all('' == _format for _format in lock_sheet_config)
         if all_blanks:
-            return lock_sheet_simple(wb, ws, df, sheet_password)
+            return lock_sheet_simple(wb, ws, data_index, df, sheet_password)
 
-
-    initial_index = df.index.tolist().index('')
     if allow_input_extra_rows:
         first_blank_row_index = df.index.tolist().index(0)
 
@@ -125,12 +121,12 @@ sheet_password: str) -> Union[lock_sheet_simple_func, None]:
                 unlocked_cells = df.loc[0:, col]
                 ws.write_column(first_blank_row_index, col, unlocked_cells, cell_format=wb.add_format(format_lock_config_dict['unlocked_text']))
             else:
-                unlocked_cells = df.iloc[initial_index:, col]
-                ws.write_column(initial_index, col, unlocked_cells, cell_format=wb.add_format(format_lock_config_dict[lock_config]))
+                unlocked_cells = df.iloc[data_index:, col]
+                ws.write_column(data_index, col, unlocked_cells, cell_format=wb.add_format(format_lock_config_dict[lock_config]))
         else:
             if lock_config in format_lock_config_dict.keys():
-                unlocked_cells = df.iloc[initial_index:, col]        
-                ws.write_column(initial_index, col, unlocked_cells, cell_format=wb.add_format(format_lock_config_dict[lock_config]))          
+                unlocked_cells = df.iloc[data_index:, col]        
+                ws.write_column(data_index, col, unlocked_cells, cell_format=wb.add_format(format_lock_config_dict[lock_config]))          
 
     ws.protect(sheet_password)
 
@@ -200,7 +196,7 @@ def process_template(writer: pd.ExcelWriter, template: XlFileTemp, split_by_valu
         hide_from_col_name = xlsxwriter.utility.xl_col_to_name(last_col_num + 1)
         ws.set_column(f'{hide_from_col_name}:XFD', None, None, {"hidden": True})
 
-        lock_sheet(wb, ws, df, template.df_settings, template.extra_rows, sheet_password)
+        lock_sheet(wb, ws, template.data_index, df, template.df_settings, template.extra_rows, sheet_password)
 
 
 def create_xl_file(*, template: XlFileTemp, file_path: str, template_name: str, split_by_value: Optional[bool]=None, split_by: Optional[str]=None,
