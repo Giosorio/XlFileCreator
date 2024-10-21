@@ -95,11 +95,11 @@ sheet_password: str) -> Union[lock_sheet_simple_func, None]:
     If 'lock_sheet_config' contains only blanks, all excel columns will be editable 
     if 'lock_sheet_config' contains only unrecognisable formats, all excel columns will be editable
 
-    If the format is not recognised the excel column will be locked 
-    If allow_input_extra_rows=True and the column format is not recognised, the columns will be locked and ONLY the extra rows in the column will be editable 
+    If the format is unrecognised or left blank (''), the Excel column will be locked 
+    If allow_input_extra_rows=True and the column format is unrecognised, the column will be locked and ONLY the extra rows in the column will be editable
 
     Comms:
-    when concatenating df_data + extra_rows, extra_rows.index starts with 0 to 100 
+    when concatenating df_data + extra_rows, extra_rows.index starts with 0 to num_extra_rows
     and is stored in the custom index is created from the begining 
     That's why df.loc[0] is referring to the frist blank row added 
     """
@@ -120,8 +120,8 @@ sheet_password: str) -> Union[lock_sheet_simple_func, None]:
     for col, lock_config in zip(df.columns, lock_sheet_config):
         if allow_input_extra_rows:
             if lock_config not in format_lock_config_dict.keys():
-                unlocked_cells = df.loc[0:, col]                           #### range from which blank rows start
-                # unlocked_cells = df.iloc[first_blank_row_index:, col]    #### range from which blank rows start
+                ### range from which blank rows start
+                unlocked_cells = df.loc[0:, col]
                 ws.write_column(first_blank_row_index, col, unlocked_cells, cell_format=wb.add_format(format_lock_config_dict['unlocked_text']))
             else:
                 unlocked_cells = df.iloc[initial_index:, col]
