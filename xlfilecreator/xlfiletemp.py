@@ -78,7 +78,7 @@ class XlFileTemp:
 
     @property
     def length(self) -> int:
-        """lenght: number of rows of the data """
+        """length: number of rows of the data """
         
         return self.df_data.shape[0]
 

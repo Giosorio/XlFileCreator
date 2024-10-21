@@ -25,37 +25,25 @@ def protect_workbook(path: str, password: str) -> None:
     wb.save(path)
 
 
-def set_formula(df: pd.DataFrame, df_settings: pd.DataFrame, allow_input_extra_rows: Optional[bool]=False) -> pd.DataFrame:
-    
+def set_formula(df: pd.DataFrame, data_index: int, df_settings: pd.DataFrame) -> pd.DataFrame:
+    """
+    Set up Excel formulas 
+
+    df: dataframe used to create the template header=None (df_header + df_data_only + df_extra_rows)
+    data_index: interger index where the data starts in the df_data
+    df_settings: dataframe contaning all the specifications for the template  
+    """
     if 'formula' not in df_settings.index:
         return df
     if all(i == '' for i in df_settings.loc['formula']):
         return df
 
-    if allow_input_extra_rows:
-        ### Identify where the extra rows start
-        first_blank_row = df.index.tolist().index(0)
-        ### Remove index from the extra rows [0,1,2...] -> ''
-        df.reset_index(inplace=True)
-        df['index'].iloc[first_blank_row:] = ''
-        df.set_index('index', inplace=True)
-
-    df_hd = df[df.index != ''].copy(deep=True)
-    df_data = df[df.index == ''].copy(deep=True)
-
     formula_settings_row = df_settings.loc['formula'].tolist()
     for col, formula_ in zip(df.columns, formula_settings_row):
         if formula_ != '':
-            df_data[col] = formula_
+            df.iloc[data_index: ,col] = formula_
 
-    if allow_input_extra_rows:
-        ### Mark with 0 the index where the extra rows start 
-        df_data.reset_index(inplace=True)
-        df_data['index'].iloc[first_blank_row] = 0
-        df_data.set_index('index', inplace=True)
-
-
-    return pd.concat([df_hd, df_data])
+    return df
 
 
 def column_width(ws: xlsxwriter.worksheet.Worksheet, df: pd.DataFrame, df_settings: pd.DataFrame) -> None:
@@ -108,7 +96,7 @@ sheet_password: str) -> Union[lock_sheet_simple_func, None]:
     if 'lock_sheet_config' contains only unrecognisable formats, all excel columns will be editable
 
     If the format is not recognised the excel column will be locked 
-    If allow_input_extra_rows=True but the column should be locked, ONLY the extra rows in the column will be editable 
+    If allow_input_extra_rows=True and the column format is not recognised, the columns will be locked and ONLY the extra rows in the column will be editable 
 
     Comms:
     when concatenating df_data + extra_rows, extra_rows.index starts with 0 to 100 
@@ -165,7 +153,7 @@ def process_template(writer: pd.ExcelWriter, template: XlFileTemp, split_by_valu
     """
 
     df = template.template_filtered(split_by=split_by, split_value=split_value, split_by_value=split_by_value)
-    df = set_formula(df, template.df_settings, template.extra_rows)
+    df = set_formula(df, template.data_index, template.df_settings)
 
     
     df.to_excel(writer, sheet_name=template_name, index=False, header=False)
