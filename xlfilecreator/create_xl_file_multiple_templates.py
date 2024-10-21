@@ -26,7 +26,7 @@ def check_tabnames(template_list: List[XlFileTemp]) -> None:
             tabname = template.tab_names[sh]
             if tabname is not None:
                 if tabname in tabnames_list:
-                    raise ValueError(f'{tabname} exists in more than one template. {sheets_to_check} must be different across all templates')
+                    raise ValueError(f'{tabname} exists in more than one template. {sheets_to_check} must be different across all templates. Using the same sheet name across multiple templates will cause data validation references to break, leading to unexpected behavior.')
                 else:
                     tabnames_list.append(tabname)
 
