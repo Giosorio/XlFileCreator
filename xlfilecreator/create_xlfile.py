@@ -96,7 +96,8 @@ sheet_password: str) -> Union[lock_sheet_simple_func, None]:
     if 'lock_sheet_config' contains only unrecognisable formats, all excel columns will be editable
 
     If the format is unrecognised or left blank (''), the Excel column will be locked 
-    If allow_input_extra_rows=True and the column format is unrecognised, the column will be locked and ONLY the extra rows in the column will be editable
+    If allow_input_extra_rows=True and the column format is unrecognised or left blank (''), the column 
+    will be locked and ONLY the extra rows in the column will be editable
 
     Comms:
     when concatenating df_data + extra_rows, extra_rows.index starts with 0 to num_extra_rows
