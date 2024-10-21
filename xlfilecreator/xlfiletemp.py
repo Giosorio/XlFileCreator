@@ -217,6 +217,10 @@ class XlFileTemp:
 
         today = datetime.datetime.today().strftime('%Y%m%d')
 
+        if sheet_password is None or sheet_password == '':
+            self.extra_rows = False            ### No need for extra empty rows as the sheet will be unlocked
+            allow_input_extra_rows = None
+
         if allow_input_extra_rows is not None:
             self.extra_rows = allow_input_extra_rows 
             if num_rows_extra is not None:
