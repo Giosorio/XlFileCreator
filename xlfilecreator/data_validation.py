@@ -15,8 +15,9 @@ class DataValidationConfiguration(ABC):
     def __init__(self) -> None:
         self.data_validation_dict: dict
         self.data_val_headers: list 
+        self.data_index: int
 
-    def set_data_validation(self, data_index: int, ws: xlsxwriter.worksheet.Worksheet, df: pd.DataFrame) -> None:
+    def set_data_validation(self, ws: xlsxwriter.worksheet.Worksheet, df: pd.DataFrame) -> None:
         
         """
         Set up data validation, dropdown lists 
@@ -37,7 +38,7 @@ class DataValidationConfiguration(ABC):
             opts_dict = self.data_validation_dict[hd]
             ### ws.data_validation(first_row, first_col, last_row, last_col, options_dict={...})
             # ws.data_validation(initial_index, col, last_row_index, col, {'validate':'list', 'source':data_source_dict[hd], 'error_type':'stop'})
-            ws.data_validation(data_index, col, last_row_index, col, opts_dict)
+            ws.data_validation(self.data_index, col, last_row_index, col, opts_dict)
 
 
 class DataValidationConfig1(DataValidationConfiguration):
@@ -48,13 +49,15 @@ class DataValidationConfig1(DataValidationConfiguration):
 
     """
 
-    def __init__(self, df_dvconfig1: Union[pd.DataFrame,None], dropdown_list_sheet: str, df_settings: pd.DataFrame) -> None:
+    def __init__(self, data_index: int, df_dvconfig1: Union[pd.DataFrame,None], dropdown_list_sheet: str, df_settings: pd.DataFrame) -> None:
         if df_dvconfig1 is None:
             self.data_validation_dict = None
             self.data_val_headers = None
             self.df_data_validation_complete = None
             self.df_data_validation = None
+            self.data_index: int = None
         else:
+            self.data_index: int = data_index
             self.dropdown_list_sheet = dropdown_list_sheet
             self.df_data_validation_complete, self.df_data_validation = clean_df_data_validation(df_dvconfig1, df_settings)
             self.data_val_headers = self.df_data_validation.columns.tolist()
@@ -63,12 +66,14 @@ class DataValidationConfig1(DataValidationConfiguration):
 
 class DataValidationConfig2(DataValidationConfiguration):
 
-    def __init__(self, df_picklists: Union[pd.DataFrame,None], dropdown_list_sheet: str, df_dvconfig2: Union[pd.DataFrame,None]) -> None:
+    def __init__(self, data_index: int, df_picklists: Union[pd.DataFrame,None], dropdown_list_sheet: str, df_dvconfig2: Union[pd.DataFrame,None]) -> None:
         if df_dvconfig2 is None or df_picklists is None:
             self.data_validation_dict = None
             self.data_val_headers = None
             self.picklists = None
+            self.data_index: int = None
         else:
+            self.data_index: int = data_index
             self.picklists = df_picklists
             self.dropdown_list_sheet = dropdown_list_sheet
             self.data_validation_dict = DataValidationConfig2.get_data_validation_dict_config2(df_dvconfig2)

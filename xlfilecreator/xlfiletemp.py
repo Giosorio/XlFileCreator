@@ -59,10 +59,10 @@ class XlFileTemp:
         self.data_index = self.df_data.index.tolist().index('')
         
         self.data_validation_sheet_config1 = data_validation_sheet_config1
-        self.dv_config1 = DataValidationConfig1(df_dvconfig1, data_validation_sheet_config1, self.df_settings)
+        self.dv_config1 = DataValidationConfig1(self.data_index, df_dvconfig1, data_validation_sheet_config1, self.df_settings)
         
         self.dropdown_lists_sheet_config2 = dropdown_lists_sheet_config2
-        self.dv_config2 = DataValidationConfig2(df_picklists, dropdown_lists_sheet_config2, df_dvconfig2)
+        self.dv_config2 = DataValidationConfig2(self.data_index ,df_picklists, dropdown_lists_sheet_config2, df_dvconfig2)
 
         self.cond_formatting = CondFormatting(df_condf, self.df_data)
         self.tab_names = tab_names
