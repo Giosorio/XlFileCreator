@@ -13,10 +13,10 @@ class DataValidationConfiguration(ABC):
 
     @abstractclassmethod
     def __init__(self) -> None:
-        self.data_validation_dict
-        self.data_val_headers ## self.data_val_dict.keys()
+        self.data_validation_dict: dict
+        self.data_val_headers: list 
 
-    def set_data_validation(self, ws: xlsxwriter.worksheet.Worksheet, df: pd.DataFrame) -> None:
+    def set_data_validation(self, data_index: int, ws: xlsxwriter.worksheet.Worksheet, df: pd.DataFrame) -> None:
         
         """
         Set up data validation, dropdown lists 
@@ -24,17 +24,12 @@ class DataValidationConfiguration(ABC):
         ws: worksheet
         df: dataframe used to create the template header=None
         self.data_validation_dict: DataValDict Dictionary containing the opctions_dict for each field in scope for data validation
-        self.data_validation_dict.keys(): List[Header] List of headers in scope for data validation
+        self.data_val_headers: List[Header] List of headers in scope for data validation
         """
         if self.data_validation_dict is None:
             return None
 
         column_indexes_to_apply_data_validation = [i for i, hd in enumerate(df.loc['HEADER']) if hd in self.data_val_headers]  
-        try:
-            initial_index = df.index.tolist().index('')  ## df index 0 = excel row 1
-        except ValueError as ve:
-            print(df)
-            raise(ve)
         last_row_index = df.shape[0] - 1  
 
         for col in column_indexes_to_apply_data_validation:
@@ -42,7 +37,7 @@ class DataValidationConfiguration(ABC):
             opts_dict = self.data_validation_dict[hd]
             ### ws.data_validation(first_row, first_col, last_row, last_col, options_dict={...})
             # ws.data_validation(initial_index, col, last_row_index, col, {'validate':'list', 'source':data_source_dict[hd], 'error_type':'stop'})
-            ws.data_validation(initial_index, col, last_row_index, col, opts_dict)
+            ws.data_validation(data_index, col, last_row_index, col, opts_dict)
 
 
 class DataValidationConfig1(DataValidationConfiguration):

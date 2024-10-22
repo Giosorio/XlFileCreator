@@ -171,8 +171,8 @@ def process_template(writer: pd.ExcelWriter, template: XlFileTemp, split_by_valu
     set_headers_format(wb, ws, df, template.df_settings, template.header_index_list, template.hd_index)
 
     ### Insert Dropdown lists
-    template.dv_config1.set_data_validation(ws, df)
-    template.dv_config2.set_data_validation(ws, df)
+    template.dv_config1.set_data_validation(template.data_index, ws, df)
+    template.dv_config2.set_data_validation(template.data_index, ws, df)
 
     ### Set Conditional Formatting
     ## The order of the conditions matters. A new condition do not overwrite a previous condition.
