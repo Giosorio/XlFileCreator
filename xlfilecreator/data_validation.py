@@ -68,15 +68,17 @@ class DataValidationConfig2(DataValidationConfiguration):
 
     def __init__(self, data_index: int, df_picklists: Union[pd.DataFrame,None], dropdown_list_sheet: str, df_dvconfig2: Union[pd.DataFrame,None]) -> None:
         if df_dvconfig2 is None or df_picklists is None:
-            self.data_validation_dict = None
+            self.__data_validation_dict = None
             self.data_val_headers = None
             self.picklists = None
             self.data_index: int = None
+            self.df_dvconfig2 : pd.DataFrame = None
         else:
             self.data_index: int = data_index
+            self.df_dvconfig2 : pd.DataFrame = df_dvconfig2
             self.picklists = df_picklists
             self.dropdown_list_sheet = dropdown_list_sheet
-            self.data_validation_dict = DataValidationConfig2.get_data_validation_dict_config2(df_dvconfig2)
+            self.__data_validation_dict = None
             self.data_val_headers = self.data_validation_dict.keys()
 
     @staticmethod
@@ -97,17 +99,23 @@ class DataValidationConfig2(DataValidationConfiguration):
 
         return opts_dict 
 
-    @staticmethod
-    def get_data_validation_dict_config2(df_dvconfig2: pd.DataFrame)->DataValDict:
+    @property
+    def data_validation_dict(self) -> DataValDict:
+
+        if self.df_dvconfig2 is None:
+            return None
+
+        if self.__data_validation_dict is not None:
+            return self.__data_validation_dict
 
         data_validation_opts_dict = {}
-        config_rows = df_dvconfig2.shape[0]
-        for row in range(config_rows):
-            hd_to_apply = df_dvconfig2.loc[row, 'apply_to']
-            opts_dict = DataValidationConfig2.create_opts_dict(df_dvconfig2.loc[row])
+        for row in self.df_dvconfig2.index:
+            hd_to_apply = self.df_dvconfig2.loc[row, 'apply_to']
+            opts_dict = DataValidationConfig2.create_opts_dict(self.df_dvconfig2.loc[row])
             data_validation_opts_dict[hd_to_apply] = opts_dict
-
-        return data_validation_opts_dict
+        
+        self.__data_validation_dict = data_validation_opts_dict
+        return self.__data_validation_dict
 
 
 
