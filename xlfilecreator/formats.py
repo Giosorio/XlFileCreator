@@ -43,6 +43,7 @@ format_lock_config_dict = {
     'unlocked_euros': {'locked': False, 'text_wrap':False, 'num_format': '€#,##0.00'},
     'unlocked_percent': {'locked': False, 'text_wrap':False, 'num_format': '0.00%'},
     'unlocked_number': {'locked': False, 'text_wrap':False, 'num_format': '#,##0.00'},
+    'unlocked_date_YYYY-MM-DD': {'locked': False, 'text_wrap':False, 'num_format': 'yyyy-mm-dd'},
     'locked_hidden': {'locked': True, 'text_wrap':False, 'hidden':True},
     'locked_hidden_wrap': {'locked': True, 'text_wrap':True, 'hidden':True},
     'locked_hidden_grey': {'locked': True, 'text_wrap':False, 'hidden':True, 'bg_color': '#d9d9d9'},
