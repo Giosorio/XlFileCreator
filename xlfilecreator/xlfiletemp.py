@@ -95,17 +95,17 @@ class XlFileTemp:
         """Convert the numbers read as text into float values
         identify_data_types: passing identify_data_types=False can improve the performance of reading a large file.
         """
+        df_data_only = df_main[df_main.index==''].copy(deep=True)
+        header = df_main.loc['HEADER']
+        
         if identify_data_types:
             float_formats = ['unlocked_dollars','unlocked_pounds','unlocked_euros','unlocked_percent','unlocked_number']
             format_cols = df_main.loc['lock_sheet_config']
-            df_data_only = df_main[df_main.index==''].copy(deep=True)
             
-            tqdm.pandas(desc='TextValues >>> Float')
-            for f, col in zip(format_cols, df_main.columns):
+            for f, col, hd in zip(format_cols, df_main.columns, header):
                 if f in float_formats:
+                    tqdm.pandas(desc=f'{hd} - TextValues >>> Float')
                     df_data_only[col] = df_data_only[col].progress_apply(to_number)
-        else:
-            df_data_only = df_main[df_main.index==''].copy(deep=True)
 
         return df_data_only
     
