@@ -75,7 +75,10 @@ def config_file() -> None:
         ws_main.data_validation('A7:A100', {'validate': 'list', 'source': ['description_header','HEADER','example_row']})
         ws_main.data_validation('B3:AM3', {'validate': 'list', 'source': ['','Mandatory']})
         ws_main.data_validation('B4:AM4', {'validate': 'list', 'source': f'=FORMATS!$A$1:$A${len(format_dict)}'})
-        ws_main.data_validation('B5:AM5', {'validate': 'list', 'error_type': 'warning', 'error_message': 'This column will be locked by default','source': f'=FORMATS!$B$2:$B${len(format_lock_config_dict)+1}'})
+        ws_main.data_validation('B5:AM5', {'validate': 'list', 'error_type': 'information', 'source': f'=FORMATS!$B$2:$B${len(format_lock_config_dict)+1}',
+                                        'input_message': 'If allow_input_extra_rows=True and the column format is unrecognised or left blank (\'\'), the column will be locked and ONLY the extra rows in the column will be editable', 
+                                        'error_message': 'This column will be locked and ONLY the extra rows in the column will be editable If allow_input_extra_rows=True',
+                                        })
 
         ws_main.write_comment('B1','Google Sheets: Activate the formula by removing the first double quotation mark. \nExcel: Clear the content of this cell', comments_format)
         ws_main.write_comment('B7','Google Sheets: Activate the formula by removing the first double quotation mark. \nExcel: Replace for offset formula =IF(OFFSET(IMPORT_FILE!A1,0,0,23,27)="","",OFFSET(IMPORT_FILE!A1,0,0,23,27)) \n\nADJUST the offset formula according to the dataset in the IMPORT_FILE sheet', comments_format)
