@@ -329,3 +329,26 @@ class XlFileTemp:
         df_split_value = pd.concat([self.df_hd, df_split_value, df_rows_extra])
 
         return df_split_value
+
+    def __repr__(self) -> str:
+        return f"""XlFileTemp(
+            extra_rows={self.extra_rows},
+            hd_index={self.hd_index},
+            data_index={self.data_index},
+            num_rows_extra={self.num_rows_extra},
+            length={self.length},
+            tab_names={self.tab_names},
+
+            dv_config1=DataValidationConfig1(
+                data_index={self.dv_config1.data_index},
+                data_val_headers={self.dv_config1.data_val_headers},
+                data_validation_dict={self.dv_config1.data_validation_dict},
+                )
+
+            dv_config2=DataValidationConfig2(
+                data_index={self.dv_config2.data_index},
+                data_val_headers={self.dv_config2.data_val_headers},
+                data_validation_dict={self.dv_config2.data_validation_dict},
+                )
+        )
+        """
