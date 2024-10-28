@@ -51,8 +51,7 @@ class XlFileTemp:
         self.__df_data = None
         self.df_data_only = XlFileTemp.apply_data_types(df_main,identify_data_types)
         self.df_settings = df_main[df_main.index!='']
-        self.extra_rows = allow_input_extra_rows
-        self.__last_extra_rows = allow_input_extra_rows
+        self.__extra_rows = allow_input_extra_rows
         self.__num_rows_extra = num_rows_extra
         self.header_index_list, self.df_hd = get_headers(self.df_settings)
         self.hd_index = self.df_data.index.tolist().index('HEADER')
@@ -70,9 +69,6 @@ class XlFileTemp:
     @property
     def df_data(self) -> pd.DataFrame:
         self.__df_data = get_df_data(self.df_hd, self.df_data_only, allow_input_extra_rows=self.extra_rows, num_rows_extra=self.num_rows_extra)
-        if self.extra_rows != self.__last_extra_rows:
-            self.__last_extra_rows = self.extra_rows 
-            print(f'Update: allow_input_extra_rows= {self.extra_rows}')
 
         return self.__df_data
 
@@ -81,11 +77,24 @@ class XlFileTemp:
         """length: number of rows of the data """
         
         return self.df_data.shape[0]
+    
+    @property
+    def extra_rows(self):
+        return self.__extra_rows
+    
+    @extra_rows.setter
+    def extra_rows(self, allow_extra_rows: bool):
+        if not isinstance(allow_extra_rows, bool):
+            raise ValueError('Invalid input. Accepted input: True/False')
+        self.__extra_rows = allow_extra_rows
 
     @property
     def num_rows_extra(self):
         if not self.extra_rows:
             self.__num_rows_extra = 0
+        elif self.__num_rows_extra == 0:
+            self.__num_rows_extra = 100
+            print(yellow('default num_rows_extra=100'))
 
         return self.__num_rows_extra
 
