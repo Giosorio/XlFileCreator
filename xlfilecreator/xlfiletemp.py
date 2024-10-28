@@ -9,7 +9,7 @@ from .conditional_formatting import CondFormatting
 from .config_file import config_file
 from .data_validation import DataValidationConfig1, DataValidationConfig2
 from .encrypt_xl import set_password, create_password
-from .terminal_colors import blue
+from .terminal_colors import blue, yellow
 from .utils_func import (to_number, get_google_sheet_df, get_headers, get_df_data, check_google_sh_reader,rows_extra,
                         set_project_name, get_google_sheet_validation2, get_excel_dvalidation2,
                         create_output_folders, clean_df_main, get_google_sheet_validation, to_zip,
@@ -84,11 +84,19 @@ class XlFileTemp:
 
     @property
     def num_rows_extra(self):
+        if not self.extra_rows:
+            self.__num_rows_extra = 0
+
         return self.__num_rows_extra
 
     @num_rows_extra.setter
     def num_rows_extra(self, num_rows_extra: int):
-        self.__num_rows_extra = validate_integer_input(num_rows_extra, 'num_rows_extra')
+        integer_input = validate_integer_input(num_rows_extra, 'num_rows_extra')
+        if not self.extra_rows and integer_input > 0:
+            self.__num_rows_extra = 0
+            print(yellow('extra_rows=False, num_rows_extra=0'))
+        else:
+            self.__num_rows_extra = integer_input
 
     @staticmethod
     def apply_data_types(df_main: pd.DataFrame, identify_data_types: bool) -> pd.DataFrame:
@@ -332,9 +340,9 @@ class XlFileTemp:
 
     def __repr__(self) -> str:
         return f"""XlFileTemp(
-            extra_rows={self.extra_rows},
             hd_index={self.hd_index},
             data_index={self.data_index},
+            extra_rows={self.extra_rows},
             num_rows_extra={self.num_rows_extra},
             length={self.length},
             tab_names={self.tab_names},
