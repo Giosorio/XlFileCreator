@@ -87,6 +87,8 @@ def config_file() -> None:
         ws_main.write_comment('X6', 'Select the entire formula row range and Use Find and Replace to replace \ for \' to keep the formula visible including the \'=\' sign', comments_format)
         ws_main.write_comment('AB6', 'Select the entire formula row range and Use Find and Replace to replace \ for \' to keep the formula visible including the \'=\' sign', comments_format)
 
+        ws_main.freeze_panes(0, 1) ### Freeze column A
+
         ### Conditional Formatting
         df_condf.to_excel(writer, sheet_name='conditional_formatting', index=False)
         ws_condf = writer.sheets['conditional_formatting']
@@ -109,6 +111,8 @@ def config_file() -> None:
         ws_dv.data_validation('B2:AM2', {'validate': 'list', 'source': ['stop','warning','information']})
 
         ws_dv.write_comment('B1','Google Sheets: Activate the formula by removing the first double quotation mark. \nExcel: Clear the content of this cell', comments_format)
+
+        ws_dv.freeze_panes(0, 1) ### Freeze column A
 
         ### Data Validation 2 sheet
         dv_config2.to_excel(writer, sheet_name='data_validation_config2', index=False)
