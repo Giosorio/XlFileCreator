@@ -215,14 +215,16 @@ def set_project_name(project_name: Optional[str]=None) -> Project:
     return project
 
 
-def create_output_folders(project_name: str, today: str, protect_files: Optional[bool]=False) -> Tuple[str, str]:
+def create_output_folders(project_name: str, today: str, protect_files: Optional[bool]=False) -> Tuple[str, Union[str,None]]:
 
     path_1 = f'{project_name}_XL_files_{today}'
-    path_2 = f'{project_name}_XL_files_password_{today}'
     os.mkdir(path_1)
 
     if protect_files:
+        path_2 = f'{project_name}_XL_files_password_{today}'
         os.mkdir(path_2)
+    else:
+        path_2 = None
     
     return path_1, path_2
 
@@ -252,6 +254,8 @@ def password_dataframe(password_master: List[Tuple[str,str,str,str]], project: P
 def to_zip(path_1: str, path_2: str) -> None:
     
     shutil.make_archive(path_1, 'zip', path_1)
-    shutil.make_archive(path_2, 'zip', path_2)
     os.system(f'rm -r {path_1}')
-    os.system(f'rm -r {path_2}')
+    
+    if isinstance(path_2, str):
+        shutil.make_archive(path_2, 'zip', path_2)
+        os.system(f'rm -r {path_2}')
