@@ -73,6 +73,7 @@ class DataValidationConfig2(DataValidationConfiguration):
             self.picklists = None
             self.data_index: int = None
             self.df_dvconfig2 : pd.DataFrame = None
+            self.dropdown_list_sheet = None
         else:
             self.data_index: int = data_index
             self.df_dvconfig2 : pd.DataFrame = df_dvconfig2
