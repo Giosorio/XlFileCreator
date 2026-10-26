@@ -170,10 +170,12 @@ def get_google_sheet_validation2(sheet_id: str, data_validation_sheet_config2: s
     if data_validation_sheet_config2 is None or data_validation_sheet_config2 == '':
         return None, None
     if dropdown_list_sheet is None or dropdown_list_sheet == '':
-        return None, None
+        df_picklists = None
+    else:
+        df_picklists = check_google_sh_reader(sheet_id, dropdown_list_sheet, na_filter=False, header=0, index_col=None)
         
     df_dvconfig2 = check_google_sh_reader(sheet_id, data_validation_sheet_config2, na_filter=False, header=0, index_col=None)
-    df_picklists = check_google_sh_reader(sheet_id, dropdown_list_sheet, na_filter=False, header=0, index_col=None)
+    
     return df_dvconfig2, df_picklists
 
 
@@ -187,10 +189,12 @@ def get_excel_dvalidation2(xl_file:str, data_validation_sheet_config2: str, drop
     if data_validation_sheet_config2 is None or data_validation_sheet_config2 == '':
         return None, None
     if dropdown_list_sheet is None or dropdown_list_sheet == '':
-        return None, None
-        
+        df_picklists = None
+    else:
+        df_picklists = pd.read_excel(xl_file, sheet_name=dropdown_list_sheet, na_filter=False)
+
     df_dvconfig2 = pd.read_excel(xl_file, sheet_name=data_validation_sheet_config2, na_filter=False)
-    df_picklists = pd.read_excel(xl_file, sheet_name=dropdown_list_sheet, na_filter=False)
+
     return df_dvconfig2, df_picklists
 
 

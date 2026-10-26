@@ -67,7 +67,7 @@ class DataValidationConfig1(DataValidationConfiguration):
 class DataValidationConfig2(DataValidationConfiguration):
 
     def __init__(self, data_index: int, df_picklists: Union[pd.DataFrame,None], dropdown_list_sheet: str, df_dvconfig2: Union[pd.DataFrame,None]) -> None:
-        if df_dvconfig2 is None or df_picklists is None:
+        if df_dvconfig2 is None:
             self.__data_validation_dict = None
             self.data_val_headers = None
             self.picklists = None
@@ -76,15 +76,22 @@ class DataValidationConfig2(DataValidationConfiguration):
         else:
             self.data_index: int = data_index
             self.df_dvconfig2 : pd.DataFrame = df_dvconfig2
-            self.picklists = df_picklists
-            self.dropdown_list_sheet = dropdown_list_sheet
             self.__data_validation_dict = None
             self.data_val_headers = self.data_validation_dict.keys()
+            self.picklists = df_picklists
+            if df_picklists is None:
+                self.dropdown_list_sheet = None
+            else:
+                self.dropdown_list_sheet = dropdown_list_sheet
 
     @staticmethod
     def create_opts_dict(opts_settings:pd.Series) -> Dict[str,str]:
         try:
             opts_dict1={'validate': opts_settings['validate'],
+                    'criteria': opts_settings['criteria'],
+                    'minimum': opts_settings['minimum'],
+                    'maximum': opts_settings['maximum'],
+                    'value': opts_settings['value'],
                     'source': opts_settings['source'],
                     'error_type': opts_settings['error_type'],
                     'input_title': opts_settings['input_title'],

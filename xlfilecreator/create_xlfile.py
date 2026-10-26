@@ -159,7 +159,7 @@ def process_template(writer: pd.ExcelWriter, template: XlFileTemp, split_by_valu
         ws_dv = writer.sheets[template.dv_config1.dropdown_list_sheet]
         ws_dv.hide()
 
-    if template.dv_config2.data_validation_dict is not None: 
+    if template.dv_config2.dropdown_list_sheet is not None: 
         template.dv_config2.picklists.to_excel(writer,sheet_name=template.dv_config2.dropdown_list_sheet, index=False)
         ws_dv2 = writer.sheets[template.dv_config2.dropdown_list_sheet]
         ws_dv2.hide()
@@ -170,7 +170,7 @@ def process_template(writer: pd.ExcelWriter, template: XlFileTemp, split_by_valu
     ### Insert Header format
     set_headers_format(wb, ws, df, template.df_settings, template.header_index_list, template.hd_index)
 
-    ### Insert Dropdown lists
+    ### Apply Data Validation (Dropdown lists, decimal, etc)
     template.dv_config1.set_data_validation(ws, df)
     template.dv_config2.set_data_validation(ws, df)
 
