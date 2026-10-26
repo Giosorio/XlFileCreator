@@ -55,7 +55,7 @@ def check_feasibility(split_by_value: Union[bool,Dict[XlFileTemp,bool]], templat
 
 
 def create_xl_file_multiple_temp(*, project_name: str, template_list: List[XlFileTemp], split_by_value: Union[bool,Dict[XlFileTemp,bool]], split_by: Optional[str]=None, 
-    split_by_range: Optional[List[str]]=None, batch: Optional[int]=1, sheet_password: Optional[str]=None, workbook_password: Optional[str]=None,
+    split_by_range: Optional[List[str]]=None, batch: Optional[int]=1, default_tab_names: Optional[bool]=True, sheet_password: Optional[str]=None, workbook_password: Optional[str]=None,
     protect_files: Optional[bool]=False, random_password: Optional[bool]=False, in_zip: Optional[bool]=False) -> None:
     """
     Creates the Excel file with multiple tamples in it.
@@ -66,6 +66,7 @@ def create_xl_file_multiple_temp(*, project_name: str, template_list: List[XlFil
     split_by: The name of the column to filter by.
     split_by_range: Python list contaning all the split_value items. If split_by_value=True All split_value items must be included in all templates provided.
     batch: Number of the batch. Included in the filename of the templates.
+    default_tab_names: True/False if True the final Excel file tabs will be defaulted to 'Sheet{j}' If False, the Excel file tab names will be inherited from the 'main_sheet' of the config file
     sheet_password: sheet password for the excel file to avoid the users to change the format of the main sheet, default=None 
     workbook_password: workbook password to avoid the users to add more sheets in the excel file, defaul=None
     protect_files: False/True encrypt the files
@@ -111,7 +112,11 @@ def create_xl_file_multiple_temp(*, project_name: str, template_list: List[XlFil
         with pd.ExcelWriter(xl_file.path, engine='xlsxwriter') as writer:
 
             for j, template in enumerate(template_list, 1):
-                template_name = f'Sheet{j}'
+                if default_tab_names:
+                    template_name = f'Sheet{j}'
+                else: 
+                    template_name = template.tab_names['main_sheet']
+
                 if isinstance(split_by_value, dict):
                     sbv = split_by_value[template]
                 else:
