@@ -314,7 +314,7 @@ class XlFileTemp:
 
         for split_value in values_to_split:
             if split_value not in self.df_data_only[col_to_split].tolist():
-                raise ValueError(f'{split_value} not in df_data')
+                raise ValueError(f'{split_value} not in df_data \n Tab names: {self.tab_names}')
     
     def template_filtered(self, *, split_by_value: bool, split_by: Union[str,None], split_value: Union[str,None]) -> pd.DataFrame:
         """
