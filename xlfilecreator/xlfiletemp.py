@@ -205,13 +205,13 @@ class XlFileTemp:
                 identify_data_types=identify_data_types)
 
     @staticmethod
-    def export_config_file() -> None:
+    def export_config_file(multiple_temp: Optional[bool]=False) -> None:
         """
         Export Excel file used as a tempalte to create an XlFileTemp object
         The template includes data that can be pass as the parameter of the 
         constructor 'read_google_sheets_file()' to create an XlFileTemp object
         """
-        config_file()
+        config_file(multiple_temp)
 
     def to_excel(self, project_name: Optional[str]=None, split_by: Optional[str]=None, split_by_range: Optional[List[str]]=None, batch: Optional[int]=1, 
         sheet_password: Optional[str]=None, workbook_password: Optional[str]=None, allow_input_extra_rows: Optional[bool]=None, 

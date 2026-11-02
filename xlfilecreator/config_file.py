@@ -1,6 +1,8 @@
 import pandas as pd
 import xlsxwriter
 
+from typing import Optional
+
 from .formats import format_dict, format_lock_config_dict
 
 ### header=None
@@ -25,6 +27,18 @@ CONDITIONAL_F = {'apply_to': {0: 'ID', 1: 'Supplier', 2: 'Supplier comment', 3: 
 df_condf = pd.DataFrame(CONDITIONAL_F)
 
 
+# MULTIPLE TEMPLATES (optional)
+
+### header=None
+ROOT_2 = {0: {0: '', 1: 'Supplier code', 2: 'Supplier ABCD', 3: '12919157830', 4: '12919178790', 5: '12919178790', 6: '12919157833', 7: '12919157833', 8: '12919157833', 9: '12919157833', 10: '12919157823', 11: '12919157833'}, 1: {0: '', 1: 'Supplier name', 2: 'Supplier ABCD', 3: 'Black Diamond Networks', 4: 'Black Diamond Networks', 5: 'Black Diamond Networks', 6: 'inSync Staffing Inc.', 7: 'inSync Staffing Inc.', 8: 'inSync Staffing Inc.', 9: 'Modis Inc.', 10: 'Point Recruitment (UK)', 11: 'Talentburst, Inc'}, 2: {0: 'Dropdown', 1: 'SOW #', 2: 'SOW-01', 3: 'SOW-01', 4: 'SOW-02', 5: 'SOW-03', 6: 'SOW-01', 7: 'SOW-02', 8: 'SOW-03', 9: 'SOW-01', 10: 'SOW-01', 11: 'SOW-01'}, 3: {0: '', 1: 'Takeda SOW Number/ID', 2: 'Contract-2026-000001', 3: 'Contract-2026-138279', 4: 'Contract-2025-123548', 5: 'Contract-2025-123552', 6: 'Contract-2026-134980', 7: 'Contract-2026-129401', 8: 'ContractAmendment-1121', 9: 'Contract-2026-127953', 10: 'Contract-2026-141760', 11: 'Contract-2026-143684'}, 4: {0: 'Dropdown', 1: 'SOW STATUS', 2: 'Active', 3: 'Active', 4: 'Active', 5: 'Active', 6: 'Active', 7: 'Active', 8: 'Active', 9: 'Active', 10: 'Active', 11: 'Active'}, 5: {0: 'YYYY-MM-DD', 1: 'Start Date', 2: '2026-10-10', 3: '2026-05-07', 4: '2025-12-05', 5: '2025-12-05', 6: '2026-04-01', 7: '2026-01-01', 8: '2025-03-31', 9: '2026-01-12', 10: '2026-08-02', 11: '2026-10-01'}, 6: {0: 'YYYY-MM-DD', 1: 'End Date', 2: '2027-01-30', 3: '2027-09-07', 4: '2026-12-31', 5: '2026-12-31', 6: '2027-03-31', 7: '2026-12-31', 8: '2027-03-31', 9: '2026-12-31', 10: '2027-03-31', 11: '2027-01-31'}, 7: {0: 'If an SOW is covered by multiple purchase orders, separate them using a tilde (~)', 1: 'PO Number', 2: '473300032345', 3: '', 4: '', 5: '', 6: '', 7: '', 8: '', 9: '', 10: '', 11: ''}, 8: {0: 'Dropdown', 1: 'VAT Tax Code (SOW)', 2: 'V2 - AUT 20%', 3: '', 4: '', 5: '', 6: '', 7: '', 8: '', 9: '', 10: '', 11: ''}, 9: {0: 'Dropdown', 1: 'Work Location', 2: 'AUT - Linz - Takeda Austria GmbH', 3: '', 4: '', 5: '', 6: '', 7: '', 8: '', 9: '', 10: '', 11: ''}, 10: {0: 'Dropdown', 1: 'SOW Service Category', 2: '0001 - IT and Telecom Services (Rate 2.0)', 3: '', 4: '', 5: '', 6: '', 7: '', 8: '', 9: '', 10: '', 11: ''}, 11: {0: 'Optional', 1: 'Supplier Comments', 2: '', 3: '', 4: '', 5: '', 6: '', 7: '', 8: '', 9: '', 10: '', 11: ''}}
+MAIN_2 = {0: {0: 'CONFIG_MANAGER', 1: 'column_width', 2: 'conditional_formatting', 3: 'header_format', 4: 'lock_sheet_config', 5: 'formula', 6: 'description_header', 7: 'HEADER', 8: 'example_row'}, 1: {0: '"=ArrayFormula(if(offset(B1:1,match("HEADER",A:A,0)-1,0)="","",column(offset(B1:1,match("HEADER",A:A,0)-1,0))-2))', 1: '15', 2: '', 3: 'rsr_format_4', 4: 'locked_hidden_grey', 5: '', 6: '"=ARRAYFORMULA(ROOT_2!A1:N)', 7: '', 8: ''}, 2: {0: '', 1: '35', 2: '', 3: 'rsr_format_4', 4: 'locked_hidden_grey', 5: '', 6: '', 7: '', 8: ''}, 3: {0: '', 1: '10', 2: '', 3: 'rsr_format_6', 4: 'unlocked_text', 5: '', 6: '', 7: '', 8: ''}, 4: {0: '', 1: '35', 2: '', 3: 'rsr_format_4', 4: 'unlocked_text', 5: '', 6: '', 7: '', 8: ''}, 5: {0: '', 1: '25', 2: '', 3: 'rsr_format_4', 4: 'unlocked_text', 5: '', 6: '', 7: '', 8: ''}, 6: {0: '', 1: '25', 2: '', 3: 'rsr_format_4', 4: 'unlocked_date_YYYY-MM-DD', 5: '', 6: '', 7: '', 8: ''}, 7: {0: '', 1: '25', 2: '', 3: 'rsr_format_4', 4: 'unlocked_date_YYYY-MM-DD', 5: '', 6: '', 7: '', 8: ''}, 8: {0: '', 1: '25', 2: '', 3: 'rsr_format_4', 4: 'unlocked_text', 5: '', 6: '', 7: '', 8: ''}, 9: {0: '', 1: '25', 2: '', 3: 'rsr_format_4', 4: 'unlocked_text', 5: '', 6: '', 7: '', 8: ''}, 10: {0: '', 1: '25', 2: '', 3: 'rsr_format_4', 4: 'unlocked_text', 5: '', 6: '', 7: '', 8: ''}, 11: {0: '', 1: '25', 2: '', 3: 'rsr_format_4', 4: 'unlocked_text', 5: '', 6: '', 7: '', 8: ''}, 12: {0: '', 1: '25', 2: '', 3: 'rsr_format_13', 4: 'unlocked_text', 5: '', 6: '', 7: '', 8: ''}}
+TEMP_2_D_VALIDATION_1 = {0: {0: 'Index', 1: 'error_type', 2: 'input_title', 3: 'input_message', 4: 'error_title', 5: 'error_message', 6: 'HEADER', 7: '', 8: '', 9: '', 10: '', 11: '', 12: '', 13: '', 14: '', 15: '', 16: '', 17: '', 18: '', 19: '', 20: '', 21: '', 22: '', 23: ''}, 1: {0: '"=ArrayFormula(if(offset(B1:1,match("HEADER",$A:$A,0)-1,0)="","",column(offset(B1:1,match("HEADER",$A:$A,0)-1,0))-2))', 1: 'stop', 2: '', 3: '', 4: '', 5: '', 6: 'VAT Tax Code (SOW)', 7: 'Q2 - AUT 0% (from EU)', 8: 'R1 - AUT 0% (from outside EU)', 9: 'V2 - AUT 20%', 10: '', 11: '', 12: '', 13: '', 14: '', 15: '', 16: '', 17: '', 18: '', 19: '', 20: '', 21: '', 22: '', 23: ''}, 2: {0: '', 1: 'stop', 2: '', 3: '', 4: '', 5: '', 6: 'SOW STATUS', 7: 'Active', 8: 'Closed', 9: '', 10: '', 11: '', 12: '', 13: '', 14: '', 15: '', 16: '', 17: '', 18: '', 19: '', 20: '', 21: '', 22: '', 23: ''}, 3: {0: '', 1: 'stop', 2: '', 3: '', 4: '', 5: '', 6: 'SOW Service Category', 7: 'IT and Telecom Services ', 8: 'Finance / Accounting ', 9: 'Business management and consulting services ', 10: 'Engineering and manufacturing technologies ', 11: 'Logistics/ Operations / Supply Chain ', 12: 'Facilities / Maintenance/ Cleaning Services ', 13: 'Building and Construction ', 14: 'Marketing / Sales ', 15: 'Scientific / Research & Development ', 16: 'Human Resources ', 17: 'Healthcare / Medical ', 18: 'Business Administration Services ', 19: 'Arts / Sports / Entertainment ', 20: 'Education / Childcare ', 21: 'Travel and Food and Lodging and Entertainment Services ', 22: 'Editorial / Design / Graphic ', 23: 'Independent Consultant '}, 4: {0: '', 1: 'stop', 2: '', 3: '', 4: '', 5: '', 6: 'Work Location', 7: 'Baxter AG', 8: 'Vienna Manufacturing Branch', 9: 'Orth Manufacturing Branch', 10: 'Toller - Vaccines', 11: 'Toller - Biosurgery BDS', 12: 'Toller - Biosurgery CMO', 13: 'Toller - Biolife', 14: 'Baxalta Innovations GmbH', 15: '', 16: '', 17: '', 18: '', 19: '', 20: '', 21: '', 22: '', 23: ''}}
+
+### headers are read
+TEMP_2_D_VALIDATION_2 = {'apply_to': {0: 'Start Date', 1: 'End Date'}, 'validate': {0: 'date', 1: 'date'}, 'source': {0: '', 1: ''}, 'criteria': {0: 'between', 1: 'greater than'}, 'minimum': {0: 'date(2020,1,1)', 1: ''}, 'maximum': {0: 'date(2027,1,1)', 1: ''}, 'value': {0: '', 1: 'date(2026,12,31)'}, 'error_type': {0: 'stop', 1: 'warning'}, 'input_title': {0: '', 1: 'End date must be in 2027'}, 'input_message': {0: 'Start date between 2020-01-01 and 2027-01-01', 1: ''}, 'error_title': {0: '', 1: ''}, 'error_message': {0: 'The Start date is invalid', 1: 'This End date is before go live. The SOW is out of scope'}}
+TEMP_2_CONDITIONAL_F = {'apply_to': {0: 'SOW #', 1: 'SOW STATUS', 2: 'Start Date', 3: 'End Date', 4: 'PO Number', 5: 'VAT Tax Code (SOW)', 6: 'Work Location', 7: 'SOW Service Category'}, 'type': {0: 'formula', 1: 'formula', 2: 'formula', 3: 'formula', 4: 'formula', 5: 'formula', 6: 'formula', 7: 'formula'}, 'criteria': {0: '\\=AND($D4<>"",$C4="")', 1: '\\=AND($D4<>"",$E4="")', 2: '\\=AND($D4<>"",$F4="")', 3: '\\=AND($D4<>"",$G4="")', 4: '\\=AND($D4<>"",$H4="")', 5: '\\=AND($D4<>"",$I4="")', 6: '\\=AND($D4<>"",$J4="")', 7: '\\=AND($D4<>"",$K4="")'}, 'format': {0: 'format_12', 1: 'format_12', 2: 'format_12', 3: 'format_12', 4: 'format_12', 5: 'format_12', 6: 'format_12', 7: 'format_12'}, 'Comms': {0: 'Mandatory', 1: 'Mandatory', 2: 'Mandatory', 3: 'Mandatory', 4: 'Mandatory', 5: 'Mandatory', 6: 'Mandatory', 7: 'Mandatory'}}
+
+
 def set_idx_format(workbook: xlsxwriter.workbook.Workbook, worksheet: xlsxwriter.worksheet.Worksheet, df: pd.DataFrame) -> None:
 
     idx_format = workbook.add_format({'text_wrap':True, 'bold':True, 'italic':True, 'right':True})
@@ -37,7 +51,7 @@ def set_idx_format(workbook: xlsxwriter.workbook.Workbook, worksheet: xlsxwriter
         worksheet.set_column(col, col, width=20, cell_format=other_cols_format)
 
 
-def config_file() -> None:
+def config_file(multiple_temp: Optional[bool]=False) -> None:
 
     with pd.ExcelWriter('XlFileTemp_config_file.xlsx', engine='xlsxwriter') as writer:
         wb = writer.book
@@ -117,12 +131,87 @@ def config_file() -> None:
         ### Data Validation 2 sheet
         dv_config2.to_excel(writer, sheet_name='data_validation_config2', index=False)
         ws_dv2 = writer.sheets['data_validation_config2']
-        ws_dv2.data_validation('D2:D50', {'validate': 'list', 'source': ['stop','warning','information']})
-        ws_dv2.data_validation('B2:B50', {'validate': 'list', 'source': ['','list','decimal','integer','date']})
+        ws_dv2.data_validation('B2:B50', {'validate': 'list', 'source': ['','custom','date','decimal','integer','length','list','time']})
+        ws_dv2.data_validation('D2:D50', {'validate': 'list', 'source': ['','between','equal to','greater than','greater than or equal to','less than','less than or equal to','not between','not equal to']})
+        ws_dv2.data_validation('H2:H50', {'validate': 'list', 'source': ['stop','warning','information']})
+        
         ws_dv2.set_tab_color('#9900ff')
         ws_dv2.write_comment('C1', 'Use Find and Replace to replace \ for \' to keep the formula visible including the \'=\' sign\n', comments_format)
+        ws_dv2.write_comment('D1', 'The criteria parameter is used to set the criteria by which the data in the cell is validated.\'It is almost always required except for the list, custom and any validate options.')
+        ws_dv2.write_comment('G1', 'value Format for "date" validation: date(2026,12,31)')
 
         ### Dropdown lists DV2
         df_dropdowns_dv2.to_excel(writer, sheet_name='dropdown_lists_config2', index=False)
 
         
+        if multiple_temp:
+
+            ### IMPORT_FILE Sheet
+            df_root2 = pd.DataFrame(ROOT_2)
+            df_root2.to_excel(writer,sheet_name='ROOT_2', header=False, index=False)
+            ws_root2 = writer.sheets['ROOT_2']
+            ws_root2.set_tab_color('#0000ff')
+            ws_root2.write_comment('A1','Google Sheets: Select the whole sheet and format it as Plain text', comments_format)
+        
+            ### MAIN_SHEET
+            df_main2 = pd.DataFrame(MAIN_2)
+            df_main2.to_excel(writer, sheet_name='MASTER_2', header=False, index=False)
+            ws_main2 = writer.sheets['MASTER_2']
+            ws_main2.set_tab_color('#00ff00')
+
+            set_idx_format(wb, ws_main2, df_main2)
+            ws_main2.write(0,1, df_main2.iloc[0,1], orange_bg_color)
+            ws_main2.write(6,1, df_main2.iloc[6,1], orange_bg_color)
+
+            ws_main2.data_validation('A7:A100', {'validate': 'list', 'source': ['description_header','HEADER','example_row']})
+            ws_main2.data_validation('B3:AM3', {'validate': 'list', 'source': ['','Mandatory']})
+            ws_main2.data_validation('B4:AM4', {'validate': 'list', 'source': f'=FORMATS!$A$1:$A${len(format_dict)}'})
+            ws_main2.data_validation('B5:AM5', {'validate': 'list', 'error_type': 'information', 'source': f'=FORMATS!$B$2:$B${len(format_lock_config_dict)+1}',
+                                            'input_message': 'If allow_input_extra_rows=True and the column format is unrecognised or left blank (\'\'), the column will be locked and ONLY the extra rows in the column will be editable', 
+                                            'error_message': 'This column will be locked and ONLY the extra rows in the column will be editable If allow_input_extra_rows=True',
+                                            })
+
+            ws_main2.write_comment('B1','Google Sheets: Activate the formula by removing the first double quotation mark. \nExcel: Clear the content of this cell', comments_format)
+            ws_main2.write_comment('B7','Google Sheets: Activate the formula by removing the first double quotation mark. \nExcel: Replace for offset formula =IF(OFFSET(IMPORT_FILE!A1,0,0,23,27)="","",OFFSET(IMPORT_FILE!A1,0,0,23,27)) \n\nADJUST the offset formula according to the dataset in the IMPORT_FILE sheet', comments_format)
+            
+            ws_main2.freeze_panes(0, 1) ### Freeze column A
+
+            ### Conditional Formatting
+            df_condf2 = pd.DataFrame(TEMP_2_CONDITIONAL_F)
+            df_condf2.to_excel(writer, sheet_name='root2_conditional_f', index=False)
+            ws_condf2 = writer.sheets['root2_conditional_f']
+            ws_condf2.data_validation('D2:D100', {'validate': 'list', 'source': f'=FORMATS!$A$1:$A${len(format_dict)}'})
+            ws_condf2.data_validation('B2:B100', {'validate': 'list', 'source': ['','formula']})
+            ws_condf2.set_tab_color('#ff00ff')
+            ws_condf2.write_comment('C1', 'Use Find and Replace to replace \ for \' to keep the formula visible including the \'=\' sign\nThe order of the conditions matters. A new condition do not overwrite a previous condition.\nThe conditions in the conditional_formatting sheet are superimposed over the Mandatory fields.\nThe mandtory flag does not overwrite an existing condition in the conditional_formatting sheet', comments_format)
+
+            ### Data Validation 1 sheet
+            dv_config1_root2 = pd.DataFrame(TEMP_2_D_VALIDATION_1)
+            dv_config1_root2.to_excel(writer, sheet_name='ROOT2_dv_config1', header=False, index=False)
+            ws_dv1_root2 = writer.sheets['ROOT2_dv_config1']
+            ws_dv1_root2.set_tab_color('#FF9900')
+
+            set_idx_format(wb, ws_dv1_root2, dv_config1_root2)
+            ws_dv1_root2.write(0,1, dv_config1_root2.iloc[0,1], orange_bg_color)
+            
+            ws_dv1_root2.write_row('B7:AM7', dv_config1_root2.iloc[6,1:].tolist(), wb.add_format({'bold':1, 'text_wrap':1}))
+
+            ws_dv1_root2.data_validation('A3:A100', {'validate': 'list', 'source': ['error_type','input_title','input_message','error_title','error_message','HEADER']})
+            ws_dv1_root2.data_validation('B2:AM2', {'validate': 'list', 'source': ['stop','warning','information']})
+
+            ws_dv1_root2.write_comment('B1','Google Sheets: Activate the formula by removing the first double quotation mark. \nExcel: Clear the content of this cell', comments_format)
+
+            ws_dv1_root2.freeze_panes(0, 1) ### Freeze column A
+
+            ### Data Validation 2 sheet
+            dv_config2_root2 = pd.DataFrame(TEMP_2_D_VALIDATION_2)
+            dv_config2_root2.to_excel(writer, sheet_name='ROOT2_dv_config2', index=False)
+            ws_dv2_root2 = writer.sheets['ROOT2_dv_config2']
+            ws_dv2_root2.data_validation('B2:B50', {'validate': 'list', 'source': ['','custom','date','decimal','integer','length','list','time']})
+            ws_dv2_root2.data_validation('D2:D50', {'validate': 'list', 'source': ['','between','equal to','greater than','greater than or equal to','less than','less than or equal to','not between','not equal to']})
+            ws_dv2_root2.data_validation('H2:H50', {'validate': 'list', 'source': ['stop','warning','information']})
+            
+            ws_dv2_root2.set_tab_color('#9900ff')
+            ws_dv2_root2.write_comment('C1', 'Use Find and Replace to replace \ for \' to keep the formula visible including the \'=\' sign\n')
+            ws_dv2_root2.write_comment('D1', 'The criteria parameter is used to set the criteria by which the data in the cell is validated.\'It is almost always required except for the list, custom and any validate options.')
+            ws_dv2_root2.write_comment('G1', 'value Format for "date" validation: date(2026,12,31)')
